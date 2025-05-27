@@ -1,0 +1,120 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+@*<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800,900&display=swap" rel="stylesheet">*@
+
+<script>
+    function myFunction() {
+        var dots = document.getElementById("dots");
+        var moreText = document.getElementById("more");
+        var btnText = document.getElementById("myBtn");
+
+        if (dots.style.display == "none") {
+            dots.style.display = "inline";
+            btnText.innerHTML = "Read more";
+            moreText.style.display = "none";
+        } else {
+            dots.style.display = "none";
+            btnText.innerHTML = "Read less";
+            moreText.style.display = "inline";
+        }
+    }
+</script>
+
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-12 col-12">
+                <div class="text-center pb-2">
+                    <h1 class="text-primary" style="font-family: 'Niconne'">The Grand Ho Tram</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<section class="latest-podcast-section  pb-0" id="section_2">
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <!--<div class="col-lg-12 col-12">
+                <div class="section-title-wrap mb-5">
+                    <h4 class="section-title">Activities</h4>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12 mb-4 mb-lg-0">
+                <div class="custom-block d-flex">
+                    <div class="">
+                        <div class="custom-block-icon-wrap">
+                            <div class="section-overlay"></div>
+                            <a href="#" class="custom-block-image-wrap">
+                                <img src="~/Assets/Images/The_Grand_2.jpg" class="custom-block-image img-fluid" alt="">
+                            </a>
+                        </div>
+
+                        <div class="mt-2">
+                            <a href="#" class="btn custom-btn">
+                                GuideLine
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="custom-block-info">
+
+                        <h5 class="mb-2">-->
+                            @*<a href="/AnnualReview/Index">Performance Review</a>*@
+                            <!--<a href="http://annualperformancereview/">
+                                Performance Review<br /><span class="font-italic text-secondary"> (Đánh giá hàng năm)</span>
+                            </a>
+                        </h5>
+                        <p class="mb-0">Employee performance reviews should cover communication, collaboration, reliability, work quality, problem-solving, and timeliness.</p>
+
+
+                    </div>
+                </div>
+            </div>-->
+
+            <div class="col-lg-12 col-12">
+                <div class="custom-block d-flex">
+                    <div class="">
+                        <div class="custom-block-icon-wrap">
+                            <div class="section-overlay"></div>
+                            <a href="/AnnualLeave/RequestForm" class="custom-block-image-wrap">
+                                <img src="~/Assets/Images/The_Grand_3.jpg" class="custom-block-image img-fluid" alt="">
+
+                            </a>
+                        </div>
+
+                        @*<div class="mt-2">
+                            <a href="~/Assets/Guide_Line.xlsx" target="_blank" class="btn custom-btn">
+                                GuideLine
+                            </a>
+                        </div>*@
+                    </div>
+
+                    <div class="custom-block-info">
+
+                        <h5 class="mb-2">
+                            <a href="/TravelExpense/Dashboard" style="color:black">
+                                Travel Expense Request <br />@*<span class="font-italic text-secondary"> (Đơn xin nghỉ phép)</span>*@
+                            </a>
+                        </h5>
+
+                        <p class="mb-0">A travel expense request form for each department</p>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+

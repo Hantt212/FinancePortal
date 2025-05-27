@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FinancePortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="RoleDescription" Type="varchar" MaxLength="255" />
+    <Property Name="IsShown" Type="bit" />
+  </EntityType>
+  <EntityType Name="TravelExpense">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BudgetID" Type="int" Nullable="false" />
+    <Property Name="StatusID" Type="int" Nullable="false" />
+    <Property Name="FromDate" Type="datetime" />
+    <Property Name="ToDate" Type="datetime" />
+    <Property Name="TripDays" Type="int" Nullable="false" />
+    <Property Name="RequestDate" Type="datetime" Nullable="false" />
+    <Property Name="TripPurpose" Type="nvarchar(max)" />
+    <Property Name="EstimatedCost" Type="bigint" Nullable="false" />
+    <Property Name="ExchangeRate" Type="bigint" Nullable="false" />
+    <Property Name="RequesterSignature" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="TarNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="BudgetAmountAtSubmit" Type="bigint" />
+    <Property Name="BudgetUsedAtSubmit" Type="bigint" />
+    <Property Name="BudgetRemainingAtSubmit" Type="bigint" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TravelExpenseApproval">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="ApprovalStep" Type="int" Nullable="false" />
+    <Property Name="ApproverID" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="ApproverName" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="ApproverEmail" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="ApproverPosition" Type="nvarchar" MaxLength="250" Nullable="false" />
+    <Property Name="ApproverSignature" Type="nvarchar" MaxLength="100" />
+    <Property Name="ApproverSignDate" Type="datetime" />
+    <Property Name="IsApproved" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
+  </EntityType>
+  <EntityType Name="TravelExpenseBudget">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BudgetName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="BudgetAmount" Type="bigint" Nullable="false" />
+    <Property Name="BudgetUsed" Type="bigint" Nullable="false" />
+    <Property Name="BudgetRemaining" Type="bigint" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TravelExpenseCost">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="CostAir" Type="bigint" Nullable="false" />
+    <Property Name="CostHotel" Type="bigint" Nullable="false" />
+    <Property Name="CostMeal" Type="bigint" Nullable="false" />
+    <Property Name="CostOther" Type="bigint" Nullable="false" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="UpdatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="TravelExpenseEmployee">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="EmployeeCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="FullName" Type="nvarchar" MaxLength="100" />
+    <Property Name="Position" Type="nvarchar" MaxLength="100" />
+    <Property Name="Division" Type="nvarchar" MaxLength="100" />
+    <Property Name="Department" Type="nvarchar" MaxLength="100" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TravelExpenseStatus">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
+    <Property Name="DisplayName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ColorCode" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EmployeeCode" Type="varchar" MaxLength="50" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CreatedTime" Type="datetime" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="LastLogin" Type="datetime" />
+    <Property Name="Password" Type="nvarchar" MaxLength="100" />
+    <Property Name="UserEmailAddress" Type="nvarchar" MaxLength="100" />
+    <Property Name="IsWindowsAccount" Type="bit" Nullable="false" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="UserRoleId" />
+    </Key>
+    <Property Name="UserRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="RoleId" Type="int" Nullable="false" />
+    <Property Name="IsShown" Type="bit" />
+  </EntityType>
+  <Association Name="FK_TravelExpense_BudgetID">
+    <End Role="TravelExpenseBudget" Type="Self.TravelExpenseBudget" Multiplicity="1" />
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpenseBudget">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpense">
+        <PropertyRef Name="BudgetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpense_TravelExpenseStatus">
+    <End Role="TravelExpenseStatus" Type="Self.TravelExpenseStatus" Multiplicity="1" />
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpenseStatus">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpense">
+        <PropertyRef Name="StatusID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseApproval_TravelExpense">
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
+    <End Role="TravelExpenseApproval" Type="Self.TravelExpenseApproval" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpense">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseApproval">
+        <PropertyRef Name="TravelExpenseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseCost_TravelExpense">
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
+    <End Role="TravelExpenseCost" Type="Self.TravelExpenseCost" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpense">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseCost">
+        <PropertyRef Name="TravelExpenseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseEmployee_TravelExpense">
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="TravelExpenseEmployee" Type="Self.TravelExpenseEmployee" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpense">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseEmployee">
+        <PropertyRef Name="TravelExpenseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserRole_Role">
+    <End Role="Role" Type="Self.Role" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserRole_User">
+    <End Role="User" Type="Self.User" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="FinancePortalModelStoreContainer">
+    <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpense" EntityType="Self.TravelExpense" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseApproval" EntityType="Self.TravelExpenseApproval" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseBudget" EntityType="Self.TravelExpenseBudget" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseCost" EntityType="Self.TravelExpenseCost" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseEmployee" EntityType="Self.TravelExpenseEmployee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseStatus" EntityType="Self.TravelExpenseStatus" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_TravelExpense_BudgetID" Association="Self.FK_TravelExpense_BudgetID">
+      <End Role="TravelExpenseBudget" EntitySet="TravelExpenseBudget" />
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="Self.FK_TravelExpense_TravelExpenseStatus">
+      <End Role="TravelExpenseStatus" EntitySet="TravelExpenseStatus" />
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseApproval_TravelExpense" Association="Self.FK_TravelExpenseApproval_TravelExpense">
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+      <End Role="TravelExpenseApproval" EntitySet="TravelExpenseApproval" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseCost_TravelExpense" Association="Self.FK_TravelExpenseCost_TravelExpense">
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+      <End Role="TravelExpenseCost" EntitySet="TravelExpenseCost" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseEmployee_TravelExpense" Association="Self.FK_TravelExpenseEmployee_TravelExpense">
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+      <End Role="TravelExpenseEmployee" EntitySet="TravelExpenseEmployee" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserRole_Role" Association="Self.FK_UserRole_Role">
+      <End Role="Role" EntitySet="Role" />
+      <End Role="UserRole" EntitySet="UserRole" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserRole_User" Association="Self.FK_UserRole_User">
+      <End Role="User" EntitySet="User" />
+      <End Role="UserRole" EntitySet="UserRole" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

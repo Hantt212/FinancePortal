@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="AnnualEmployeeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Department">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DepartmentName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="DivisionID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Division">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="DivisionID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="DivisionName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ImageID" Type="Int32" />
+    <Property Name="FirstName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <Property Name="BirthDay" Type="DateTime" Precision="0" />
+    <Property Name="DepartmentName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DepartmentID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="Position" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+    <Property Name="EmailAddress" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="DivisionID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="LevelName" Type="Int32" />
+    <Property Name="GroupName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FirstTimeLogin" Type="Boolean" />
+    <Property Name="LastLogin" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityContainer Name="AnnualEmployeeEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Departments" EntityType="Self.Department" />
+    <EntitySet Name="Divisions" EntityType="Self.Division" />
+    <EntitySet Name="Employees" EntityType="Self.Employee" />
+  </EntityContainer>
+</Schema>

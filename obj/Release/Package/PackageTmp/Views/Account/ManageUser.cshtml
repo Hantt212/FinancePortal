@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "Manage Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Toast Container -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed" style="top: 20px; right: 20px; z-index: 1055;">
+        <div class="toast" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header">
+                <div class="rounded mr-2" id="toastIcon" style="width: 15px; height: 15px;"></div>
+                <strong class="mr-auto" id="toastTitle">Notification</strong>
+                <small class="text-muted" id="toastTime">Just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container pt-5" style="margin-top: 100px;">
+    <h2 class="mb-4 font-weight-bold">Users</h2>
+
+    <div class="mb-3">
+        <button class="btn btn-primary" id="addUserBtn">
+            <i class="fa fa-plus-circle"></i> Add New User
+        </button>
+    </div>
+
+    <table class="table table-bordered table-striped" id="userTable">
+        <thead class="thead-light">
+            <tr>
+                <th>Username</th>
+                <th>Employee Code</th>
+                <th>Email</th>
+                <th>Windows Account</th>
+                <th>Role Name</th>
+                <th>Active</th>
+                <th>Created Date</th>              
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Filled via JS or server rendering -->
+        </tbody>
+    </table>
+</div>
+
+<input type="hidden" id="newUserId" value="0" />
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalTitle">Add New User</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group position-relative">
+                    <label class="font-weight-bold">Employee Code</label>
+                    <div class="input-group">
+                        <input type="text" id="newEmployeeCode" class="form-control" autocomplete="off" />
+                        <div class="input-group-append">
+                            <span id="employeeCodeStatus" class="input-group-text">
+                                <i class="fa fa-times text-danger"></i> <!-- default: invalid -->
+                            </span>
+                        </div>
+                    </div>
+                    <small id="employeeCodeInfo" class="form-text text-muted d-none"></small>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="newUserName" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="newUserEmail" class="form-control" />
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" id="newIsWindowsAccount" class="form-check-input" />
+                    <label class="form-check-label" for="newIsWindowsAccount">Use Windows Domain Account</label>
+                </div>
+                <div class="form-group" id="newPasswordGroup">
+                    <label>Password</label>
+                    <input type="password" id="newPassword" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-bold">Roles</label>
+                    <select id="newRoles" class="form-control">
+                        @foreach (var role in ViewBag.AllRoles as List<SelectListItem>)
+                        {
+                            <option value="@role.Value">@role.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" id="newIsActive" class="form-check-input" checked />
+                    <label class="form-check-label">Active</label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="saveUserBtn" class="btn btn-primary">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section manageUserScripts {
+    <script src="~/Assets/js/TravelExpense/manageuser.js"></script>
+}

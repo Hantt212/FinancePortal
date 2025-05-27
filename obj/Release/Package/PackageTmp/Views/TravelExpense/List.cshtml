@@ -1,0 +1,203 @@
+﻿@{
+    ViewBag.Title = "My Travel Expense Requests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var roleDisplay = HttpContext.Current.Session["UserRole"] as string ?? "";
+}
+
+<style>
+    .page-break {
+        page-break-before: always;
+        break-before: always;
+    }
+</style>
+
+
+<script>
+    sessionStorage.setItem("currentUserRole", "@roleDisplay");
+</script>
+
+<!-- 🔔 Toast Notification -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed" style="top: 20px; right: 20px; z-index: 1055;">
+        <div class="toast" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header">
+                <div class="rounded mr-2" id="toastIcon" style="width: 15px; height: 15px;"></div>
+                <strong class="mr-auto" id="toastTitle">Notification</strong>
+                <small class="text-muted" id="toastTime">Just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5" style="margin-top: 120px;">
+    <h2 class="mb-4 font-weight-bold">My Travel Expense Requests</h2>
+    <table class="table table-bordered" id="requestListTbl">
+        <thead class="thead-light">
+            <tr>
+                <th>TAR No</th>
+                <th>Trip Purpose</th>
+                <th>Request Date</th>
+                <th>Estimated Cost (VND)</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Global var -->
+<input type="hidden" id="viewRequestID" value="" />
+
+<!-- View Request Modal -->
+<div class="modal fade" id="viewRequestModal" tabindex="-1" role="dialog" aria-labelledby="viewRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+
+            <!-- 🔘 Modal Header -->
+            <div class="modal-header d-flex justify-content-between align-items-center">
+                <div>
+                    <button id="exportPDFBtn" class="btn btn-sm btn-outline-dark">
+                        <i class="fa fa-file-pdf-o"></i> Export PDF
+                    </button>
+                </div>
+                <h5 class="modal-title font-weight-bold">TAR No: <span id="viewTarNo"></span></h5>
+                <div id="approvalActions" class="d-flex gap-2">
+                    <button class="btn btn-success btn-sm mr-1" id="approveBtn"><i class="fa fa-check"></i> Approve</button>
+                    <button class="btn btn-danger btn-sm" id="rejectBtn"><i class="fa fa-times"></i> Reject</button>
+                </div>
+            </div>
+
+            <!-- 🧾 Modal Body -->
+            <div class="modal-body">
+                <!-- Trip Info -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white font-weight-bold">Trip Info</div>
+                    <div class="card-body row">
+                        <div class="col-md-6"><strong>From:</strong> <span id="viewFromDate"></span></div>
+                        <div class="col-md-6"><strong>To:</strong> <span id="viewToDate"></span></div>
+                        <div class="col-md-6"><strong>Days:</strong> <span id="viewTripDays"></span></div>
+                        <div class="col-md-6"><strong>Request Date:</strong> <span id="viewRequestDate"></span></div>
+                        <div class="col-md-12 mt-2"><strong>Purpose:</strong> <span id="viewTripPurpose"></span></div>
+                    </div>
+                </div>
+
+                <!-- Budget -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white font-weight-bold">Budget</div>
+                    <div class="card-body row">
+                        <div class="col-md-6"><strong>Budget Name:</strong> <span id="viewBudgetName"></span></div>
+                        <div class="col-md-6"><strong>Amount:</strong> <span id="viewBudgetAmount"></span></div>
+                        <div class="col-md-6"><strong>Used:</strong> <span id="viewBudgetUsed"></span></div>
+                        <div class="col-md-6"><strong>Remaining:</strong> <span id="viewBudgetRemaining"></span></div>
+                    </div>
+                </div>
+
+                <!-- Cost Details -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white font-weight-bold">Cost Breakdown</div>
+                    <div class="card-body row">
+                        <div class="col-md-3"><strong>Air:</strong> <span id="viewCostAir"></span></div>
+                        <div class="col-md-3"><strong>Hotel:</strong> <span id="viewCostHotel"></span></div>
+                        <div class="col-md-3"><strong>Meal:</strong> <span id="viewCostMeal"></span></div>
+                        <div class="col-md-3"><strong>Other:</strong> <span id="viewCostOther"></span></div>
+                        <div class="col-md-6 mt-3"><strong>Exchange Rate:</strong> <span id="viewExchangeRate"></span></div>
+                        <div class="col-md-6 mt-3"><strong>Estimated VND:</strong> <span id="viewEstimatedCost"></span></div>
+                    </div>
+                </div>
+
+                <!-- Employees -->
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white font-weight-bold">Employees</div>
+                    <div class="card-body">
+                        <ul id="viewEmployeeList" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <!-- Requester Signature -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light font-weight-bold">Requester Signature</div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewRequesterSign"></span></div>
+                        <div><strong>Sign Date:</strong> <span id="viewRequesterDate"></span></div>
+                    </div>
+                </div>
+
+                <!-- HOD Approver Info -->
+                <div class="card mb-3 d-none" id="hodSection">
+                    <div class="card-header font-weight-bold bg-light d-flex justify-content-between align-items-center">
+                        <span>HOD Approver</span>
+                        <span id="hodApprovalStatus" class="badge badge-secondary">Pending</span>
+                    </div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewHODName"></span></div>
+                        <div><strong>Email:</strong> <span id="viewHODEmail"></span></div>
+                        <div><strong>Position:</strong> <span id="viewHODPosition"></span></div>
+                        <div><strong>Sign:</strong> <span id="viewHODSignature"></span></div>
+                        <div><strong>Date:</strong> <span id="viewHODSignDate"></span></div>
+                    </div>
+                </div>
+
+                <!-- FC Approver Info -->
+                <div class="card mb-3 d-none" id="fcSection">
+                    <div class="card-header font-weight-bold bg-light d-flex justify-content-between align-items-center">
+                        <span>FC Approver</span>
+                        <span id="fcApprovalStatus" class="badge badge-secondary">Pending</span>
+                    </div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewFCName"></span></div>
+                        <div><strong>Email:</strong> <span id="viewFCEmail"></span></div>
+                        <div><strong>Position:</strong> <span id="viewFCPosition"></span></div>
+                        <div><strong>Sign:</strong> <span id="viewFCSignature"></span></div>
+                        <div><strong>Date:</strong> <span id="viewFCSignDate"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔚 Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeViewModalBtn">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Approval confirm modal -->
+<div class="modal fade" id="confirmApprovalModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title">Confirm Approval Action</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmApprovalMessage" class="mb-0 text-dark font-weight-bold">
+                    Are you sure you want to proceed? You cannot undo this action.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button id="confirmApprovalBtn" class="btn btn-primary">Yes, Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+
+@section requestListScripts {
+    <script src="~/Assets/js/TravelExpense/requestlist.js"></script>
+}
+

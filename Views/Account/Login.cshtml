@@ -1,0 +1,123 @@
+﻿@using LeaveRequestForm.Models
+@model LoginViewModel
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/main.css">
+    <link rel="stylesheet" href="~/Assets/css/Common/bootstrap.min.css">
+    <title>Employee Daily Activity</title>
+    <link rel="icon" href="~/Assets/Images/icon_web.png" type="image/x-icon">
+</head>
+<body>
+
+    <section class="material-half-bg">
+    </section>
+    <section class="login-content" style="background-image: linear-gradient(#348CD2, #FFFFFF);">
+        <div class="logo">
+            <h1 style="font-family: 'Niconne'">Finance Portal</h1>
+        </div>
+        <div class="login-box">
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "login-form", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("returnUrl", Request.QueryString["ReturnUrl"])
+
+                <h3 class="login-head"><i class="fa fa-sm fa-fw fa-user"></i> Login</h3>
+
+                <div class="form-group">
+                    <label class="control-label">Username</label>
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Username" })
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group mb-2">
+                    <label class="control-label">Password</label>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+
+                @Html.ValidationMessage("ErrorLogin", new { @class = "text-danger font-weight-bold text-center" })
+
+                <div class="form-group btn-container mt-4">
+                    <button class="btn btn-primary btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i> SIGN IN</button>
+                </div>
+            }
+
+            <form class="forget-form">
+                <h3 class="login-head"><i class="fa fa-sm fa-fw fa-lock"></i> Forgot Password?</h3>
+
+                <div class="form-group">
+                    <div class="alert alert-primary alert-dismissible fade show m-0" style="padding:0 5px" id="noticefy">
+                        <p>Check new password in your email</p>
+                    </div>
+                </div>
+
+                <div class="form-group" id="email">
+                    <label class="control-label">Email</label>
+                    <input class="form-control" name="emailAdd" id="emailAdd" type="email" required placeholder="Email">
+                </div>
+
+                <div class="form-group btn-container mt-3" id="btnReset">
+                    <button type="button" class="btn btn-primary btn-block" onclick="ResetPass()">
+                        <i class="fa fa-unlock fa-lg fa-fw"></i> RESET
+                    </button>
+                </div>
+
+                <div class="form-group mt-2">
+                    <p class="semibold-text mb-0">
+                        <a href="#" data-toggle="flip" onclick="clearForm()">
+                            <i class="fa fa-angle-left fa-fw"></i> Back to Login
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </section>
+
+
+    <script src="~/Assets/js/Common/jquery-3.6.3.js"></script>
+    <script type="text/javascript">
+
+        $("#noticefy").hide();
+        //$("#email").show();
+        //$("#btnReset").show();
+
+        // Login Page Flipbox control
+        $('.login-content [data-toggle="flip"]').click(function () {
+            $('.login-box').toggleClass('flipped');
+            return false;
+        });
+
+
+        //function ResetPass() {
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Account/ResetPass/?nocache=' + Math.random(),
+        //        async: true,
+        //        catche: false,
+        //        data: {
+        //            mail: $('#emailAdd').val()
+        //        },
+        //        dataType: "json",
+        //        success: function (data) {
+        //            if (data = "Success") {
+        //                $("#noticefy").show();
+        //            }
+        //        },
+        //        error: function (message) {
+        //            alert("Error");
+        //        }
+        //    });
+        //}
+
+        //function clearForm() {
+        //    $("#noticefy").hide();
+        //    $("#emailAdd").val("");
+        //}
+    </script>
+</body>
+</html>

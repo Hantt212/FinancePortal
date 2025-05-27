@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>Employee Portal</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="~/Assets/Images/icon_web.png" type="image/x-icon" />
+
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/main.css">
+    <link rel="Stylesheet" type="text/css" href="~/Assets/css/Common/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/Common/buttons.dataTables.min.css">
+
+    <link rel="stylesheet" href="~/Assets/css/Common/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/Assets/css/Common/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/Common/templatemo-pod-talk.css">
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/Common/owl.carousel.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/Common/owl.theme.default.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/Common/jquery.dataTables.min.css">
+
+    <link rel="stylesheet" type="text/css" href="~/Assets/css/AnnualReview/editor.css">
+    <style>
+        .rotate {
+            transform: rotateY(40deg);
+            animation: two 15s infinite;
+            animation-direction: alternate;
+        }
+
+        @@keyframes two {
+            0% {
+                transform: rotateY(0);
+            }
+
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+    </style>
+
+    @{
+        var username = HttpContext.Current.Session["Username"]?.ToString();
+        var role = HttpContext.Current.Session["UserRole"] as string;
+        var roleDisplay = !string.IsNullOrEmpty(role) ? role : "";
+    }
+</head>
+
+<body class="app sidebar-mini">
+
+    <main>
+        <nav class="navbar navbar-expand-lg" style="background-image: url(/Assets/Images/bgr_header.jpg), linear-gradient(#348CD2, #FFFFFF);">
+            <div class="container ">
+                @*<a class="navbar-brand me-lg-5 me-0 rotate" href="/Account/Dashboard/">*@
+                <a class="navbar-brand">
+                    <img src="~/Assets/Images/The Grand_HT_logo.png" class="logo-image img-fluid " alt="templatemo pod talk">
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-lg-auto">
+                        <li class="nav-item mr-2">
+                            <a class="nav-link" style="text-transform:unset; font-size:16px; font-family: 'Montserrat-Regular', sans-serif" href="/Account/Dashboard/">Home</a>
+                        </li>
+
+                        <li class="nav-item dropdown mr-2">
+                            <a class="nav-link dropdown-toggle" style="text-transform:unset; font-size:16px; color: white;font-family: 'Montserrat-Regular', sans-serif" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Expense Form </a>
+
+                            <ul class="dropdown-menu dropdown-menu-light " aria-labelledby="navbarLightDropdownMenuLink">
+                                <li><a class="dropdown-item" style="text-transform:unset; font-size:16px; font-family: 'Montserrat-Regular', sans-serif" href="/TravelExpense/Index">New Form</a></li>
+                                <li><a class="dropdown-item" style="text-transform:unset; font-size:16px; font-family: 'Montserrat-Regular', sans-serif" href="/TravelExpense/List">Request List</a></li>
+                                <li><a class="dropdown-item" style="text-transform:unset; font-size:16px; font-family: 'Montserrat-Regular', sans-serif" href="/TravelExpense/ExpenseBudget">Expense Budget</a></li>
+                                <li><a class="dropdown-item" style="text-transform:unset; font-size:16px; font-family: 'Montserrat-Regular', sans-serif" href="/Account/ManageUser">Manage Users</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item dropdown mr-2">
+                            <a class="nav-link dropdown-toggle" style="text-transform:unset; font-size:16px; color: white; font-family: 'Montserrat-Regular', sans-serif"
+                               id="accountMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Hi, @username
+                                @if (!string.IsNullOrEmpty(roleDisplay))
+                                {
+                                    <span class="badge badge-pill badge-info ml-2" style="font-size: 0.75rem;">@roleDisplay</span>
+                                }
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="accountMenu">
+                                <li>
+                                    <a class="dropdown-item" style="text-transform:unset; font-size:16px; font-family: 'Montserrat-Regular', sans-serif; cursor:pointer"
+                                       data-toggle="modal" data-target="#logoutModal">Logout</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        @RenderBody()
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="col-12 text-center">
+            <p class="mb-0">
+                © 2024 The Grand Ho Tram<br />
+                Designed By: IT Department
+            </p>
+        </div>
+    </footer>
+
+    <!-- Logout Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ready to Leave?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/Account/LogOff">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link href="~/Assets/lib/jqueryui/jquery-ui.css" rel="Stylesheet" type="text/css" />
+    <link href="~/Assets/lib/dropzone.min.css" rel="Stylesheet" type="text/css" />
+
+
+    <script src="~/Assets/js/Common/jquery-3.6.3.js"></script>
+    <script src="~/Assets/js/Common/jquery-ui.js"></script>
+    <script src="~/Assets/lib/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="~/Assets/js/Common/bootstrap.min.js"></script>
+    <script src="~/Assets/lib/html2pdf.bundle.min.js"></script>
+
+    <script src="~/Assets/lib/bootstrap.bundle.min.js"></script>
+
+    <script src="~/Assets/lib/main.js"></script>
+    <!--Export excel-->
+    <script src="~/Assets/js/Common//jquery.dataTables.min.js"></script>
+    <script src="~/Assets/js/Common/dataTables.buttons.min.js"></script>
+    <script src="~/Assets/js/Common/jszip.min.js"></script>
+    <script src="~/Assets/js/Common/pdfmake.min.js"></script>
+    <script src="~/Assets/js/Common/vfs_fonts.js"></script>
+    <script src="~/Assets/js/Common/buttons.html5.min.js"></script>
+    <script src="~/Assets/js/Common/buttons.print.min.js"></script>
+    <script src="~/Assets/js/TravelExpense/editor.js"></script>
+
+    <!-- Page-specific Scripts -->
+    <script>
+        $(document).ready(function () {
+            var path = window.location.href;
+            $('#navbarNav a').each(function () {
+                if (this.href.replace("#", "") === path) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
+
+    @RenderSection("travelExpenseScript", required: false)
+    @RenderSection("dashBoardScripts", required: false)
+    @RenderSection("expenseBudgetScripts", required: false)
+    @RenderSection("requestListScripts", required: false)
+    @RenderSection("manageUserScripts", required: false)
+
+</body>
+</html>

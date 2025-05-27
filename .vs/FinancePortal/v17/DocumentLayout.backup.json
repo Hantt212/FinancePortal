@@ -1,0 +1,160 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\nghiad.tran\\source\\repos\\financeportal\\assets\\js\\travelexpense\\requestlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:assets\\js\\travelexpense\\requestlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\nghiad.tran\\source\\repos\\financeportal\\viewmodels\\approverviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\approverviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\nghiad.tran\\source\\repos\\financeportal\\viewmodels\\travelexpenseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpenseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\nghiad.tran\\source\\repos\\financeportal\\viewmodels\\travelexpensesubmitmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpensesubmitmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\dao\\travelexpensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:dao\\travelexpensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\nghiad.tran\\source\\repos\\financeportal\\views\\travelexpense\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\travelexpense\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\nghiad.tran\\source\\repos\\financeportal\\views\\travelexpense\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\travelexpense\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\controllers\\travelexpensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:controllers\\travelexpensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "TravelExpenseViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\ViewModels\\TravelExpenseViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\TravelExpenseViewModel.cs",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\ViewModels\\TravelExpenseViewModel.cs",
+              "RelativeToolTip": "ViewModels\\TravelExpenseViewModel.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAA0wBkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-07T02:55:29.127Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ApproverViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\ViewModels\\ApproverViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\ApproverViewModel.cs",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\ViewModels\\ApproverViewModel.cs",
+              "RelativeToolTip": "ViewModels\\ApproverViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-06T06:35:33.647Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TravelExpenseSubmitModel.cs",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\ViewModels\\TravelExpenseSubmitModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\TravelExpenseSubmitModel.cs",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\ViewModels\\TravelExpenseSubmitModel.cs",
+              "RelativeToolTip": "ViewModels\\TravelExpenseSubmitModel.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwAcAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-06T06:24:45.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Views\\TravelExpense\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\TravelExpense\\Index.cshtml",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Views\\TravelExpense\\Index.cshtml",
+              "RelativeToolTip": "Views\\TravelExpense\\Index.cshtml",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAAAGEAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-25T03:17:07.101Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TravelExpenseDao.cs",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Dao\\TravelExpenseDao.cs",
+              "RelativeDocumentMoniker": "Dao\\TravelExpenseDao.cs",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Dao\\TravelExpenseDao.cs",
+              "RelativeToolTip": "Dao\\TravelExpenseDao.cs",
+              "ViewState": "AgIAAJcAAAAAAAAAAAAowJ8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T08:20:26.247Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TravelExpenseController.cs",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Controllers\\TravelExpenseController.cs",
+              "RelativeDocumentMoniker": "Controllers\\TravelExpenseController.cs",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Controllers\\TravelExpenseController.cs",
+              "RelativeToolTip": "Controllers\\TravelExpenseController.cs",
+              "ViewState": "AgIAAL8AAAAAAAAAAIAxwNwAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T06:30:32.726Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "requestlist.js",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Assets\\js\\TravelExpense\\requestlist.js",
+              "RelativeDocumentMoniker": "Assets\\js\\TravelExpense\\requestlist.js",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Assets\\js\\TravelExpense\\requestlist.js",
+              "RelativeToolTip": "Assets\\js\\TravelExpense\\requestlist.js",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAwGEAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-05-01T08:04:52.478Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "List.cshtml",
+              "DocumentMoniker": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Views\\TravelExpense\\List.cshtml",
+              "RelativeDocumentMoniker": "Views\\TravelExpense\\List.cshtml",
+              "ToolTip": "C:\\Users\\nghiad.tran\\source\\repos\\FinancePortal\\Views\\TravelExpense\\List.cshtml",
+              "RelativeToolTip": "Views\\TravelExpense\\List.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-05-01T08:57:38.439Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

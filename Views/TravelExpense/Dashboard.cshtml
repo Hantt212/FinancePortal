@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Travel Expense Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container pt-5" style="margin-top: 100px;">
+    <h2 class="mb-4 font-weight-bold">Travel Expense Dashboard</h2>
+
+    <!-- 🔹 Quick Access Cards -->
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-left-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Budgets</h5>
+                    <p class="card-text">View and manage budget allocations.</p>
+                    <a href="/TravelExpense/ExpenseBudget" class="btn btn-outline-primary btn-sm">Manage Budgets</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-left-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Travel Requests</h5>
+                    <p class="card-text">View all submitted travel expense forms.</p>
+                    <a href="/TravelExpense/List" class="btn btn-outline-success btn-sm">View Requests</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-left-info h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Action</h5>
+                    <p class="card-text">Submit a new travel expense request.</p>
+                    <a href="/TravelExpense/Index" class="btn btn-outline-info btn-sm">New Travel Expense</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 Charts Section -->
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Budget Usage</h5>
+                    <canvas id="budgetUsageChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Travel Request Statuses</h5>
+                    <canvas id="requestStatusChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ JS Section -->
+@section dashBoardScripts {
+    <script src="@Url.Content("~/Assets/js/TravelExpense/chart.umd.js")"></script>
+    <script src="@Url.Content("~/Assets/js/TravelExpense/dashboard.js")"></script>
+}
+
