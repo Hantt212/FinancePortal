@@ -17,7 +17,8 @@ const LabelStatusEnum = {
     Pending: 'Pending',
     Approved: 'Approved',
     Rejected: 'Rejected',
-    NotAssigned: 'Not Assigned'
+    NotAssigned: 'Not Assigned',
+    NotReviewed: 'Not Reviewed'
 }
 
 $(document).ready(function () {
@@ -205,7 +206,7 @@ function showHODSection(hod, statusID) {
     $('#viewHODSignature').text(hod.ApproverSignature || "N/A");
     $('#viewHODSignDate').text(formatJSONDate(hod.ApproverSignDate) || "N/A");
 
-    let statusLabel = "Not Reviewed";
+    let statusLabel = LabelStatusEnum.NotReviewed;
 
     if (statusID === StatusEnum.HODPending) {
         statusLabel = LabelStatusEnum.Pending;
@@ -275,9 +276,9 @@ function setApprovalStatusBadge(selector, status) {
             label = 'Rejected';
             backgroundColor = '#dc3545';
             break;
-        case 'Not Reviewed':
+        case LabelStatusEnum.NotReviewed:
             badgeClass = 'badge-info';
-            label = 'Not Reviewed';
+            label = LabelStatusEnum.NotReviewed;
             backgroundColor = '#17a2b8';
             break;
         case LabelStatusEnum.NotAssigned:
