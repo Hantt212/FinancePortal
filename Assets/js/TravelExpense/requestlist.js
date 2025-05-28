@@ -1,4 +1,26 @@
-﻿$(document).ready(function () {
+﻿
+const StatusEnum = {
+    RequesterPending: 1,
+    RequesterCancelled: 2,
+    HODPending: 3,
+    HODApproved: 4,
+    HODRejected: 5,
+    GLPending: 6,
+    GLApproved: 7,
+    FCPending: 8,
+    FCApproved: 9,
+    FCRejected: 10,
+    Done: 11
+};
+
+const LabelStatusEnum = {
+    Pending: 'Pending',
+    Approved: 'Approved',
+    Rejected: 'Rejected',
+    NotAssigned: 'Not Assigned'
+}
+
+$(document).ready(function () {
     loadUserRequests();
 });
 
@@ -143,8 +165,6 @@ function resetApprovalSections() {
     $('#hodSection').addClass('d-none');
     $('#fcSection').addClass('d-none');
     $('#cancelActions').addClass('d-none');
-    //$('#hodSection').hide();
-    //$('#fcSection').hide();
 }
 
 function showApprovalSections(role, approvals, statusID) {
@@ -164,14 +184,14 @@ function showApprovalSections(role, approvals, statusID) {
     showFCSection(fc, statusID);
 
     // Approve/Reject buttons (based on role + section still pending)
-    if (role === "HOD" && statusID === 2) {
+    if (role === "HOD" && statusID === StatusEnum.HODPending) {
         $('#approvalActions').removeClass('d-none');
-    } else if (role === "FC" && statusID === 5) {
+    } else if (role === "FC" && statusID === StatusEnum.FCPending) {
         $('#approvalActions').removeClass('d-none');
     }
 
     //Cancel buttons
-    if (role === "Requester" && statusID < 3) {
+    if (role === "Requester" && statusID <= StatusEnum.HODPending) {
         $('#cancelActions').removeClass('d-none');
     } else {
         $('#cancelActions').addClass('d-none');
@@ -187,14 +207,14 @@ function showHODSection(hod, statusID) {
 
     let statusLabel = "Not Reviewed";
 
-    if (statusID === 2) {
-        statusLabel = "Pending";
-    } else if (statusID === 3) {
-        statusLabel = "Approved";
-    } else if (statusID === 4) {
-        statusLabel = "Rejected";
-    } else if (statusID > 4) {
-        statusLabel = "Approved";
+    if (statusID === StatusEnum.HODPending) {
+        statusLabel = LabelStatusEnum.Pending;
+    } else if (statusID === StatusEnum.HODApproved) {
+        statusLabel = LabelStatusEnum.Approved;
+    } else if (statusID === StatusEnum.HODRejected) {
+        statusLabel = LabelStatusEnum.Rejected;
+    } else if (statusID > StatusEnum.HODRejected) {
+        statusLabel = LabelStatusEnum.Approved;
     }
 
     setApprovalStatusBadge("#hodApprovalStatus", statusLabel);
@@ -208,7 +228,7 @@ function setFallbackHODSection() {
     $('#viewHODPosition').text("N/A");
     $('#viewHODSignature').text("N/A");
     $('#viewHODSignDate').text("N/A");
-    setApprovalStatusBadge('#hodApprovalStatus', 'Not Assigned');
+    setApprovalStatusBadge('#hodApprovalStatus', LabelStatusEnum.NotAssigned);
 }
 
 function showFCSection(fc, statusID) {
@@ -218,17 +238,17 @@ function showFCSection(fc, statusID) {
     $('#viewFCSignature').text(fc?.ApproverSignature || "N/A");
     $('#viewFCSignDate').text(formatJSONDate(fc?.ApproverSignDate) || "N/A");
 
-    let statusLabel = "Not Assigned";
+    let statusLabel = LabelStatusEnum.NotAssigned;
 
-    if (statusID === 5) {
-        statusLabel = "Pending";
-    } else if (statusID === 6) {
-        statusLabel = "Approved";
-    } else if (statusID === 7) {
-        statusLabel = "Rejected";
-    } else if (statusID > 7) {
-        statusLabel = "Approved";
-    } 
+    if (statusID === StatusEnum.FCPending) {
+        statusLabel = LabelStatusEnum.Pending;
+    } else if (statusID === StatusEnum.FCApproved) {
+        statusLabel = LabelStatusEnum.Approved;
+    } else if (statusID === StatusEnum.FCRejected) {
+        statusLabel = LabelStatusEnum.Rejected;
+    } else if (statusID > StatusEnum.FCRejected) {
+        statusLabel = LabelStatusEnum.Approved;
+    }
 
     setApprovalStatusBadge("#fcApprovalStatus", statusLabel);
     $('#fcSection').removeClass('d-none');
@@ -236,7 +256,7 @@ function showFCSection(fc, statusID) {
 
 function setApprovalStatusBadge(selector, status) {
     let badgeClass = 'badge-secondary';
-    let label = 'Not Assigned';
+    let label = LabelStatusEnum.NotAssigned;
     let backgroundColor = '#6c757d'; // Default: Not Assigned (secondary)
 
     switch (status) {
@@ -260,10 +280,10 @@ function setApprovalStatusBadge(selector, status) {
             label = 'Not Reviewed';
             backgroundColor = '#17a2b8';
             break;
-        case 'Not Assigned':
+        case LabelStatusEnum.NotAssigned:
         default:
             // Keep default styles
-            label = 'Not Assigned';
+            label = LabelStatusEnum.NotAssigned;
             break;
     }
 
@@ -296,30 +316,30 @@ $('#confirmApprovalBtn').click(() => {
     submitApproval(pendingApprovalAction);
 });
 
-function submitApproval(isApprove) {   
-        const role = sessionStorage.getItem("currentUserRole") || "";
-        const requestId = $('#viewRequestID').val();
+function submitApproval(isApprove) {
+    const role = sessionStorage.getItem("currentUserRole") || "";
+    const requestId = $('#viewRequestID').val();
 
-        if (!requestId) {
-            showToast("Missing Request ID", "danger");
-            return;
-        }
+    if (!requestId) {
+        showToast("Missing Request ID", "danger");
+        return;
+    }
 
-        const payload = {
-            requestId: parseInt(requestId),
-            isApprove: isApprove
-        };
+    const payload = {
+        requestId: parseInt(requestId),
+        isApprove: isApprove
+    };
 
-        const url = role === "HOD"
-            ? '/TravelExpense/ApproveByHOD'
-            : role === "FC"
-                ? '/TravelExpense/ApproveByFC'
-                : null;
+    const url = role === "HOD"
+        ? '/TravelExpense/ApproveByHOD'
+        : role === "FC"
+            ? '/TravelExpense/ApproveByFC'
+            : null;
 
-        if (!url) {
-            showToast("Unauthorized action for current role", "warning");
-            return;
-        }
+    if (!url) {
+        showToast("Unauthorized action for current role", "warning");
+        return;
+    }
 
     $.ajax({
         url: url,

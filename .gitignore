@@ -6,3 +6,5 @@
 *.cache
 *.pdb
 *.dll
+*.pdb
+obj/Debug/FinancePortal.csproj.FileListAbsolute.txt
