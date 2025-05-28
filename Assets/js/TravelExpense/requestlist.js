@@ -142,6 +142,7 @@ function resetApprovalSections() {
     $('#approvalActions').addClass('d-none');
     $('#hodSection').addClass('d-none');
     $('#fcSection').addClass('d-none');
+    $('#cancelActions').addClass('d-none');
     //$('#hodSection').hide();
     //$('#fcSection').hide();
 }
@@ -167,6 +168,13 @@ function showApprovalSections(role, approvals, statusID) {
         $('#approvalActions').removeClass('d-none');
     } else if (role === "FC" && statusID === 5) {
         $('#approvalActions').removeClass('d-none');
+    }
+
+    //Cancel buttons
+    if (role === "Requester" && statusID < 3) {
+        $('#cancelActions').removeClass('d-none');
+    } else {
+        $('#cancelActions').addClass('d-none');
     }
 }
 
