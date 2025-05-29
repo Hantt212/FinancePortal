@@ -3,40 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\dao\\travelexpensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:dao\\travelexpensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\assets\\js\\travelexpense\\requestlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:assets\\js\\travelexpense\\requestlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\viewmodels\\requestsummariesbyuserresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\requestsummariesbyuserresult.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\controllers\\travelexpensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:controllers\\travelexpensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\views\\travelexpense\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\travelexpense\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\assets\\js\\travelexpense\\requestlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:assets\\js\\travelexpense\\requestlist.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\travelexpensestatusenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpensestatusenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\dao\\travelexpensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:dao\\travelexpensedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\views\\travelexpense\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\travelexpense\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\approverviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\approverviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\travelexpenseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpenseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\assets\\js\\travelexpense\\travelexpense.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -47,28 +39,38 @@
       "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:models\\employeesmodel.context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\viewmodels\\useraccountviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\useraccountviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\approverviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\approverviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\travelexpensestatusenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpensestatusenum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\travelexpensesubmitmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpensesubmitmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\travelexpensecostviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpensecostviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\travelexpenseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\travelexpenseviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\models\\financeportalmodel.context.tt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:models\\financeportalmodel.context.tt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\viewmodels\\employeeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:viewmodels\\employeeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|FinancePortal||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\views\\travelexpense\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|solutionrelative:views\\travelexpense\\list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7F36D8C2-6779-434B-8C4C-C5C6232C8110}|FinancePortal.csproj|c:\\users\\hatt.nguyen.htpvtg\\desktop\\hantt\\ha\u0027s handover\\ha\u0027s handover\\financeportal\\||{B270807C-D8C6-49EB-8EBE-8E8D566637A1}|909d16b3-c8e8-43d1-a2b8-26ea0d4b6b57"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,7 +80,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 16,
           "Children": [
             {
               "$type": "Bookmark",
@@ -86,70 +88,71 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\Account\\Login.cshtml",
-              "RelativeDocumentMoniker": "Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\Account\\Login.cshtml",
-              "RelativeToolTip": "Views\\Account\\Login.cshtml",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-29T02:38:21Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AQIAABUAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-29T02:38:16.919Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AccountController.cs",
-              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "Controllers\\AccountController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAfAAAA",
+              "DocumentIndex": 1,
+              "Title": "RequestSummariesByUserResult.cs",
+              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\RequestSummariesByUserResult.cs",
+              "RelativeDocumentMoniker": "ViewModels\\RequestSummariesByUserResult.cs",
+              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\RequestSummariesByUserResult.cs",
+              "RelativeToolTip": "ViewModels\\RequestSummariesByUserResult.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwBEAAAAbAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T02:04:40.326Z",
+              "WhenOpened": "2025-05-29T06:24:16.633Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "TravelExpenseCostViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseCostViewModel.cs",
-              "RelativeDocumentMoniker": "ViewModels\\TravelExpenseCostViewModel.cs",
-              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseCostViewModel.cs",
-              "RelativeToolTip": "ViewModels\\TravelExpenseCostViewModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAABAAAA",
+              "DocumentIndex": 9,
+              "Title": "UserAccountViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\UserAccountViewModel.cs",
+              "RelativeDocumentMoniker": "ViewModels\\UserAccountViewModel.cs",
+              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\UserAccountViewModel.cs",
+              "RelativeToolTip": "ViewModels\\UserAccountViewModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAyAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-28T02:32:35.116Z"
+              "WhenOpened": "2025-05-29T06:03:51.876Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
+              "Title": "FinancePortalModel.Context.tt",
+              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Models\\FinancePortalModel.Context.tt",
+              "RelativeDocumentMoniker": "Models\\FinancePortalModel.Context.tt",
+              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Models\\FinancePortalModel.Context.tt",
+              "RelativeToolTip": "Models\\FinancePortalModel.Context.tt",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-05-29T05:35:47.394Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "FinancePortal",
+              "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\FinancePortal.csproj",
+              "RelativeDocumentMoniker": "FinancePortal.csproj",
+              "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\FinancePortal.csproj",
+              "RelativeToolTip": "FinancePortal.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-05-29T04:41:44.56Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "TravelExpenseSubmitModel.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseSubmitModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\TravelExpenseSubmitModel.cs",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseSubmitModel.cs",
               "RelativeToolTip": "ViewModels\\TravelExpenseSubmitModel.cs",
-              "ViewState": "AQIAABEAAAAAAAAAAAAAwBwAAAApAAAA",
+              "ViewState": "AQIAAA8AAAAAAAAAAADgvxwAAABKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-28T02:32:21.872Z"
+              "WhenOpened": "2025-05-28T02:32:21.872Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "TravelExpenseStatusEnum.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseStatusEnum.cs",
               "RelativeDocumentMoniker": "ViewModels\\TravelExpenseStatusEnum.cs",
@@ -162,7 +165,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Web.config",
               "RelativeDocumentMoniker": "Web.config",
@@ -175,19 +178,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "EmployeesModel.Context.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Models\\EmployeesModel.Context.cs",
               "RelativeDocumentMoniker": "Models\\EmployeesModel.Context.cs",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Models\\EmployeesModel.Context.cs",
               "RelativeToolTip": "Models\\EmployeesModel.Context.cs",
-              "ViewState": "AQIAAAUAAAAAAAAAAAAgwBEAAAAPAAAA",
+              "ViewState": "AQIAABAAAAAAAAAAAAAowBEAAAAPAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-27T07:15:51.347Z"
+              "WhenOpened": "2025-05-27T07:15:51.347Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 14,
               "Title": "EmployeeViewModel.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\EmployeeViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\EmployeeViewModel.cs",
@@ -195,47 +199,51 @@
               "RelativeToolTip": "ViewModels\\EmployeeViewModel.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-27T07:13:23.194Z"
+              "WhenOpened": "2025-05-27T07:13:23.194Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "travelexpense.js",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Assets\\js\\TravelExpense\\travelexpense.js",
               "RelativeDocumentMoniker": "Assets\\js\\TravelExpense\\travelexpense.js",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Assets\\js\\TravelExpense\\travelexpense.js",
               "RelativeToolTip": "Assets\\js\\TravelExpense\\travelexpense.js",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAHoBAAA4AAAA",
+              "ViewState": "AQIAAFkBAAAAAAAAAAAkwHoBAAA4AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-05-27T07:11:54.121Z"
+              "WhenOpened": "2025-05-27T07:11:54.121Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 6,
               "Title": "TravelExpenseViewModel.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\TravelExpenseViewModel.cs",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\TravelExpenseViewModel.cs",
               "RelativeToolTip": "ViewModels\\TravelExpenseViewModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-07T02:55:29.127Z"
+              "WhenOpened": "2025-05-07T02:55:29.127Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 5,
               "Title": "ApproverViewModel.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\ApproverViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\ApproverViewModel.cs",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\ViewModels\\ApproverViewModel.cs",
               "RelativeToolTip": "ViewModels\\ApproverViewModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-06T06:35:33.647Z"
+              "WhenOpened": "2025-05-06T06:35:33.647Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 4,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\TravelExpense\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\TravelExpense\\Index.cshtml",
@@ -243,56 +251,57 @@
               "RelativeToolTip": "Views\\TravelExpense\\Index.cshtml",
               "ViewState": "AQIAAFUBAAAAAAAAAAAAAFgBAAAmAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-25T03:17:07.101Z"
+              "WhenOpened": "2025-04-25T03:17:07.101Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "TravelExpenseDao.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Dao\\TravelExpenseDao.cs",
               "RelativeDocumentMoniker": "Dao\\TravelExpenseDao.cs",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Dao\\TravelExpenseDao.cs",
               "RelativeToolTip": "Dao\\TravelExpenseDao.cs",
-              "ViewState": "AQIAAEIDAAAAAAAAAAAnwFQDAAA4AAAA",
+              "ViewState": "AQIAAFICAAAAAAAAAAAlwGACAAAjAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-08T08:20:26.247Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "TravelExpenseController.cs",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Controllers\\TravelExpenseController.cs",
               "RelativeDocumentMoniker": "Controllers\\TravelExpenseController.cs",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Controllers\\TravelExpenseController.cs",
               "RelativeToolTip": "Controllers\\TravelExpenseController.cs",
-              "ViewState": "AQIAAMsAAAAAAAAAAAAMwNkAAAApAAAA",
+              "ViewState": "AQIAAMUAAAAAAAAAAAAawNIAAAAaAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-08T06:30:32.726Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "requestlist.js",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Assets\\js\\TravelExpense\\requestlist.js",
               "RelativeDocumentMoniker": "Assets\\js\\TravelExpense\\requestlist.js",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Assets\\js\\TravelExpense\\requestlist.js",
               "RelativeToolTip": "Assets\\js\\TravelExpense\\requestlist.js",
-              "ViewState": "AQIAAL0AAAAAAAAAAAArwMUAAAA1AAAA",
+              "ViewState": "AQIAAFcAAAAAAAAAAAAhwGYAAAA1AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-05-01T08:04:52.478Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 16,
               "Title": "List.cshtml",
               "DocumentMoniker": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\TravelExpense\\List.cshtml",
               "RelativeDocumentMoniker": "Views\\TravelExpense\\List.cshtml",
               "ToolTip": "C:\\Users\\hatt.nguyen.HTPVTG\\Desktop\\Hantt\\Ha\u0027s Handover\\Ha\u0027s Handover\\FinancePortal\\Views\\TravelExpense\\List.cshtml",
               "RelativeToolTip": "Views\\TravelExpense\\List.cshtml",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEcAAAAZAAAA",
+              "ViewState": "AQIAAFwAAAAAAAAAAAAUwG4AAABsAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-05-01T08:57:38.439Z",
               "EditorCaption": ""

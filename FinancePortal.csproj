@@ -241,6 +241,7 @@
     <Compile Include="ViewModels\BudgetViewModel.cs" />
     <Compile Include="ViewModels\EmployeeViewModel.cs" />
     <Compile Include="ViewModels\OperationResult.cs" />
+    <Compile Include="ViewModels\RequestSummariesByUserResult.cs" />
     <Compile Include="ViewModels\TravelExpenseBudgetViewModel.cs" />
     <Compile Include="ViewModels\TravelExpenseCostViewModel.cs" />
     <Compile Include="ViewModels\TravelExpenseStatusEnum.cs" />

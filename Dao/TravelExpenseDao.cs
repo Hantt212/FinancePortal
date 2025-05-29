@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -613,46 +614,55 @@ namespace FinancePortal.Dao
 
             using (var db = new FinancePortalEntities())
             {
-                var query = from t in db.TravelExpenses
-                            join s in db.TravelExpenseStatus on t.StatusID equals s.ID
-                            where t.IsShown == true
-                            select new
-                            {
-                                t.ID,
-                                t.TarNo,
-                                t.TripPurpose,
-                                t.RequestDate,
-                                t.EstimatedCost,
-                                t.CreatedBy,
-                                s.DisplayName,
-                                s.ColorCode
-                            };
+                //var query = from t in db.TravelExpenses
+                //            join s in db.TravelExpenseStatus on t.StatusID equals s.ID
+                //            where t.IsShown == true
+                //            select new
+                //            {
+                //                t.ID,
+                //                t.TarNo,
+                //                t.TripPurpose,
+                //                t.RequestDate,
+                //                t.EstimatedCost,
+                //                t.CreatedBy,
+                //                s.DisplayName,
+                //                s.ColorCode
+                //            };
 
-                if (role == RequesterRole)
-                {
-                    query = query.Where(t => t.CreatedBy == username);
-                }
-                else if (role == HODRole)
-                {
-                    query = query.Where(t =>
-                        db.TravelExpenseApprovals.Any(a =>
-                            a.TravelExpenseID == t.ID &&
-                            a.ApprovalStep == (int)ApprovalStep.HOD &&
-                            a.ApproverID == employeeCode));
-                }
-                else if (role == FCRole)
-                {
-                    query = query.Where(t =>
-                        db.TravelExpenseApprovals.Any(a =>
-                            a.TravelExpenseID == t.ID &&
-                            a.ApprovalStep == (int)ApprovalStep.FC &&
-                            a.ApproverID == employeeCode));
-                }
+                //if (role == RequesterRole)
+                //{
+                //    query = query.Where(t => t.CreatedBy == username);
+                //}
+                //else if (role == HODRole)
+                //{
+                //    query = query.Where(t =>
+                //        db.TravelExpenseApprovals.Any(a =>
+                //            a.TravelExpenseID == t.ID &&
+                //            a.ApprovalStep == (int)ApprovalStep.HOD &&
+                //            a.ApproverID == employeeCode));
+                //}
+                //else if (role == FCRole)
+                //{
+                //    query = query.Where(t =>
+                //        db.TravelExpenseApprovals.Any(a =>
+                //            a.TravelExpenseID == t.ID &&
+                //            a.ApprovalStep == (int)ApprovalStep.FC &&
+                //            a.ApproverID == employeeCode));
+                //}
+                //return query
+                //    .OrderByDescending(t => t.RequestDate)
+                //    .Take(maxItems)
+                //    .ToList<object>();
 
-                return query
-                    .OrderByDescending(t => t.RequestDate)
-                    .Take(maxItems)
-                    .ToList<object>();
+                List<object> result = db.Database.SqlQuery<RequestSummariesByUserResult>(
+                    "EXEC GetRequestSummariesByUser @Role, @Username, @EmployeeCode",
+                    new SqlParameter("@Role", role),
+                    new SqlParameter("@Username", username),
+                    new SqlParameter("@EmployeeCode", employeeCode)
+                ).Take(maxItems)
+                 .ToList<object>();
+                return result;
+
             }
         }
 

@@ -87,21 +87,16 @@ function loadUserRequests() {
                     }
                 },
                 {
-                    data: "ID",
+                    data: null,
                     title: "Actions",
                     orderable: false,
                     render: function (data, type, row) {
-                        const role = sessionStorage.getItem("currentUserRole");
-                        const status = row.DisplayName;
-
-                        const canEdit = role === "Requester" && status === "Requester Pending";
-
-                        const viewBtn = `<button class="btn btn-sm btn-outline-info btn-view-request" data-id="${data}">
+                        const viewBtn = `<button class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
                             <i class="fa fa-eye"></i> View
                         </button>`;
 
-                        const editBtn = canEdit
-                            ? `<a href="/TravelExpense/Index/${data}" class="btn btn-sm btn-outline-primary ml-1">
+                        const editBtn = data.EditMode
+                            ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
                                 <i class="fa fa-edit"></i> Edit
                                </a>`
                             : "";

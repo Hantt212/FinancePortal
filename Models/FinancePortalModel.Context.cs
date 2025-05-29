@@ -12,6 +12,8 @@ namespace FinancePortal.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class FinancePortalEntities : DbContext
     {
@@ -34,5 +36,7 @@ namespace FinancePortal.Models
         public virtual DbSet<TravelExpenseStatu> TravelExpenseStatus { get; set; }
         public virtual DbSet<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
         public virtual DbSet<TravelExpense> TravelExpenses { get; set; }
+    
+  
     }
 }
