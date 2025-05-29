@@ -220,11 +220,11 @@ C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePor
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\chart.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\chart.umd.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\manageuser.js
+C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\requestlist.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\expensebudget.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\editor.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\dashboard.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\travelexpense.js
-C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\requestlist.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\FinancePortal.dll.config
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\FinancePortal.dll
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\FinancePortal.pdb

@@ -16,7 +16,22 @@ const StatusEnum = {
 const LabelStatusEnum = {
     Pending: 'Pending',
     Approved: 'Approved',
-    Rejected: 'Rejected'
+    Rejected: 'Rejected',
+    NotAssigned: 'Not Assigned',
+    NotReviewed: 'Not Reviewed'
+}
+
+const RoleEnum = {
+    Requester: 'Requester',
+    HOD: 'HOD',
+    GL: 'GL',
+    FC: 'FC',
+}
+
+const StepEnum = {
+    HOD: 1,
+    GL: 2,
+    FC: 3
 }
 
 $(document).ready(function () {
@@ -167,8 +182,9 @@ function resetApprovalSections() {
 }
 
 function showApprovalSections(role, approvals, statusID) {
-    const hod = approvals.find(a => a.ApprovalStep === 1);
-    const fc = approvals.find(a => a.ApprovalStep === 2);
+    const hod = approvals.find(a => a.ApprovalStep === StepEnum.HOD);
+    const gl = approvals.find(a => a.ApprovalStep === StepEnum.GL);
+    const fc = approvals.find(a => a.ApprovalStep === StepEnum.FC);
 
     resetApprovalSections();
 
@@ -183,14 +199,16 @@ function showApprovalSections(role, approvals, statusID) {
     showFCSection(fc, statusID);
 
     // Approve/Reject buttons (based on role + section still pending)
-    if (role === "HOD" && statusID === StatusEnum.HODPending) {
+    if (role === RoleEnum.HOD && statusID === StatusEnum.HODPending) {
         $('#approvalActions').removeClass('d-none');
-    } else if (role === "FC" && statusID === StatusEnum.FCPending) {
+    } else if (role === RoleEnum.GL && statusID === StatusEnum.GLPending) {
+        $('#approvalActions').removeClass('d-none');
+    } else if (role === RoleEnum.FC && statusID === StatusEnum.FCPending) {
         $('#approvalActions').removeClass('d-none');
     }
 
     //Cancel buttons
-    if (role === "Requester" && statusID <= StatusEnum.HODPending) {
+    if (role === RoleEnum.Requester && statusID <= StatusEnum.HODPending) {
         $('#cancelActions').removeClass('d-none');
     } else {
         $('#cancelActions').addClass('d-none');
@@ -204,7 +222,7 @@ function showHODSection(hod, statusID) {
     $('#viewHODSignature').text(hod.ApproverSignature || "N/A");
     $('#viewHODSignDate').text(formatJSONDate(hod.ApproverSignDate) || "N/A");
 
-    let statusLabel = "Not Reviewed";
+    let statusLabel = LabelStatusEnum.NotReviewed;
 
     if (statusID === StatusEnum.HODPending) {
         statusLabel = LabelStatusEnum.Pending;
@@ -227,7 +245,7 @@ function setFallbackHODSection() {
     $('#viewHODPosition').text("N/A");
     $('#viewHODSignature').text("N/A");
     $('#viewHODSignDate').text("N/A");
-    setApprovalStatusBadge('#hodApprovalStatus', 'Not Assigned');
+    setApprovalStatusBadge('#hodApprovalStatus', LabelStatusEnum.NotAssigned);
 }
 
 function showFCSection(fc, statusID) {
@@ -237,7 +255,7 @@ function showFCSection(fc, statusID) {
     $('#viewFCSignature').text(fc?.ApproverSignature || "N/A");
     $('#viewFCSignDate').text(formatJSONDate(fc?.ApproverSignDate) || "N/A");
 
-    let statusLabel = "Not Assigned";
+    let statusLabel = LabelStatusEnum.NotAssigned;
 
     if (statusID === StatusEnum.FCPending) {
         statusLabel = LabelStatusEnum.Pending;
@@ -255,7 +273,7 @@ function showFCSection(fc, statusID) {
 
 function setApprovalStatusBadge(selector, status) {
     let badgeClass = 'badge-secondary';
-    let label = 'Not Assigned';
+    let label = LabelStatusEnum.NotAssigned;
     let backgroundColor = '#6c757d'; // Default: Not Assigned (secondary)
 
     switch (status) {
@@ -274,15 +292,15 @@ function setApprovalStatusBadge(selector, status) {
             label = 'Rejected';
             backgroundColor = '#dc3545';
             break;
-        case 'Not Reviewed':
+        case LabelStatusEnum.NotReviewed:
             badgeClass = 'badge-info';
-            label = 'Not Reviewed';
+            label = LabelStatusEnum.NotReviewed;
             backgroundColor = '#17a2b8';
             break;
-        case 'Not Assigned':
+        case LabelStatusEnum.NotAssigned:
         default:
             // Keep default styles
-            label = 'Not Assigned';
+            label = LabelStatusEnum.NotAssigned;
             break;
     }
 
@@ -329,11 +347,21 @@ function submitApproval(isApprove) {
         isApprove: isApprove
     };
 
-    const url = role === "HOD"
-        ? '/TravelExpense/ApproveByHOD'
-        : role === "FC"
-            ? '/TravelExpense/ApproveByFC'
-            : null;
+
+    let url;
+    switch (role) {
+        case RoleEnum.HOD:
+            url = '/TravelExpense/ApproveByHOD';
+            break;
+        case RoleEnum.GL:
+            url = '/TravelExpense/ApproveByGL';
+            break;
+        case RoleEnum.FC:
+            url = '/TravelExpense/ApproveByFC';
+            break;
+        default:
+            url = null;
+    }
 
     if (!url) {
         showToast("Unauthorized action for current role", "warning");

@@ -1,5 +1,6 @@
 ﻿using FinancePortal.Models;
 using FinancePortal.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,6 +14,10 @@ namespace FinancePortal.Dao
     public static class TravelExpenseDao
     {
         #region Expense Form
+        const string RequesterRole = "Requester";
+        const string HODRole = "HOD";
+        const string GLRole = "GL";
+        const string FCRole = "FC";
 
         public static EmployeeViewModel GetEmployeeByCode(string code)
         {
@@ -81,13 +86,13 @@ namespace FinancePortal.Dao
                 db.TravelExpenses.Add(travel);
                 db.SaveChanges(); // get travel.ID
 
-                // 3. Insert HOD Approval Step (ApprovalStep = 1)
+                // 3. Insert HOD Approval Step 
                 if (model.Approver != null)
                 {
                     db.TravelExpenseApprovals.Add(new TravelExpenseApproval
                     {
                         TravelExpenseID = travel.ID,
-                        ApprovalStep = 1,
+                        ApprovalStep = (int)ApprovalStep.HOD,
                         ApproverID = model.Approver.Code,
                         ApproverName = model.Approver.Name,
                         ApproverEmail = model.Approver.Email,
@@ -268,7 +273,7 @@ namespace FinancePortal.Dao
 
                 // 8. Update Requester Approval Info (ApprovalStep 1)
                 var requesterApproval = db.TravelExpenseApprovals
-                    .FirstOrDefault(a => a.TravelExpenseID == travel.ID && a.ApprovalStep == 1 && a.IsApproved == false);
+                    .FirstOrDefault(a => a.TravelExpenseID == travel.ID && a.ApprovalStep == (int)ApprovalStep.HOD && a.IsApproved == false);
 
                 if (requesterApproval != null)
                 {
@@ -351,7 +356,7 @@ namespace FinancePortal.Dao
 
                 // Find the associated approver (HOD) info
                 var approverApproval = db.TravelExpenseApprovals
-                    .FirstOrDefault(a => a.TravelExpenseID == latestExpense.ID && a.ApprovalStep == 1);
+                    .FirstOrDefault(a => a.TravelExpenseID == latestExpense.ID && a.ApprovalStep == (int)ApprovalStep.HOD);
 
                 return (
                     requesterSign: latestExpense.RequesterSignature,
@@ -370,7 +375,7 @@ namespace FinancePortal.Dao
 
                 var roleNames = (from ur in db.UserRoles
                                  join r in db.Roles on ur.RoleId equals r.RoleId
-                                 where ur.UserId == user.UserId && ur.IsShown == true && r.RoleName == "HOD"
+                                 where ur.UserId == user.UserId && ur.IsShown == true && r.RoleName == HODRole
                                  select r.RoleName).ToList();
 
                 if (!roleNames.Any()) return null;
@@ -405,7 +410,7 @@ namespace FinancePortal.Dao
                     return false;
                 }
 
-                var approval = db.TravelExpenseApprovals.FirstOrDefault(a => a.TravelExpenseID == travelExpenseId && a.ApprovalStep == 1 && a.IsApproved == false);
+                var approval = db.TravelExpenseApprovals.FirstOrDefault(a => a.TravelExpenseID == travelExpenseId && a.ApprovalStep == (int)ApprovalStep.HOD && a.IsApproved == false);
                 if (approval == null)
                 {
                     message = "HOD approval record not found or already approved.";
@@ -623,24 +628,24 @@ namespace FinancePortal.Dao
                                 s.ColorCode
                             };
 
-                if (role == "Requester")
+                if (role == RequesterRole)
                 {
                     query = query.Where(t => t.CreatedBy == username);
                 }
-                else if (role == "HOD")
+                else if (role == HODRole)
                 {
                     query = query.Where(t =>
                         db.TravelExpenseApprovals.Any(a =>
                             a.TravelExpenseID == t.ID &&
-                            a.ApprovalStep == 1 &&
+                            a.ApprovalStep == (int)ApprovalStep.HOD &&
                             a.ApproverID == employeeCode));
                 }
-                else if (role == "FC")
+                else if (role == FCRole)
                 {
                     query = query.Where(t =>
                         db.TravelExpenseApprovals.Any(a =>
                             a.TravelExpenseID == t.ID &&
-                            a.ApprovalStep == 2 &&
+                            a.ApprovalStep == (int)ApprovalStep.FC &&
                             a.ApproverID == employeeCode));
                 }
 
@@ -677,16 +682,16 @@ namespace FinancePortal.Dao
                                   }).ToList();
 
                 // Check if FC approval step exists, if not, preload from User table
-                bool hasFCApproval = approvals.Any(a => a.ApprovalStep == 2);
+                bool hasFCApproval = approvals.Any(a => a.ApprovalStep == (int)ApprovalStep.FC);
                 if (!hasFCApproval)
                 {
                     var fcUser = (from u in db.Users
                                   join ur in db.UserRoles on u.UserId equals ur.UserId
                                   join r in db.Roles on ur.RoleId equals r.RoleId
-                                  where r.RoleName == "FC" && u.IsShown && u.IsActive && ur.IsShown == true
+                                  where r.RoleName == FCRole && u.IsShown && u.IsActive && ur.IsShown == true
                                   select new ApprovalInfoViewModel
                                   {
-                                      ApprovalStep = 2,
+                                      ApprovalStep = (int)ApprovalStep.FC,
                                       ApproverID = u.EmployeeCode,
                                       ApproverName = u.UserName,
                                       ApproverEmail = u.UserEmailAddress,
@@ -761,7 +766,7 @@ namespace FinancePortal.Dao
                 if (t == null) return null;
 
                 var approver = db.TravelExpenseApprovals
-                                .Where(a => a.TravelExpenseID == t.ID && a.ApprovalStep == 1)
+                                .Where(a => a.TravelExpenseID == t.ID && a.ApprovalStep == (int)ApprovalStep.HOD)
                                 .Select(a => new ApproverViewModel
                                 {
                                     Code = a.ApproverID,
@@ -819,13 +824,13 @@ namespace FinancePortal.Dao
             {
                 var now = DateTime.Now;
 
-                if (role == "HOD")
+                if (role == HODRole)
                 {
                     // 🔄 Update all requests where approval step = 1 and current status = RequesterPending
                     var pendingRequests = (from t in db.TravelExpenses
                                            join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
                                            where a.ApproverID == employeeCode &&
-                                                 a.ApprovalStep == 1 && t.IsShown == true &&
+                                                 a.ApprovalStep == (int)ApprovalStep.HOD && t.IsShown == true &&
                                                  t.StatusID == (int)TravelExpenseStatusEnum.RequesterPending
                                            select t).ToList();
 
@@ -835,14 +840,29 @@ namespace FinancePortal.Dao
                         //req.UpdatedDate = now;
                     }
                 }
-                else if (role == "FC")
+                else if (role == GLRole)
                 {
                     // 🔄 Update all requests where approval step = 2 and current status = HODApproved
                     var pendingRequests = (from t in db.TravelExpenses
                                            join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
                                            where a.ApproverID == employeeCode &&
-                                                 a.ApprovalStep == 2 && t.IsShown == true &&
+                                                 a.ApprovalStep == (int)ApprovalStep.GL && t.IsShown == true &&
                                                  t.StatusID == (int)TravelExpenseStatusEnum.HODApproved
+                                           select t).ToList();
+
+                    foreach (var req in pendingRequests)
+                    {
+                        req.StatusID = (int)TravelExpenseStatusEnum.GLPending;
+                    }
+                }
+                else if (role == FCRole)
+                {
+                    // 🔄 Update all requests where approval step = 2 and current status = GLApproved
+                    var pendingRequests = (from t in db.TravelExpenses
+                                           join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
+                                           where a.ApproverID == employeeCode &&
+                                                 a.ApprovalStep == (int)ApprovalStep.FC && t.IsShown == true &&
+                                                 t.StatusID == (int)TravelExpenseStatusEnum.GLApproved
                                            select t).ToList();
 
                     foreach (var req in pendingRequests)
@@ -851,7 +871,7 @@ namespace FinancePortal.Dao
                         //req.UpdatedDate = now;
                     }
                 }
-                else if (role == "Requester")
+                else if (role == RequesterRole)
                 {
                     // ✅ Update all of the requester’s own requests that are FCApproved to DONE
                     var approvedRequests = db.TravelExpenses
@@ -881,19 +901,19 @@ namespace FinancePortal.Dao
                 var now = DateTime.Now;
 
                 var approval = db.TravelExpenseApprovals
-                    .FirstOrDefault(a => a.TravelExpenseID == requestId && a.ApprovalStep == 1);
+                    .FirstOrDefault(a => a.TravelExpenseID == requestId && a.ApprovalStep == (int)ApprovalStep.HOD);
 
                 if (approval == null)
-                    return new OperationResult { Success = false, Message = "HOD approval record not found." };        
+                    return new OperationResult { Success = false, Message = "HOD approval record not found." };
+
+                var glUser = db.Users
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == GLRole &&  r.IsShown == true))
+                            .FirstOrDefault();
 
                 if (isApprove)
                 {
-                    var fcUser = db.Users
-                        .Where(u => u.UserRoles.Any(r => r.Role.RoleName == "FC" && r.IsShown == true))
-                        .FirstOrDefault();
-
-                    if (fcUser == null)
-                        return new OperationResult { Success = false, Message = "No Financial Controller (FC) is assigned. Cannot proceed with approval." };
+                    if (glUser == null)
+                        return new OperationResult { Success = false, Message = "No GL is assigned. Cannot proceed with approval." };
                 }
 
                 approval.ApproverSignature = approverUsername;
@@ -912,27 +932,24 @@ namespace FinancePortal.Dao
                 request.UpdatedBy = approverUsername;
                 request.UpdatedDate = now;
 
+
                 if (isApprove)
                 {
-                    var fcApprovalExists = db.TravelExpenseApprovals
-                        .Any(a => a.TravelExpenseID == requestId && a.ApprovalStep == 2);
+                    var glApprovalExists = db.TravelExpenseApprovals
+                        .Any(a => a.TravelExpenseID == requestId && a.ApprovalStep == (int)ApprovalStep.GL);
 
-                    if (!fcApprovalExists)
+                    if (!glApprovalExists)
                     {
-                        var fcUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == "FC" && r.IsShown == true))
-                            .FirstOrDefault();
-
-                        if (fcUser != null)
+                        if (glUser != null)
                         {
                             db.TravelExpenseApprovals.Add(new TravelExpenseApproval
                             {
                                 TravelExpenseID = requestId,
-                                ApprovalStep = 2,
-                                ApproverID = fcUser.EmployeeCode,
-                                ApproverName = fcUser.UserName,
-                                ApproverEmail = fcUser.UserEmailAddress,
-                                ApproverPosition = "Financial Controller",
+                                ApprovalStep = (int)ApprovalStep.GL,
+                                ApproverID = glUser.EmployeeCode,
+                                ApproverName = glUser.UserName,
+                                ApproverEmail = glUser.UserEmailAddress,
+                                ApproverPosition = "GL Dept",
                                 IsApproved = false,
                                 CreatedDate = now,
                                 CreatedBy = approverUsername
@@ -942,6 +959,81 @@ namespace FinancePortal.Dao
                 }
 
                 db.SaveChanges();
+                return new OperationResult
+                {
+                    Success = true,
+                    Message = isApprove ? "Request approved successfully." : "Request rejected successfully."
+                };
+            }
+        }
+
+        public static OperationResult HandleGLApproval(int requestId, string approverUsername, bool isApprove)
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var now = DateTime.Now;
+
+                var request = db.TravelExpenses.FirstOrDefault(t => t.ID == requestId && t.IsShown);
+                if (request == null)
+                    return new OperationResult { Success = false, Message = "Request not found." };
+
+                var approval = db.TravelExpenseApprovals
+                    .FirstOrDefault(a => a.TravelExpenseID == requestId && a.ApprovalStep == (int)ApprovalStep.GL);
+                if (approval == null)
+                    return new OperationResult { Success = false, Message = "GL Approval record not found." };
+
+                var fcUser = db.Users
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true ))
+                            .FirstOrDefault();
+
+                // Update approval
+                approval.ApproverSignature = approverUsername;
+                approval.ApproverSignDate = now;
+                approval.IsApproved = isApprove;
+                approval.UpdatedDate = now;
+                approval.UpdatedBy = approverUsername;
+
+                request.StatusID = isApprove
+                    ? (int)TravelExpenseStatusEnum.GLApproved
+                    : (int)TravelExpenseStatusEnum.GLPending;
+                request.UpdatedBy = approverUsername;
+                request.UpdatedDate = now;
+
+                if (isApprove)
+                {
+                    if (fcUser == null)
+                    {
+                        return new OperationResult
+                        {
+                            Success = false,
+                            Message = "No Finance Controller is assigned.Cannot proceed with approval."
+                        };
+                    }
+                    var fcApprovalExists = db.TravelExpenseApprovals
+                        .Any(a => a.TravelExpenseID == requestId && a.ApprovalStep == (int)ApprovalStep.FC);
+
+                    if (!fcApprovalExists)
+                    {
+                        if (fcUser != null)
+                        {
+                            db.TravelExpenseApprovals.Add(new TravelExpenseApproval
+                            {
+                                TravelExpenseID = requestId,
+                                ApprovalStep = (int)ApprovalStep.FC,
+                                ApproverID = fcUser.EmployeeCode,
+                                ApproverName = fcUser.UserName,
+                                ApproverEmail = fcUser.UserEmailAddress,
+                                ApproverPosition = "Finance Controller",
+                                IsApproved = false,
+                                CreatedDate = now,
+                                CreatedBy = approverUsername
+                            });
+                        }
+                    }
+                }
+
+                db.SaveChanges();
+
                 return new OperationResult
                 {
                     Success = true,
@@ -961,7 +1053,7 @@ namespace FinancePortal.Dao
                     return new OperationResult { Success = false, Message = "Request not found." };
 
                 var approval = db.TravelExpenseApprovals
-                    .FirstOrDefault(a => a.TravelExpenseID == requestId && a.ApprovalStep == 2);
+                    .FirstOrDefault(a => a.TravelExpenseID == requestId && a.ApprovalStep == (int)ApprovalStep.FC);
                 if (approval == null)
                     return new OperationResult { Success = false, Message = "FC Approval record not found." };
 

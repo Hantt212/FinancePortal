@@ -19,4 +19,11 @@ namespace FinancePortal.ViewModels
         FCRejected = 10,
         Done = 11
     }
+
+    public enum ApprovalStep
+    {
+        HOD = 1,
+        GL = 2,
+        FC = 3
+    }
 }

@@ -244,6 +244,20 @@ namespace FinancePortal.Controllers
         }
 
         [HttpPost]
+        public JsonResult ApproveByGL(ApprovalActionModel dto)
+        {
+            var username = Session["Username"]?.ToString();
+            if (dto == null || dto.requestId <= 0 || string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "Invalid request or session." });
+            }
+
+            var result = TravelExpenseDao.HandleGLApproval(dto.requestId, username, dto.isApprove);
+
+            return Json(new { success = result.Success, message = result.Message });
+        }
+
+        [HttpPost]
         public JsonResult ApproveByFC(ApprovalActionModel dto)
         {
             var username = Session["Username"]?.ToString();

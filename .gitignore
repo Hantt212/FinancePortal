@@ -8,3 +8,5 @@
 *.dll
 *.pdb
 obj/Debug/FinancePortal.csproj.FileListAbsolute.txt
+/obj
+/bin
