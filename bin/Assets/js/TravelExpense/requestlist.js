@@ -91,11 +91,6 @@ function loadUserRequests() {
                     title: "Actions",
                     orderable: false,
                     render: function (data, type, row) {
-                        const role = sessionStorage.getItem("currentUserRole");
-                        const status = row.DisplayName;
-
-                       // const canEdit = role === "Requester" && status === "Requester Pending";
-
                         const viewBtn = `<button class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
                             <i class="fa fa-eye"></i> View
                         </button>`;
@@ -314,26 +309,34 @@ function setApprovalStatusBadge(selector, status) {
         .text(label);
 }
 
-let pendingApprovalAction = null;
+let userAction = null;
 
 $('#approveBtn').click(() => {
-    pendingApprovalAction = true;
+    userAction = 1;
     $('#confirmApprovalMessage').text("Are you sure you want to APPROVE this request?");
     $('#confirmApprovalModal').modal('show');
 });
 
 $('#rejectBtn').click(() => {
-    pendingApprovalAction = false;
+    userAction = 0;
     $('#confirmApprovalMessage').text("Are you sure you want to REJECT this request?");
+    $('#confirmApprovalModal').modal('show');
+});
+
+$('#cancelBtn').click(() => {
+    userAction = -1 ;
+    $('#confirmApprovalMessage').text("Are you sure you want to CANCEL this request?");
     $('#confirmApprovalModal').modal('show');
 });
 
 $('#confirmApprovalBtn').click(() => {
     $('#confirmApprovalModal').modal('hide');
-    submitApproval(pendingApprovalAction);
+    submitApproval(userAction);
 });
 
-function submitApproval(isApprove) {
+
+function submitApproval(userAction) {
+
     const role = sessionStorage.getItem("currentUserRole") || "";
     const requestId = $('#viewRequestID').val();
 
@@ -342,51 +345,78 @@ function submitApproval(isApprove) {
         return;
     }
 
-    const payload = {
-        requestId: parseInt(requestId),
-        isApprove: isApprove
-    };
+    //Cancel TravelExpense Request
+    if (userAction < 0) {
+        $.ajax({
+            url: '/TravelExpense/CancelByRequester',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(requestId),
+            success: function (res) {
+                if (res.success) {
+                    showToast("Request cancelled successfully!", "success");
 
-
-    let url;
-    switch (role) {
-        case RoleEnum.HOD:
-            url = '/TravelExpense/ApproveByHOD';
-            break;
-        case RoleEnum.GL:
-            url = '/TravelExpense/ApproveByGL';
-            break;
-        case RoleEnum.FC:
-            url = '/TravelExpense/ApproveByFC';
-            break;
-        default:
-            url = null;
-    }
-
-    if (!url) {
-        showToast("Unauthorized action for current role", "warning");
-        return;
-    }
-
-    $.ajax({
-        url: url,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(payload),
-        success: function (res) {
-            if (res.success) {
-                showToast("Approval status updated successfully!", "success");
-
-                // Refresh modal contents in real-time
-                loadRequestDetails(payload.requestId);
-            } else {
-                showToast(res.message || "Failed to update approval", "danger");
+                    // Refresh modal contents in real-time
+                    loadRequestDetails(requestId);
+                } else {
+                    showToast(res.message || "Failed to cancel request", "danger");
+                }
+            },
+            error: function () {
+                showToast("Server error while approving request", "danger");
             }
-        },
-        error: function () {
-            showToast("Server error while approving request", "danger");
+        });
+
+    } else { //Approve or Reject TravelExpense Request
+       
+
+        const payload = {
+            requestId: parseInt(requestId),
+            isApprove: userAction == 0 ? false : true
+        };
+
+
+        let url;
+        switch (role) {
+            case RoleEnum.HOD:
+                url = '/TravelExpense/ApproveByHOD';
+                break;
+            case RoleEnum.GL:
+                url = '/TravelExpense/ApproveByGL';
+                break;
+            case RoleEnum.FC:
+                url = '/TravelExpense/ApproveByFC';
+                break;
+            default:
+                url = null;
         }
-    });
+
+        if (!url) {
+            showToast("Unauthorized action for current role", "warning");
+            return;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.success) {
+                    showToast("Approval status updated successfully!", "success");
+
+                    // Refresh modal contents in real-time
+                    loadRequestDetails(payload.requestId);
+                } else {
+                    showToast(res.message || "Failed to update approval", "danger");
+                }
+            },
+            error: function () {
+                showToast("Server error while approving request", "danger");
+            }
+        });
+    }
+    
 }
 
 $('#closeViewModalBtn').click(function () {

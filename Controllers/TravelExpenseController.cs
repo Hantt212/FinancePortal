@@ -271,6 +271,20 @@ namespace FinancePortal.Controllers
             return Json(new { success = result.Success, message = result.Message });
         }
 
+        [HttpPost]
+        public JsonResult CancelByRequester(int requestID)
+        {
+            var username = Session["Username"]?.ToString();
+            if (requestID <= 0 || string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "Invalid request or session." });
+            }
+
+            var result = TravelExpenseDao.HandleRequesterCancel(requestID, username);
+
+            return Json(new { success = result.Success, message = result.Message });
+        }
+
         #endregion
     }
 }

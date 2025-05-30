@@ -1090,6 +1090,29 @@ namespace FinancePortal.Dao
             }
         }
 
+        public static OperationResult HandleRequesterCancel(int requestId, string approverUsername)
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var now = DateTime.Now;
+
+                var request = db.TravelExpenses.FirstOrDefault(t => t.ID == requestId && t.IsShown);
+                if (request == null)
+                    return new OperationResult { Success = false, Message = "Request not found." };
+
+                request.StatusID = (int)TravelExpenseStatusEnum.RequesterCancelled;
+                request.UpdatedBy = approverUsername;
+                request.UpdatedDate = now;
+
+                db.SaveChanges();
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Message = "Request cancel successfully." 
+                };
+            }
+        }
 
         #endregion
     }
