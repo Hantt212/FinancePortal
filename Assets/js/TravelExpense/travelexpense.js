@@ -2,9 +2,12 @@
 // 🔄 Init all fields for new/edit
 $(document).ready(function () {
     // Generate TAR Number
-    $.get('/TravelExpense/GenerateTARNo', function (res) {
-        $('#tarNumber').text(res.tarNo);
-    });
+    if ($('#tarNumber').text() == "" || $('#tarNumber').text() == null) {
+        $.get('/TravelExpense/GenerateTARNo', function (res) {
+            $('#tarNumber').text(res.tarNo);
+        });
+    }
+
 
     // 🖱️ Double click Exchange Rate to edit
     $('#ExchangeRate').on('dblclick', function () {
