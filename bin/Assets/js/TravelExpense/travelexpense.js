@@ -2,9 +2,12 @@
 // 🔄 Init all fields for new/edit
 $(document).ready(function () {
     // Generate TAR Number
-    $.get('/TravelExpense/GenerateTARNo', function (res) {
-        $('#tarNumber').text(res.tarNo);
-    });
+    if ($('#tarNumber').text() == "" || $('#tarNumber').text() == null) {
+        $.get('/TravelExpense/GenerateTARNo', function (res) {
+            $('#tarNumber').text(res.tarNo);
+        });
+    }
+
 
     // 🖱️ Double click Exchange Rate to edit
     $('#ExchangeRate').on('dblclick', function () {
@@ -206,6 +209,7 @@ $('#submitTravelBtn').click(function () {
     const tripPurpose = $('#TripPurpose').val().trim();
     const tarNo = $('#tarNumber').text().trim();
     const requestID = parseInt($('#RequestID').val()) || 0;
+    const statusID = parseInt($('#travelStatusID').val()) || 0;
 
     const estimatedCostRaw = $('#EstimatedCost').val().replace(/\./g, '').replace(/,/g, '');
     const exchangeRateRaw = $('#ExchangeRate').val().replace(/\./g, '').replace(/,/g, '');
@@ -286,6 +290,7 @@ $('#submitTravelBtn').click(function () {
         tarNo,
         fromDate,
         toDate,
+        statusID,
         tripDays,
         requestDate,
         tripPurpose,

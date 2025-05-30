@@ -209,6 +209,7 @@ $('#submitTravelBtn').click(function () {
     const tripPurpose = $('#TripPurpose').val().trim();
     const tarNo = $('#tarNumber').text().trim();
     const requestID = parseInt($('#RequestID').val()) || 0;
+    const statusID = parseInt($('#travelStatusID').val()) || 0;
 
     const estimatedCostRaw = $('#EstimatedCost').val().replace(/\./g, '').replace(/,/g, '');
     const exchangeRateRaw = $('#ExchangeRate').val().replace(/\./g, '').replace(/,/g, '');
@@ -289,6 +290,7 @@ $('#submitTravelBtn').click(function () {
         tarNo,
         fromDate,
         toDate,
+        statusID,
         tripDays,
         requestDate,
         tripPurpose,

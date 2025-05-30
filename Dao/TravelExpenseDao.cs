@@ -305,6 +305,13 @@ namespace FinancePortal.Dao
                 travel.BudgetUsedAtSubmit = budget.BudgetUsed;
                 travel.BudgetRemainingAtSubmit = budget.BudgetRemaining;
 
+                //If travel status is Reject, then update as a new travel
+                if (travel.StatusID == (int)TravelExpenseStatusEnum.HODRejected
+                    || travel.StatusID == (int)TravelExpenseStatusEnum.FCRejected)
+                {
+                    travel.StatusID = (int)TravelExpenseStatusEnum.RequesterPending;
+                }
+
                 // 10. Save Changes
                 try
                 {
@@ -810,6 +817,7 @@ namespace FinancePortal.Dao
                 return new TravelExpenseSubmitModel
                 {
                     ID = t.ID,
+                    StatusID = t.StatusID,
                     FromDate = t.FromDate,
                     ToDate = t.ToDate,
                     TripDays = t.TripDays,

@@ -351,7 +351,9 @@ function submitApproval(userAction) {
             url: '/TravelExpense/CancelByRequester',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(requestId),
+            data: JSON.stringify({
+                requestID: +requestId
+            }) ,
             success: function (res) {
                 if (res.success) {
                     showToast("Request cancelled successfully!", "success");
