@@ -20,6 +20,7 @@ namespace FinancePortal.Models
             this.TravelExpenseApprovals = new HashSet<TravelExpenseApproval>();
             this.TravelExpenseCosts = new HashSet<TravelExpenseCost>();
             this.TravelExpenseEmployees = new HashSet<TravelExpenseEmployee>();
+            this.TravelExpenseAttachmentFiles = new HashSet<TravelExpenseAttachmentFile>();
         }
     
         public int ID { get; set; }
@@ -51,5 +52,7 @@ namespace FinancePortal.Models
         public virtual ICollection<TravelExpenseCost> TravelExpenseCosts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TravelExpenseEmployee> TravelExpenseEmployees { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
     }
 }

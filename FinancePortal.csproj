@@ -214,6 +214,9 @@
     <Compile Include="Models\TravelExpenseApproval.cs">
       <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TravelExpenseAttachmentFile.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TravelExpenseBudget.cs">
       <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
@@ -536,6 +539,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Assets\images\AnnualReview\" />
+    <Folder Include="Upload\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -585,7 +589,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>18947</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44386/</IISUrl>
+          <IISUrl>http://localhost:18947/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

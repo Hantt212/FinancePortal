@@ -73,6 +73,11 @@
       <End Role="TravelExpense" EntitySet="TravelExpenses" />
       <End Role="TravelExpenseEmployee" EntitySet="TravelExpenseEmployees" />
     </AssociationSet>
+    <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="FinancePortalModel.TravelExpenseAttachmentFile" />
+    <AssociationSet Name="FK_TravelExpenseAttachFiles_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense">
+      <End Role="TravelExpense" EntitySet="TravelExpenses" />
+      <End Role="TravelExpenseAttachmentFile" EntitySet="TravelExpenseAttachmentFiles" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="TravelExpenseBudget">
     <Key>
@@ -209,6 +214,7 @@
     <NavigationProperty Name="TravelExpenseApprovals" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseApproval" />
     <NavigationProperty Name="TravelExpenseCosts" Relationship="FinancePortalModel.FK_TravelExpenseCost_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseCost" />
     <NavigationProperty Name="TravelExpenseEmployees" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseEmployee" />
+    <NavigationProperty Name="TravelExpenseAttachmentFiles" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseAttachmentFile" />
   </EntityType>
   <Association Name="FK_TravelExpense_BudgetID">
     <End Type="FinancePortalModel.TravelExpenseBudget" Role="TravelExpenseBudget" Multiplicity="1" />
@@ -268,6 +274,32 @@
         <PropertyRef Name="ID" />
       </Principal>
       <Dependent Role="TravelExpenseEmployee">
+        <PropertyRef Name="TravelExpenseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="TravelExpenseAttachmentFile">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+    <Property Name="FileName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="IsShown" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpenseAttachmentFile" ToRole="TravelExpense" />
+  </EntityType>
+  <Association Name="FK_TravelExpenseAttachFiles_TravelExpense">
+    <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
+    <End Type="FinancePortalModel.TravelExpenseAttachmentFile" Role="TravelExpenseAttachmentFile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpense">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseAttachmentFile">
         <PropertyRef Name="TravelExpenseID" />
       </Dependent>
     </ReferentialConstraint>

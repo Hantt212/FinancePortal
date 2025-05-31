@@ -53,6 +53,19 @@
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
   </EntityType>
+  <EntityType Name="TravelExpenseAttachmentFiles">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="FileName" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="IsShown" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="150" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
+  </EntityType>
   <EntityType Name="TravelExpenseBudget">
     <Key>
       <PropertyRef Name="ID" />
@@ -165,6 +178,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_TravelExpenseAttachFiles_TravelExpense">
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
+    <End Role="TravelExpenseAttachmentFiles" Type="Self.TravelExpenseAttachmentFiles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpense">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseAttachmentFiles">
+        <PropertyRef Name="TravelExpenseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_TravelExpenseCost_TravelExpense">
     <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
     <End Role="TravelExpenseCost" Type="Self.TravelExpenseCost" Multiplicity="*" />
@@ -223,6 +248,7 @@
     <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpense" EntityType="Self.TravelExpense" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseApproval" EntityType="Self.TravelExpenseApproval" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="Self.TravelExpenseAttachmentFiles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseBudget" EntityType="Self.TravelExpenseBudget" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseCost" EntityType="Self.TravelExpenseCost" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseEmployee" EntityType="Self.TravelExpenseEmployee" Schema="dbo" store:Type="Tables" />
@@ -240,6 +266,10 @@
     <AssociationSet Name="FK_TravelExpenseApproval_TravelExpense" Association="Self.FK_TravelExpenseApproval_TravelExpense">
       <End Role="TravelExpense" EntitySet="TravelExpense" />
       <End Role="TravelExpenseApproval" EntitySet="TravelExpenseApproval" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseAttachFiles_TravelExpense" Association="Self.FK_TravelExpenseAttachFiles_TravelExpense">
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+      <End Role="TravelExpenseAttachmentFiles" EntitySet="TravelExpenseAttachmentFiles" />
     </AssociationSet>
     <AssociationSet Name="FK_TravelExpenseCost_TravelExpense" Association="Self.FK_TravelExpenseCost_TravelExpense">
       <End Role="TravelExpense" EntitySet="TravelExpense" />

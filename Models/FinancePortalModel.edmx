@@ -58,6 +58,19 @@
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
         </EntityType>
+        <EntityType Name="TravelExpenseAttachmentFiles">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="IsShown" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="150" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
+        </EntityType>
         <EntityType Name="TravelExpenseBudget">
           <Key>
             <PropertyRef Name="ID" />
@@ -170,6 +183,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TravelExpenseAttachFiles_TravelExpense">
+          <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
+          <End Role="TravelExpenseAttachmentFiles" Type="Self.TravelExpenseAttachmentFiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpense">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TravelExpenseAttachmentFiles">
+              <PropertyRef Name="TravelExpenseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TravelExpenseCost_TravelExpense">
           <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
           <End Role="TravelExpenseCost" Type="Self.TravelExpenseCost" Multiplicity="*" />
@@ -228,6 +253,7 @@
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpense" EntityType="Self.TravelExpense" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpenseApproval" EntityType="Self.TravelExpenseApproval" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="Self.TravelExpenseAttachmentFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpenseBudget" EntityType="Self.TravelExpenseBudget" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpenseCost" EntityType="Self.TravelExpenseCost" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpenseEmployee" EntityType="Self.TravelExpenseEmployee" Schema="dbo" store:Type="Tables" />
@@ -245,6 +271,10 @@
           <AssociationSet Name="FK_TravelExpenseApproval_TravelExpense" Association="Self.FK_TravelExpenseApproval_TravelExpense">
             <End Role="TravelExpense" EntitySet="TravelExpense" />
             <End Role="TravelExpenseApproval" EntitySet="TravelExpenseApproval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TravelExpenseAttachFiles_TravelExpense" Association="Self.FK_TravelExpenseAttachFiles_TravelExpense">
+            <End Role="TravelExpense" EntitySet="TravelExpense" />
+            <End Role="TravelExpenseAttachmentFiles" EntitySet="TravelExpenseAttachmentFiles" />
           </AssociationSet>
           <AssociationSet Name="FK_TravelExpenseCost_TravelExpense" Association="Self.FK_TravelExpenseCost_TravelExpense">
             <End Role="TravelExpense" EntitySet="TravelExpense" />
@@ -339,6 +369,11 @@
           <AssociationSet Name="FK_TravelExpenseEmployee_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense">
             <End Role="TravelExpense" EntitySet="TravelExpenses" />
             <End Role="TravelExpenseEmployee" EntitySet="TravelExpenseEmployees" />
+          </AssociationSet>
+          <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="FinancePortalModel.TravelExpenseAttachmentFile" />
+          <AssociationSet Name="FK_TravelExpenseAttachFiles_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense">
+            <End Role="TravelExpense" EntitySet="TravelExpenses" />
+            <End Role="TravelExpenseAttachmentFile" EntitySet="TravelExpenseAttachmentFiles" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="TravelExpenseBudget">
@@ -476,6 +511,7 @@
           <NavigationProperty Name="TravelExpenseApprovals" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseApproval" />
           <NavigationProperty Name="TravelExpenseCosts" Relationship="FinancePortalModel.FK_TravelExpenseCost_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseCost" />
           <NavigationProperty Name="TravelExpenseEmployees" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseEmployee" />
+          <NavigationProperty Name="TravelExpenseAttachmentFiles" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseAttachmentFile" />
         </EntityType>
         <Association Name="FK_TravelExpense_BudgetID">
           <End Type="FinancePortalModel.TravelExpenseBudget" Role="TravelExpenseBudget" Multiplicity="1" />
@@ -535,6 +571,32 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="TravelExpenseEmployee">
+              <PropertyRef Name="TravelExpenseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TravelExpenseAttachmentFile">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsShown" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpenseAttachmentFile" ToRole="TravelExpense" />
+        </EntityType>
+        <Association Name="FK_TravelExpenseAttachFiles_TravelExpense">
+          <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
+          <End Type="FinancePortalModel.TravelExpenseAttachmentFile" Role="TravelExpenseAttachmentFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpense">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TravelExpenseAttachmentFile">
               <PropertyRef Name="TravelExpenseID" />
             </Dependent>
           </ReferentialConstraint>
@@ -679,6 +741,20 @@
                 <ScalarProperty Name="FromDate" ColumnName="FromDate" />
                 <ScalarProperty Name="StatusID" ColumnName="StatusID" />
                 <ScalarProperty Name="BudgetID" ColumnName="BudgetID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TravelExpenseAttachmentFiles">
+            <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseAttachmentFile">
+              <MappingFragment StoreEntitySet="TravelExpenseAttachmentFiles">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

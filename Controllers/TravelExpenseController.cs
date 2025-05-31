@@ -1,8 +1,10 @@
 ﻿using FinancePortal.Dao;
 using FinancePortal.Models;
 using FinancePortal.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -42,13 +44,31 @@ namespace FinancePortal.Controllers
         }
 
         [HttpPost]
-        public JsonResult SubmitForm(TravelExpenseSubmitModel model)
+        //public JsonResult SubmitForm(TravelExpenseSubmitModel model)
+        public ActionResult SubmitForm(IEnumerable<HttpPostedFileBase> attachmentFiles)
         {
+            var payloadJson = Request.Form["Payload"];
+            var model = JsonConvert.DeserializeObject<TravelExpenseSubmitModel>(payloadJson);
+
             if (model == null)
                 return Json(new { success = false, message = "Invalid data." });
 
             try
             {
+                // Attachment files
+                List<string> fileList = new List<string>();
+                foreach (var file in attachmentFiles ?? Enumerable.Empty<HttpPostedFileBase>())
+                {
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var path = Path.Combine(Server.MapPath("~/Upload"), fileName);
+                        file.SaveAs(path);
+
+                        fileList.Add(fileName);
+                    }
+                }
+
                 bool result;
 
                 if (model.ID > 0)
@@ -59,7 +79,7 @@ namespace FinancePortal.Controllers
                 else
                 {
                     // Create new request
-                    result = TravelExpenseDao.SaveTravelExpense(model);
+                    result = TravelExpenseDao.SaveTravelExpense(model, fileList);
                 }
 
                 return Json(new { success = result, message = result ? "" : "Failed to save travel expense." });

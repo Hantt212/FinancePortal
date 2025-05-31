@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -45,10 +46,11 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static bool SaveTravelExpense(TravelExpenseSubmitModel model)
+        public static bool SaveTravelExpense(TravelExpenseSubmitModel model, List<string> attachmentFiles)
         {
             using (var db = new FinancePortalEntities())
             {
+
                 var username = HttpContext.Current.Session["Username"]?.ToString();
                 var employeeID = HttpContext.Current.Session["EmployeeID"]?.ToString();
                 var email = HttpContext.Current.Session["Email"]?.ToString();
@@ -144,7 +146,17 @@ namespace FinancePortal.Dao
                 budget.UpdatedBy = username;
                 budget.UpdatedDate = DateTime.Now;
 
-                // 7. Save all changes safely
+                // 7.Insert Attach Files
+                foreach (var fileName in attachmentFiles)
+                {
+                    db.TravelExpenseAttachmentFiles.Add(new TravelExpenseAttachmentFile {
+                        TravelExpenseID = travel.ID,
+                        FileName = fileName,
+                        CreatedBy = username   
+                    });
+                }
+
+                // 8. Save all changes safely
                 try
                 {
                     db.SaveChanges();

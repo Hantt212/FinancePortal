@@ -196,10 +196,13 @@ function showApprovalSections(role, approvals, statusID) {
     // Approve/Reject buttons (based on role + section still pending)
     if (role === RoleEnum.HOD && statusID === StatusEnum.HODPending) {
         $('#approvalActions').removeClass('d-none');
+        $('#rejectBtn').show();
     } else if (role === RoleEnum.GL && statusID === StatusEnum.GLPending) {
         $('#approvalActions').removeClass('d-none');
+        $('#rejectBtn').hide();
     } else if (role === RoleEnum.FC && statusID === StatusEnum.FCPending) {
         $('#approvalActions').removeClass('d-none');
+        $('#rejectBtn').show();
     }
 
     //Cancel buttons

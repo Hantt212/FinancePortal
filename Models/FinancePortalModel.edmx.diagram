@@ -21,6 +21,8 @@
         <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" />
         <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseCost_TravelExpense" />
         <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseAttachmentFile" Width="1.5" PointX="13.125" PointY="0.75" />
+        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

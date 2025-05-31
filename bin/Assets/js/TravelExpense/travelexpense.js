@@ -201,6 +201,39 @@ $('#employeeCodeInput').on('input', function () {
     });
 });
 
+document.getElementById('AttachmentFiles').addEventListener('change', function () {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = ''; // Clear previous list
+
+    Array.from(this.files).forEach((file, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center border-bottom';
+
+        // File name span
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = file.name;
+        nameSpan.style.color = '#007bff';
+
+        // Remove button with Font Awesome icon
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn btn-sm btn-danger';
+        removeBtn.innerHTML = '<i class="fa fa-trash"></i>';
+        removeBtn.style.cursor = 'pointer';
+
+        const removeSpan = document.createElement('span');
+        removeSpan.textContent = 'Remove';
+        removeBtn.appendChild(removeSpan);
+
+        removeBtn.onclick = () => {
+            li.remove();
+        };
+
+        li.appendChild(nameSpan);
+        li.appendChild(removeBtn);
+        fileList.appendChild(li);
+    });
+});
+
 $('#submitTravelBtn').click(function () {
     const fromDate = $('#BusinessDateFrom').val().trim();
     const toDate = $('#BusinessDateTo').val().trim();
@@ -318,12 +351,25 @@ $('#submitTravelBtn').click(function () {
     const btn = $(this);
     btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
 
+    //
+    var formData = new FormData(document.getElementById('travelExpenseForm'));
+
+    // Append files (if needed manually)
+    var files = document.getElementById('AttachmentFiles').files;
+    for (var i = 0; i < files.length; i++) {
+        formData.append("AttachmentFiles", files[i]);
+    }
+    formData.append("Payload", JSON.stringify(payload));
+
     // 📤 Submit via AJAX
     $.ajax({
         url: '/TravelExpense/SubmitForm',
         type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(payload),
+        //contentType: 'application/json',
+        //data: JSON.stringify(payload),
+        data: formData,
+        processData: false, // important
+        contentType: false, // important
         success: function (res) {
             if (res.success) {
                 const msg = requestID > 0 ? "Travel Expense updated successfully!" : "Travel Expense created successfully!";
