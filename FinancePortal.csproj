@@ -272,6 +272,7 @@
     <Content Include="Assets\css\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
     <Content Include="Assets\css\font-awesome-4.7.0\HELP-US-OUT.txt" />
     <Content Include="Assets\css\main.css" />
+    <Content Include="Assets\images\attach.png" />
     <Content Include="Assets\images\bgr_header.jpg" />
     <Content Include="Assets\images\c45f8d7543359e6bc724.jpg" />
     <Content Include="Assets\images\dept.png" />

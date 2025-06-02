@@ -31,6 +31,7 @@ namespace FinancePortal.ViewModels
         public BudgetViewModel Budget { get; set; }
         public List<EmployeeViewModel> Employees { get; set; }
         public TravelExpenseCostViewModel CostDetails { get; set; }
+        public List<string> AttachmentFiles { get; set; } = new List<string>();
         public List<ApprovalInfoViewModel> Approvals { get; set; }
     }
 }

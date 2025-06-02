@@ -817,7 +817,10 @@ namespace FinancePortal.Dao
                                         CostOther = c.CostOther
                                     }).FirstOrDefault() ?? new TravelExpenseCostViewModel(),
 
-                    Approvals = approvals.OrderBy(a => a.ApprovalStep).ToList()
+                    Approvals = approvals.OrderBy(a => a.ApprovalStep).ToList(),
+                    AttachmentFiles = db.TravelExpenseAttachmentFiles
+                                    .Where(a => a.TravelExpenseID == t.ID && a.IsShown == true)
+                                    .Select (a => a.FileName).ToList(),
                 };
 
                 return model;

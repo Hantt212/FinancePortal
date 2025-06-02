@@ -158,6 +158,13 @@ function fillViewModal(data) {
         $('#viewEmployeeList').append(item);
     });
 
+    // Attachment File
+    $('#ddAttachment').empty();
+    (data.AttachmentFiles || []).forEach(name => {
+        const file = `<li><a  style="color: #007bff" class="dropdown-item" href="/Upload/${name}" target="_blank">${name}</a></li>`
+        $('#ddAttachment').append(file);
+    });
+
     // 🔹 Requester Signature
     $('#viewRequesterSign').text(data.RequesterSign || "");
     $('#viewRequesterDate').text(formatJSONDate(data.CreatedDate));
