@@ -2,6 +2,7 @@
 using FinancePortal.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
@@ -46,7 +47,7 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static bool SaveTravelExpense(TravelExpenseSubmitModel model, List<string> attachmentFiles)
+        public static bool SaveTravelExpense(TravelExpenseSubmitModel model, List<string> newAttachFiles)
         {
             using (var db = new FinancePortalEntities())
             {
@@ -147,12 +148,15 @@ namespace FinancePortal.Dao
                 budget.UpdatedDate = DateTime.Now;
 
                 // 7.Insert Attach Files
-                foreach (var fileName in attachmentFiles)
+                foreach (var fileName in newAttachFiles)
                 {
                     db.TravelExpenseAttachmentFiles.Add(new TravelExpenseAttachmentFile {
                         TravelExpenseID = travel.ID,
                         FileName = fileName,
-                        CreatedBy = username   
+                        Type = (int) TypeAttachmentFile.TravelExpense,
+                        IsShown = true,
+                        CreatedBy = username,
+                        CreatedDate = DateTime.Now
                     });
                 }
 
@@ -177,7 +181,7 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static bool UpdateTravelExpense(TravelExpenseSubmitModel model)
+        public static bool UpdateTravelExpense(TravelExpenseSubmitModel model, List<string> newAttachFiles)
         {
             using (var db = new FinancePortalEntities())
             {
@@ -324,7 +328,40 @@ namespace FinancePortal.Dao
                     travel.StatusID = (int)TravelExpenseStatusEnum.RequesterPending;
                 }
 
-                // 10. Save Changes
+                // 10. Update Attach Files
+                List<TravelExpenseAttachmentFile> travelFileList = db.TravelExpenseAttachmentFiles.Where(a => a.TravelExpenseID == travel.ID).ToList();
+                List<string> currFile = model.AttachmentFiles.Except(newAttachFiles).ToList();
+                foreach (var travelFile in travelFileList)
+                {
+                    TravelExpenseAttachmentFile travelExpenseAttachmentFile = db.TravelExpenseAttachmentFiles.Find(travelFile.ID);
+                    if (currFile.Contains(travelFile.FileName))
+                    {
+                        travelExpenseAttachmentFile.IsShown = true;
+                    }
+                    else
+                    {
+                        travelExpenseAttachmentFile.IsShown = false;
+                    }
+                    travelExpenseAttachmentFile.UpdatedBy = username;
+                    travelExpenseAttachmentFile.UpdatedDate = DateTime.Now;
+                }
+
+
+                //  Add Attach Files
+                foreach (var fileName in newAttachFiles)
+                {
+                    db.TravelExpenseAttachmentFiles.Add(new TravelExpenseAttachmentFile
+                    {
+                        TravelExpenseID = travel.ID,
+                        FileName = fileName,
+                        Type = (int)TypeAttachmentFile.TravelExpense,
+                        IsShown = true,
+                        CreatedBy = username,
+                        CreatedDate = DateTime.Now
+                    });
+                }
+
+                // 11. Save Changes
                 try
                 {
                     db.SaveChanges();
@@ -826,6 +863,10 @@ namespace FinancePortal.Dao
                                  CostOther = c.CostOther
                              }).FirstOrDefault() ?? new TravelExpenseCostViewModel();
 
+                var files = db.TravelExpenseAttachmentFiles
+                            .Where(c => c.TravelExpenseID.Equals(t.ID) && c.IsShown == true && c.Type == (int)TypeAttachmentFile.TravelExpense)
+                            .Select(c => c.FileName).ToList();
+
                 return new TravelExpenseSubmitModel
                 {
                     ID = t.ID,
@@ -841,6 +882,7 @@ namespace FinancePortal.Dao
                     RequesterSign = t.RequesterSignature,
                     CreatedDate = t.CreatedDate,
                     BudgetID = t.BudgetID,
+                    AttachmentFiles = files,
                     CostDetails = cost,
                     Employees = employees,
                     Approver = approver

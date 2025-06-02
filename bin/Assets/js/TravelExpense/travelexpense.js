@@ -203,36 +203,50 @@ $('#employeeCodeInput').on('input', function () {
 
 document.getElementById('AttachmentFiles').addEventListener('change', function () {
     const fileList = document.getElementById('fileList');
-    fileList.innerHTML = ''; // Clear previous list
 
-    Array.from(this.files).forEach((file, index) => {
+    // Get existing file names from the list
+    const existingFiles = Array.from(fileList.querySelectorAll('a'))
+        .map(a => a.textContent.trim());
+
+    Array.from(this.files).forEach((file) => {
+        if (existingFiles.includes(file.name)) {
+            console.warn(`File "${file.name}" is already added.`);
+            return; // Skip duplicate
+        }
+
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center border-bottom';
 
-        // File name span
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = file.name;
-        nameSpan.style.color = '#007bff';
+        // Create anchor with file name
+        const hrefSpan = document.createElement('a');
+        hrefSpan.textContent = file.name;
+        //hrefSpan.href = '/Upload/' + encodeURIComponent(file.name);
+        hrefSpan.style.color = '#007bff';
+        hrefSpan.setAttribute('target', '_blank');
 
-        // Remove button with Font Awesome icon
+        // Remove button
         const removeBtn = document.createElement('button');
-        removeBtn.className = 'btn btn-sm btn-danger';
-        removeBtn.innerHTML = '<i class="fa fa-trash"></i>';
+        removeBtn.className = 'btn btn-sm btn-danger ms-2';
+        removeBtn.innerHTML = '<i class="fa fa-trash me-1"></i><span>Remove</span>';
         removeBtn.style.cursor = 'pointer';
-
-        const removeSpan = document.createElement('span');
-        removeSpan.textContent = 'Remove';
-        removeBtn.appendChild(removeSpan);
 
         removeBtn.onclick = () => {
             li.remove();
         };
 
-        li.appendChild(nameSpan);
+        // Append to list
+        li.appendChild(hrefSpan);
         li.appendChild(removeBtn);
         fileList.appendChild(li);
     });
 });
+
+document.querySelectorAll('#fileList .btn-danger').forEach(btn => {
+    btn.onclick = function () {
+        this.closest('li')?.remove();
+    };
+});
+
 
 $('#submitTravelBtn').click(function () {
     const fromDate = $('#BusinessDateFrom').val().trim();
@@ -256,6 +270,7 @@ $('#submitTravelBtn').click(function () {
     const approverEmail = $('#approverEmail').val().trim();
     const requesterSign = $('#requesterSign').val().trim();
     const employeeRows = $('#employeeListTable tbody tr');
+    const attachmentFileRows = $("#fileList li");
 
     // ✅ Validation
     if (!tarNo) {
@@ -316,6 +331,12 @@ $('#submitTravelBtn').click(function () {
         });
     });
 
+    //Attachment file
+    const attachmentFileList = [];
+    attachmentFileRows.each(function () {
+        attachmentFileList.push($(this).find('a').text());
+    })
+
     // 📦 Prepare final payload
     const payload = {
         id: parseInt(requestID),
@@ -342,31 +363,24 @@ $('#submitTravelBtn').click(function () {
             email: approverEmail,
             position: $('#approverPosition').val().trim()
         },
-        employees: employees
+        employees: employees,
+        attachmentFiles: attachmentFileList
     };
 
-    console.log("payload: ", payload);
+
 
     // 🔄 Disable button while submitting
     const btn = $(this);
     btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
 
-    //
     var formData = new FormData(document.getElementById('travelExpenseForm'));
-
-    // Append files (if needed manually)
-    var files = document.getElementById('AttachmentFiles').files;
-    for (var i = 0; i < files.length; i++) {
-        formData.append("AttachmentFiles", files[i]);
-    }
     formData.append("Payload", JSON.stringify(payload));
+
 
     // 📤 Submit via AJAX
     $.ajax({
         url: '/TravelExpense/SubmitForm',
         type: 'POST',
-        //contentType: 'application/json',
-        //data: JSON.stringify(payload),
         data: formData,
         processData: false, // important
         contentType: false, // important

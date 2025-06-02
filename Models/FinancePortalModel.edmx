@@ -65,6 +65,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TravelExpenseID" Type="int" Nullable="false" />
           <Property Name="FileName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
           <Property Name="IsShown" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="nvarchar" MaxLength="150" />
@@ -582,6 +583,7 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
           <Property Name="FileName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
           <Property Name="IsShown" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -753,6 +755,7 @@
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />

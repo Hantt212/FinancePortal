@@ -44,8 +44,7 @@ namespace FinancePortal.Controllers
         }
 
         [HttpPost]
-        //public JsonResult SubmitForm(TravelExpenseSubmitModel model)
-        public ActionResult SubmitForm(IEnumerable<HttpPostedFileBase> attachmentFiles)
+        public JsonResult SubmitForm(IEnumerable<HttpPostedFileBase> attachmentFiles)
         {
             var payloadJson = Request.Form["Payload"];
             var model = JsonConvert.DeserializeObject<TravelExpenseSubmitModel>(payloadJson);
@@ -56,7 +55,7 @@ namespace FinancePortal.Controllers
             try
             {
                 // Attachment files
-                List<string> fileList = new List<string>();
+                List<string> newAttachFiles = new List<string>();
                 foreach (var file in attachmentFiles ?? Enumerable.Empty<HttpPostedFileBase>())
                 {
                     if (file != null && file.ContentLength > 0)
@@ -65,7 +64,7 @@ namespace FinancePortal.Controllers
                         var path = Path.Combine(Server.MapPath("~/Upload"), fileName);
                         file.SaveAs(path);
 
-                        fileList.Add(fileName);
+                        newAttachFiles.Add(fileName);
                     }
                 }
 
@@ -74,12 +73,12 @@ namespace FinancePortal.Controllers
                 if (model.ID > 0)
                 {
                     // Update existing request
-                    result = TravelExpenseDao.UpdateTravelExpense(model);
+                    result = TravelExpenseDao.UpdateTravelExpense(model, newAttachFiles);
                 }
                 else
                 {
                     // Create new request
-                    result = TravelExpenseDao.SaveTravelExpense(model, fileList);
+                    result = TravelExpenseDao.SaveTravelExpense(model, newAttachFiles);
                 }
 
                 return Json(new { success = result, message = result ? "" : "Failed to save travel expense." });

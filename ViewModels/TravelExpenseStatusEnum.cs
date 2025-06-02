@@ -26,4 +26,10 @@ namespace FinancePortal.ViewModels
         GL = 2,
         FC = 3
     }
+
+    public enum TypeAttachmentFile
+    {
+        TravelExpense = 1,
+        CashAdvantage = 2,
+    }
 }

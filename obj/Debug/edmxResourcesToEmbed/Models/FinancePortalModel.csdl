@@ -285,6 +285,7 @@
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
     <Property Name="FileName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="Int32" Nullable="false" />
     <Property Name="IsShown" Type="Boolean" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />

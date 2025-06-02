@@ -26,237 +26,253 @@
 
 <!-- 🔹 Form Container -->
 
-<div class="card-body section-padding" style="margin-left:2%; width: 96%; margin-top: 60px;">
-    <div class="card o-hidden border-0 shadow-lg row">
-        <div class="col-lg-12">
-            <div class="col-md-12">
+    <div class="card-body section-padding" style="margin-left:2%; width: 96%; margin-top: 60px;">
+        <div class="card o-hidden border-0 shadow-lg row">
+            <div class="col-lg-12">
+                <div class="col-md-12">
 
-                <!-- 🔹 Header with TAR No -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0 font-weight-bold">TRAVEL EXPENSE FORM</h3>
-                    <h5 class="mb-0 text-muted font-weight-bold">
-                        TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
-                    </h5>
-                    <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)"/>
-                </div>
+                    <!-- 🔹 Header with TAR No -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0 font-weight-bold">TRAVEL EXPENSE FORM</h3>
+                        <h5 class="mb-0 text-muted font-weight-bold">
+                            TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
+                        </h5>
+                        <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)" />
+                    </div>
 
-                <!-- 🔸 Travel Info -->
-                <div class="card mb-4">
-                    <h4 class="card-header text-center" style="background: #ffca2c;">
-                        Travel Info <span class="font-italic text-secondary">(Thông tin chuyến đi)</span>
-                    </h4>
-                    <div class="card-body">
-                        <div class="card mb-4">
-                            <h5 class="card-header font-weight-bold" style="background: #9ddef2;">Business Date</h5>
-                            <div class="card-body">
+                    <!-- 🔸 Travel Info -->
+                    <div class="card mb-4">
+                        <h4 class="card-header text-center" style="background: #ffca2c;">
+                            Travel Info <span class="font-italic text-secondary">(Thông tin chuyến đi)</span>
+                        </h4>
+                        <div class="card-body">
+                            <div class="card mb-4">
+                                <h5 class="card-header font-weight-bold" style="background: #9ddef2;">Business Date</h5>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">From Date <span class="text-danger">*</span></label>
+                                            <input type="date" id="BusinessDateFrom" class="form-control"
+                                                   value="@(Model != null ? Model.FromDate.ToString("yyyy-MM-dd") : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">To Date <span class="text-danger">*</span></label>
+                                            <input type="date" id="BusinessDateTo" class="form-control"
+                                                   value="@(Model != null ? Model.ToDate.ToString("yyyy-MM-dd") : "")" />
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">Days of Business Trip</label>
+                                            <input type="text" id="TripDays" class="form-control" value="@(Model != null ? Model.TripDays.ToString() : "")" readonly />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="font-weight-bold">Request Date <span class="text-danger">*</span></label>
+                                            <input type="date" id="RequestDate" class="form-control"
+                                                   value="@(Model != null ? Model.RequestDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-4">
+                                <label class="font-weight-bold">Trip Purpose <span class="text-danger">*</span></label>
+                                <textarea id="TripPurpose" class="form-control" rows="3">@(Model != null ? Model.TripPurpose : "")</textarea>
+                            </div>
+
+                            <form id="travelExpenseForm" enctype="multipart/form-data" class="mb-4">
+                                <div class="form-group mb-2">
+                                    <label class="font-weight-bold">Attach file(s)</label>
+                                    <input type="file" name="attachmentFiles" id="AttachmentFiles" class="form-control-file" multiple />
+                                </div>
+
+                                <ul id="fileList" class="list-group">
+                                    @if (Model != null)
+                                    {
+                                        foreach (var fileName in Model.AttachmentFiles)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center border-bottom">
+                                                <a style="color: #007bff" href="~/Upload/@fileName" target="_blank">@fileName</a>
+                                                <button class="btn btn-sm btn-danger ms-2" style="cursor: pointer;" onclick="this.closest('li').remove();">
+                                                    <i class="fa fa-trash me-1"></i><span>Remove</span>
+                                                </button>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </form>
+
+
+
+                                <!-- 🔸 Budget Details & Cost Details -->
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="card mb-4">
+                                            <h5 class="card-header d-flex align-items-center" style="background: #9ddef2;">
+                                                <span class="font-weight-bold">Budget Details <span class="text-danger">*</span></span>
+                                                <button class="btn btn-sm btn-outline-primary ms-auto" data-toggle="modal" data-target="#addBudgetModal">
+                                                    <i class="fa fa-plus-circle"></i> Add Budget
+                                                </button>
+                                            </h5>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold">Budget Name</label>
+                                                    <select id="BudgetName" class="form-control" data-selected-id="@Model?.BudgetID"></select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Budget Amount</label>
+                                                    <input type="text" id="BudgetAmount" class="form-control" readonly />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Budget Used</label>
+                                                    <input type="text" id="BudgetUsed" class="form-control" readonly />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Budget Remaining</label>
+                                                    <input type="text" id="BudgetRemaining" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="card mb-4">
+                                            <h5 class="card-header font-weight-bold" style="background: #9ddef2;">Cost Details</h5>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Air Ticket ($)</label>
+                                                    <input type="number" id="CostAir" class="form-control cost-input" value="0" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Hotel ($)</label>
+                                                    <input type="number" id="CostHotel" class="form-control cost-input" value="0" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Meal ($)</label>
+                                                    <input type="number" id="CostMeal" class="form-control cost-input" value="0" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Other ($)</label>
+                                                    <input type="number" id="CostOther" class="form-control cost-input" value="0" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 🔸 Exchange Rate & Estimated Cost -->
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label class="font-weight-bold">From Date <span class="text-danger">*</span></label>
-                                        <input type="date" id="BusinessDateFrom" class="form-control"
-                                               value="@(Model != null ? Model.FromDate.ToString("yyyy-MM-dd") : "")" />
+                                        <label class="font-weight-bold">Exchange Rate</label>
+                                        <input type="text" id="ExchangeRate" class="form-control"
+                                               value="@(Model != null ? Model.ExchangeRate.ToString("N0") : "25000")" readonly />
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="font-weight-bold">To Date <span class="text-danger">*</span></label>
-                                        <input type="date" id="BusinessDateTo" class="form-control"
-                                               value="@(Model != null ? Model.ToDate.ToString("yyyy-MM-dd") : "")" />
+                                        <label class="font-weight-bold">Estimated Cost</label>
+                                        <input type="text" id="EstimatedCost" class="form-control"
+                                               value="@(Model != null ? Model.EstimatedCost.ToString("N0") : "")" readonly />
                                     </div>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <label class="font-weight-bold">Days of Business Trip</label>
-                                        <input type="text" id="TripDays" class="form-control" value="@(Model != null ? Model.TripDays.ToString() : "")" readonly />
+
+                                <!-- 🔸 Employees Section -->
+                                <div class="card shadow border-0 mb-4 mt-4">
+                                    <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
+                                        <h5 class="m-0">Employees Section <span class="text-danger">*</span></h5>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addEmployeeModal">
+                                            <i class="fa fa-plus-circle"></i> Add Employee
+                                        </button>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="font-weight-bold">Request Date <span class="text-danger">*</span></label>
-                                        <input type="date" id="RequestDate" class="form-control"
-                                               value="@(Model != null ? Model.RequestDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                    <div class="card-body" style="overflow-x: auto;">
+                                        <table class="table table-bordered table-sm" id="employeeListTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Employee Code</th>
+                                                    <th>Name</th>
+                                                    <th>Position</th>
+                                                    <th>Department</th>
+                                                    <th>Division</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Populated via JS (window.preloadedEmployees) -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="form-group mb-4">
-                            <label class="font-weight-bold">Trip Purpose <span class="text-danger">*</span></label>
-                            <textarea id="TripPurpose" class="form-control" rows="3">@(Model != null ? Model.TripPurpose : "")</textarea>
-                        </div>
+                                <div class="row mt-4">
+                                    <!-- Approver Info Card -->
+                                    <div class="col-md-6">
+                                        <div class="card shadow-sm h-100">
+                                            <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                                Approver Info <span class="text-danger">*</span>
+                                                <span class="font-italic text-secondary ml-2">(Thông tin người duyệt)</span>
+                                            </h5>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label class="font-weight-bold">Approver Code</label>
+                                                    <div class="input-group">
+                                                        <input type="number" id="approverCode" class="form-control" value="@(Model?.Approver?.Code ?? "")" />
+                                                    </div>
+                                                </div>
 
-                        <form id="travelExpenseForm" enctype="multipart/form-data" method="post" class="mb-4">
-                            <div class="form-group mb-2">
-                                <label class="font-weight-bold">Attach file(s)</label>
-                                <input type="file" name="AttachmentFiles" id="AttachmentFiles" class="form-control-file" multiple />
-                            </div>
-                            <ul id="fileList" class="list-group"></ul>
-                        </form>
+                                                <div id="approverInfoFields" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label>Name</label>
+                                                        <input type="text" class="form-control" id="approverName" value="@Model?.Approver?.Name" readonly />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Position</label>
+                                                        <input type="text" class="form-control" id="approverPosition" value="@Model?.Approver?.Position" readonly />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="text" class="form-control" id="approverEmail" value="@Model?.Approver?.Email" readonly />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <!-- 🔸 Budget Details & Cost Details -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card mb-4">
-                                        <h5 class="card-header d-flex align-items-center" style="background: #9ddef2;">
-                                            <span class="font-weight-bold">Budget Details <span class="text-danger">*</span></span>
-                                            <button class="btn btn-sm btn-outline-primary ms-auto" data-toggle="modal" data-target="#addBudgetModal">
-                                                <i class="fa fa-plus-circle"></i> Add Budget
-                                            </button>
-                                        </h5>
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Budget Name</label>
-                                                <select id="BudgetName" class="form-control" data-selected-id="@Model?.BudgetID"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Budget Amount</label>
-                                                <input type="text" id="BudgetAmount" class="form-control" readonly />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Budget Used</label>
-                                                <input type="text" id="BudgetUsed" class="form-control" readonly />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Budget Remaining</label>
-                                                <input type="text" id="BudgetRemaining" class="form-control" readonly />
+                                    <!-- Requester Signature Card with fixed body height -->
+                                    <div class="col-md-6">
+                                        <div class="card shadow-sm h-100" min-height: 280px>
+                                            <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                                Requester Signature <span class="text-danger">*</span>
+                                                <span class="font-italic text-secondary ml-2">(Chữ ký người yêu cầu)</span>
+                                            </h5>
+                                            <div class="card-body text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
+                                                <label class="font-weight-bold d-block">Your Signature</label>
+                                                <input type="text" id="requesterSign" class="form-control text-center mb-3"
+                                                       style="font-family: 'Binetta Signature'; font-size: 3.0em; border: none;"
+                                                       value="@(Model != null ? Model.RequesterSign : HttpContext.Current.Session["UserName"]?.ToString())" readonly />
+
+                                                <div class="input-group mt-auto">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Date</span>
+                                                    </div>
+                                                    <input type="date" id="requesterSignDate" class="form-control"
+                                                           value="@(Model != null ? Model.CreatedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="card mb-4">
-                                        <h5 class="card-header font-weight-bold" style="background: #9ddef2;">Cost Details</h5>
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label>Air Ticket ($)</label>
-                                                <input type="number" id="CostAir" class="form-control cost-input" value="0" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Hotel ($)</label>
-                                                <input type="number" id="CostHotel" class="form-control cost-input" value="0" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Meal ($)</label>
-                                                <input type="number" id="CostMeal" class="form-control cost-input" value="0" />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Other ($)</label>
-                                                <input type="number" id="CostOther" class="form-control cost-input" value="0" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 🔸 Exchange Rate & Estimated Cost -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="font-weight-bold">Exchange Rate</label>
-                                    <input type="text" id="ExchangeRate" class="form-control"
-                                           value="@(Model != null ? Model.ExchangeRate.ToString("N0") : "25000")" readonly />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="font-weight-bold">Estimated Cost</label>
-                                    <input type="text" id="EstimatedCost" class="form-control"
-                                           value="@(Model != null ? Model.EstimatedCost.ToString("N0") : "")" readonly />
-                                </div>
-                            </div>
-
-                            <!-- 🔸 Employees Section -->
-                            <div class="card shadow border-0 mb-4 mt-4">
-                                <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
-                                    <h5 class="m-0">Employees Section <span class="text-danger">*</span></h5>
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#addEmployeeModal">
-                                        <i class="fa fa-plus-circle"></i> Add Employee
+                                <!-- 🔘 Submit Button -->
+                                <div class="tile-footer my-4 text-center">
+                                    <button class="btn btn-primary btn-lg" id="submitTravelBtn" type="button" style="width:200px">
+                                        <i class="fa fa-save" aria-hidden="true"></i> @(isEdit ? "Update" : "Submit")
                                     </button>
                                 </div>
-                                <div class="card-body" style="overflow-x: auto;">
-                                    <table class="table table-bordered table-sm" id="employeeListTable">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Employee Code</th>
-                                                <th>Name</th>
-                                                <th>Position</th>
-                                                <th>Department</th>
-                                                <th>Division</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Populated via JS (window.preloadedEmployees) -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
 
-                            <div class="row mt-4">
-                                <!-- Approver Info Card -->
-                                <div class="col-md-6">
-                                    <div class="card shadow-sm h-100">
-                                        <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
-                                            Approver Info <span class="text-danger">*</span>
-                                            <span class="font-italic text-secondary ml-2">(Thông tin người duyệt)</span>
-                                        </h5>
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label class="font-weight-bold">Approver Code</label>
-                                                <div class="input-group">
-                                                    <input type="number" id="approverCode" class="form-control" value="@(Model?.Approver?.Code ?? "")" />
-                                                </div>
-                                            </div>
-
-                                            <div id="approverInfoFields" style="display: none;">
-                                                <div class="form-group">
-                                                    <label>Name</label>
-                                                    <input type="text" class="form-control" id="approverName" value="@Model?.Approver?.Name" readonly />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Position</label>
-                                                    <input type="text" class="form-control" id="approverPosition" value="@Model?.Approver?.Position" readonly />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Email</label>
-                                                    <input type="text" class="form-control" id="approverEmail" value="@Model?.Approver?.Email" readonly />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Requester Signature Card with fixed body height -->
-                                <div class="col-md-6">
-                                    <div class="card shadow-sm h-100" min-height: 280px>
-                                        <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
-                                            Requester Signature <span class="text-danger">*</span>
-                                            <span class="font-italic text-secondary ml-2">(Chữ ký người yêu cầu)</span>
-                                        </h5>
-                                        <div class="card-body text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
-                                            <label class="font-weight-bold d-block">Your Signature</label>
-                                            <input type="text" id="requesterSign" class="form-control text-center mb-3"
-                                                   style="font-family: 'Binetta Signature'; font-size: 3.0em; border: none;"
-                                                   value="@(Model != null ? Model.RequesterSign : HttpContext.Current.Session["UserName"]?.ToString())" readonly />
-
-                                            <div class="input-group mt-auto">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">Date</span>
-                                                </div>
-                                                <input type="date" id="requesterSignDate" class="form-control"
-                                                       value="@(Model != null ? Model.CreatedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 🔘 Submit Button -->
-                            <div class="tile-footer my-4 text-center">
-                                <button class="btn btn-primary btn-lg" id="submitTravelBtn" type="button" style="width:200px">
-                                    <i class="fa fa-save" aria-hidden="true"></i> @(isEdit ? "Update" : "Submit")
-                                </button>
-                            </div>
-
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- Add Employee Modal -->
 <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">

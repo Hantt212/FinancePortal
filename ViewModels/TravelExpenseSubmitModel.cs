@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FinancePortal.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,6 +25,7 @@ namespace FinancePortal.ViewModels
         public string StatusColor { get; set; }
         public ApproverViewModel Approver { get; set; }
         public List<EmployeeViewModel> Employees { get; set; } = new List<EmployeeViewModel>();
+        public List<string> AttachmentFiles { get; set; } = new List<string>();
 
         // 🔥 NEW SECTION: Cost Details
         public TravelExpenseCostViewModel CostDetails { get; set; } = new TravelExpenseCostViewModel();

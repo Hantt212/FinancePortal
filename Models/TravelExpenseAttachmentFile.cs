@@ -17,6 +17,7 @@ namespace FinancePortal.Models
         public int ID { get; set; }
         public int TravelExpenseID { get; set; }
         public string FileName { get; set; }
+        public int Type { get; set; }
         public Nullable<bool> IsShown { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public string CreatedBy { get; set; }
