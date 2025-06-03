@@ -12,22 +12,22 @@ namespace FinancePortal.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class TravelExpenseCost
+    public partial class TravelExpenseCostBudget
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TravelExpenseCost()
+        public TravelExpenseCostBudget()
         {
-            this.TravelExpenseCostBudgets = new HashSet<TravelExpenseCostBudget>();
+            this.TravelExpenseCostDetails = new HashSet<TravelExpenseCostDetail>();
         }
     
         public int ID { get; set; }
-        public string CostName { get; set; }
-        public string CreatedBy { get; set; }
-        public System.DateTime CreatedDate { get; set; }
-        public string UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public int CostID { get; set; }
+        public int BudgetID { get; set; }
+        public bool IsShown { get; set; }
     
+        public virtual TravelExpenseBudget TravelExpenseBudget { get; set; }
+        public virtual TravelExpenseCost TravelExpenseCost { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TravelExpenseCostBudget> TravelExpenseCostBudgets { get; set; }
+        public virtual ICollection<TravelExpenseCostDetail> TravelExpenseCostDetails { get; set; }
     }
 }

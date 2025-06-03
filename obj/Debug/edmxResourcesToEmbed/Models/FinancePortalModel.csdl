@@ -1,61 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="FinancePortalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-  <EntityType Name="Role">
-    <Key>
-      <PropertyRef Name="RoleId" />
-    </Key>
-    <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="RoleDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="UserRoles" Relationship="Self.FK_UserRole_Role" FromRole="Role" ToRole="UserRole" />
-    <Property Name="IsShown" Type="Boolean" />
-  </EntityType>
-  <EntityType Name="UserRole">
-    <Key>
-      <PropertyRef Name="UserRoleId" />
-    </Key>
-    <Property Name="UserRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="UserId" Type="Int32" Nullable="false" />
-    <Property Name="RoleId" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="Role" Relationship="Self.FK_UserRole_Role" FromRole="UserRole" ToRole="Role" />
-    <Property Name="IsShown" Type="Boolean" />
-    <NavigationProperty Name="User" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="UserRole" ToRole="User" />
-  </EntityType>
-  <Association Name="FK_UserRole_Role">
-    <End Role="Role" Type="Self.Role" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="UserRole" Type="Self.UserRole" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Role">
-        <PropertyRef Name="RoleId" />
-      </Principal>
-      <Dependent Role="UserRole">
-        <PropertyRef Name="RoleId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityContainer Name="FinancePortalEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="Roles" EntityType="Self.Role" />
-    <EntitySet Name="UserRoles" EntityType="Self.UserRole" />
-    <AssociationSet Name="FK_UserRole_Role" Association="Self.FK_UserRole_Role">
+    <EntitySet Name="Roles" EntityType="FinancePortalModel.Role" />
+    <EntitySet Name="TravelExpenses" EntityType="FinancePortalModel.TravelExpense" />
+    <EntitySet Name="TravelExpenseApprovals" EntityType="FinancePortalModel.TravelExpenseApproval" />
+    <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="FinancePortalModel.TravelExpenseAttachmentFile" />
+    <EntitySet Name="TravelExpenseBudgets" EntityType="FinancePortalModel.TravelExpenseBudget" />
+    <EntitySet Name="TravelExpenseCashInAdvances" EntityType="FinancePortalModel.TravelExpenseCashInAdvance" />
+    <EntitySet Name="TravelExpenseCosts" EntityType="FinancePortalModel.TravelExpenseCost" />
+    <EntitySet Name="TravelExpenseCostBudgets" EntityType="FinancePortalModel.TravelExpenseCostBudget" />
+    <EntitySet Name="TravelExpenseCostDetails" EntityType="FinancePortalModel.TravelExpenseCostDetail" />
+    <EntitySet Name="TravelExpenseEmployees" EntityType="FinancePortalModel.TravelExpenseEmployee" />
+    <EntitySet Name="TravelExpenseStatus" EntityType="FinancePortalModel.TravelExpenseStatu" />
+    <EntitySet Name="Users" EntityType="FinancePortalModel.User" />
+    <EntitySet Name="UserRoles" EntityType="FinancePortalModel.UserRole" />
+    <AssociationSet Name="FK_UserRole_Role" Association="FinancePortalModel.FK_UserRole_Role">
       <End Role="Role" EntitySet="Roles" />
       <End Role="UserRole" EntitySet="UserRoles" />
-    </AssociationSet>
-    <EntitySet Name="TravelExpenseBudgets" EntityType="FinancePortalModel.TravelExpenseBudget" />
-    <EntitySet Name="TravelExpenseCosts" EntityType="FinancePortalModel.TravelExpenseCost" />
-    <EntitySet Name="TravelExpenseEmployees" EntityType="FinancePortalModel.TravelExpenseEmployee" />
-    <EntitySet Name="Users" EntityType="FinancePortalModel.User" />
-    <AssociationSet Name="FK_UserRole_User" Association="FinancePortalModel.FK_UserRole_User">
-      <End Role="User" EntitySet="Users" />
-      <End Role="UserRole" EntitySet="UserRoles" />
-    </AssociationSet>
-    <EntitySet Name="TravelExpenseStatus" EntityType="FinancePortalModel.TravelExpenseStatu" />
-    <EntitySet Name="TravelExpenseApprovals" EntityType="FinancePortalModel.TravelExpenseApproval" />
-    <EntitySet Name="TravelExpenses" EntityType="FinancePortalModel.TravelExpense" />
-    <AssociationSet Name="FK_TravelExpense_BudgetID" Association="FinancePortalModel.FK_TravelExpense_BudgetID">
-      <End Role="TravelExpenseBudget" EntitySet="TravelExpenseBudgets" />
-      <End Role="TravelExpense" EntitySet="TravelExpenses" />
     </AssociationSet>
     <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus">
       <End Role="TravelExpenseStatu" EntitySet="TravelExpenseStatus" />
@@ -65,105 +26,65 @@
       <End Role="TravelExpense" EntitySet="TravelExpenses" />
       <End Role="TravelExpenseApproval" EntitySet="TravelExpenseApprovals" />
     </AssociationSet>
-    <AssociationSet Name="FK_TravelExpenseCost_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseCost_TravelExpense">
+    <AssociationSet Name="FK_TravelExpenseAttachFiles_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense">
       <End Role="TravelExpense" EntitySet="TravelExpenses" />
-      <End Role="TravelExpenseCost" EntitySet="TravelExpenseCosts" />
+      <End Role="TravelExpenseAttachmentFile" EntitySet="TravelExpenseAttachmentFiles" />
     </AssociationSet>
     <AssociationSet Name="FK_TravelExpenseEmployee_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense">
       <End Role="TravelExpense" EntitySet="TravelExpenses" />
       <End Role="TravelExpenseEmployee" EntitySet="TravelExpenseEmployees" />
     </AssociationSet>
-    <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="FinancePortalModel.TravelExpenseAttachmentFile" />
-    <AssociationSet Name="FK_TravelExpenseAttachFiles_TravelExpense" Association="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense">
-      <End Role="TravelExpense" EntitySet="TravelExpenses" />
-      <End Role="TravelExpenseAttachmentFile" EntitySet="TravelExpenseAttachmentFiles" />
+    <AssociationSet Name="FK_TravelExpenseCostBudget_TravelExpenseBudget" Association="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget">
+      <End Role="TravelExpenseBudget" EntitySet="TravelExpenseBudgets" />
+      <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudgets" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseCostBudget_TravelExpenseCost" Association="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseCost">
+      <End Role="TravelExpenseCost" EntitySet="TravelExpenseCosts" />
+      <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudgets" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseCostDetail_TravelExpenseCostBudget" Association="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget">
+      <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudgets" />
+      <End Role="TravelExpenseCostDetail" EntitySet="TravelExpenseCostDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserRole_User" Association="FinancePortalModel.FK_UserRole_User">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserRole" EntitySet="UserRoles" />
     </AssociationSet>
   </EntityContainer>
-  <EntityType Name="TravelExpenseBudget">
+  <EntityType Name="Role">
     <Key>
-      <PropertyRef Name="ID" />
+      <PropertyRef Name="RoleId" />
     </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="BudgetName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="BudgetAmount" Type="Int64" Nullable="false" />
-    <Property Name="BudgetUsed" Type="Int64" Nullable="false" />
-    <Property Name="BudgetRemaining" Type="Int64" Nullable="false" />
-    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="IsShown" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="TravelExpenses" Relationship="FinancePortalModel.FK_TravelExpense_BudgetID" FromRole="TravelExpenseBudget" ToRole="TravelExpense" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="RoleDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="IsShown" Type="Boolean" />
+    <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_Role" FromRole="Role" ToRole="UserRole" />
   </EntityType>
-  <EntityType Name="TravelExpenseCost">
+  <EntityType Name="TravelExpense">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
-    <Property Name="CostAir" Type="Int64" Nullable="false" />
-    <Property Name="CostHotel" Type="Int64" Nullable="false" />
-    <Property Name="CostMeal" Type="Int64" Nullable="false" />
-    <Property Name="CostOther" Type="Int64" Nullable="false" />
+    <Property Name="StatusID" Type="Int32" Nullable="false" />
+    <Property Name="FromDate" Type="DateTime" Precision="3" />
+    <Property Name="ToDate" Type="DateTime" Precision="3" />
+    <Property Name="TripDays" Type="Int32" Nullable="false" />
+    <Property Name="RequestDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="TripPurpose" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="EstimatedCost" Type="Int64" Nullable="false" />
+    <Property Name="ExchangeRate" Type="Int32" Nullable="false" />
+    <Property Name="RequesterSignature" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="TarNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseCost_TravelExpense" FromRole="TravelExpenseCost" ToRole="TravelExpense" />
-  </EntityType>
-  <EntityType Name="TravelExpenseEmployee">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
-    <Property Name="EmployeeCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Division" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="IsShown" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpenseEmployee" ToRole="TravelExpense" />
-  </EntityType>
-  <EntityType Name="User">
-    <Key>
-      <PropertyRef Name="UserId" />
-    </Key>
-    <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="EmployeeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="IsActive" Type="Boolean" Nullable="false" />
-    <Property Name="LastLogin" Type="DateTime" Precision="3" />
-    <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="UserEmailAddress" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="IsWindowsAccount" Type="Boolean" Nullable="false" />
-    <Property Name="IsShown" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="User" ToRole="UserRole" />
-  </EntityType>
-  <Association Name="FK_UserRole_User">
-    <End Type="FinancePortalModel.User" Role="User" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="FinancePortalModel.UserRole" Role="UserRole" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="User">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="UserRole">
-        <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <EntityType Name="TravelExpenseStatu">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="ColorCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="TravelExpenses" Relationship="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus" FromRole="TravelExpenseStatu" ToRole="TravelExpense" />
+    <NavigationProperty Name="TravelExpenseStatu" Relationship="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus" FromRole="TravelExpense" ToRole="TravelExpenseStatu" />
+    <NavigationProperty Name="TravelExpenseApprovals" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseApproval" />
+    <NavigationProperty Name="TravelExpenseAttachmentFiles" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseAttachmentFile" />
+    <NavigationProperty Name="TravelExpenseEmployees" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseEmployee" />
   </EntityType>
   <EntityType Name="TravelExpenseApproval">
     <Key>
@@ -185,46 +106,152 @@
     <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpenseApproval" ToRole="TravelExpense" />
   </EntityType>
-  <EntityType Name="TravelExpense">
+  <EntityType Name="TravelExpenseAttachmentFile">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="BudgetID" Type="Int32" Nullable="false" />
-    <Property Name="StatusID" Type="Int32" Nullable="false" />
-    <Property Name="FromDate" Type="DateTime" Precision="3" />
-    <Property Name="ToDate" Type="DateTime" Precision="3" />
-    <Property Name="TripDays" Type="Int32" Nullable="false" />
-    <Property Name="RequestDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="TripPurpose" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="EstimatedCost" Type="Int64" Nullable="false" />
-    <Property Name="ExchangeRate" Type="Int64" Nullable="false" />
-    <Property Name="RequesterSignature" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="TarNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="BudgetAmountAtSubmit" Type="Int64" />
-    <Property Name="BudgetUsedAtSubmit" Type="Int64" />
-    <Property Name="BudgetRemainingAtSubmit" Type="Int64" />
+    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+    <Property Name="FileName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="Int32" Nullable="false" />
+    <Property Name="IsShown" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpenseAttachmentFile" ToRole="TravelExpense" />
+  </EntityType>
+  <EntityType Name="TravelExpenseBudget">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="BudgetName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="BudgetAmount" Type="Int64" Nullable="false" />
+    <Property Name="BudgetUsed" Type="Int64" Nullable="false" />
+    <Property Name="BudgetRemaining" Type="Int64" Nullable="false" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="TravelExpenseCostBudgets" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget" FromRole="TravelExpenseBudget" ToRole="TravelExpenseCostBudget" />
+  </EntityType>
+  <EntityType Name="TravelExpenseCashInAdvance">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeID" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Department" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Reason" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RequiredCash" Type="Int32" Nullable="false" />
+    <Property Name="RequiredDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TravelExpenseCost">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CostName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="IsShown" Type="Boolean" Nullable="false" />
-    <NavigationProperty Name="TravelExpenseBudget" Relationship="FinancePortalModel.FK_TravelExpense_BudgetID" FromRole="TravelExpense" ToRole="TravelExpenseBudget" />
-    <NavigationProperty Name="TravelExpenseStatu" Relationship="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus" FromRole="TravelExpense" ToRole="TravelExpenseStatu" />
-    <NavigationProperty Name="TravelExpenseApprovals" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseApproval" />
-    <NavigationProperty Name="TravelExpenseCosts" Relationship="FinancePortalModel.FK_TravelExpenseCost_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseCost" />
-    <NavigationProperty Name="TravelExpenseEmployees" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseEmployee" />
-    <NavigationProperty Name="TravelExpenseAttachmentFiles" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseAttachmentFile" />
+    <NavigationProperty Name="TravelExpenseCostBudgets" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseCost" FromRole="TravelExpenseCost" ToRole="TravelExpenseCostBudget" />
   </EntityType>
-  <Association Name="FK_TravelExpense_BudgetID">
-    <End Type="FinancePortalModel.TravelExpenseBudget" Role="TravelExpenseBudget" Multiplicity="1" />
-    <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="*" />
+  <EntityType Name="TravelExpenseCostBudget">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="CostID" Type="Int32" Nullable="false" />
+    <Property Name="BudgetID" Type="Int32" Nullable="false" />
+    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="TravelExpenseBudget" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseBudget" />
+    <NavigationProperty Name="TravelExpenseCost" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseCost" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseCost" />
+    <NavigationProperty Name="TravelExpenseCostDetails" Relationship="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseCostDetail" />
+  </EntityType>
+  <EntityType Name="TravelExpenseCostDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+    <Property Name="CostBudgetID" Type="Int32" Nullable="false" />
+    <Property Name="BudgetAmountAtSubmit" Type="Int64" Nullable="false" />
+    <Property Name="BudgetUsedAtSubmit" Type="Int64" Nullable="false" />
+    <Property Name="BudgetRemainingAtSubmit" Type="Int64" Nullable="false" />
+    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="TravelExpenseCostBudget" Relationship="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget" FromRole="TravelExpenseCostDetail" ToRole="TravelExpenseCostBudget" />
+  </EntityType>
+  <EntityType Name="TravelExpenseEmployee">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+    <Property Name="EmployeeCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Division" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpenseEmployee" ToRole="TravelExpense" />
+  </EntityType>
+  <EntityType Name="TravelExpenseStatu">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DisplayName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ColorCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="TravelExpenses" Relationship="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus" FromRole="TravelExpenseStatu" ToRole="TravelExpense" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="LastLogin" Type="DateTime" Precision="3" />
+    <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UserEmailAddress" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="IsWindowsAccount" Type="Boolean" Nullable="false" />
+    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="User" ToRole="UserRole" />
+  </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="UserRoleId" />
+    </Key>
+    <Property Name="UserRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+    <Property Name="IsShown" Type="Boolean" />
+    <NavigationProperty Name="Role" Relationship="FinancePortalModel.FK_UserRole_Role" FromRole="UserRole" ToRole="Role" />
+    <NavigationProperty Name="User" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="UserRole" ToRole="User" />
+  </EntityType>
+  <Association Name="FK_UserRole_Role">
+    <End Type="FinancePortalModel.Role" Role="Role" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FinancePortalModel.UserRole" Role="UserRole" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="TravelExpenseBudget">
-        <PropertyRef Name="ID" />
+      <Principal Role="Role">
+        <PropertyRef Name="RoleId" />
       </Principal>
-      <Dependent Role="TravelExpense">
-        <PropertyRef Name="BudgetID" />
+      <Dependent Role="UserRole">
+        <PropertyRef Name="RoleId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -252,14 +279,14 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_TravelExpenseCost_TravelExpense">
+  <Association Name="FK_TravelExpenseAttachFiles_TravelExpense">
     <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
-    <End Type="FinancePortalModel.TravelExpenseCost" Role="TravelExpenseCost" Multiplicity="*" />
+    <End Type="FinancePortalModel.TravelExpenseAttachmentFile" Role="TravelExpenseAttachmentFile" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="TravelExpense">
         <PropertyRef Name="ID" />
       </Principal>
-      <Dependent Role="TravelExpenseCost">
+      <Dependent Role="TravelExpenseAttachmentFile">
         <PropertyRef Name="TravelExpenseID" />
       </Dependent>
     </ReferentialConstraint>
@@ -278,30 +305,53 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityType Name="TravelExpenseAttachmentFile">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
-    <Property Name="FileName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="Type" Type="Int32" Nullable="false" />
-    <Property Name="IsShown" Type="Boolean" />
-    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-    <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-    <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpenseAttachmentFile" ToRole="TravelExpense" />
-  </EntityType>
-  <Association Name="FK_TravelExpenseAttachFiles_TravelExpense">
-    <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
-    <End Type="FinancePortalModel.TravelExpenseAttachmentFile" Role="TravelExpenseAttachmentFile" Multiplicity="*" />
+  <Association Name="FK_TravelExpenseCostBudget_TravelExpenseBudget">
+    <End Type="FinancePortalModel.TravelExpenseBudget" Role="TravelExpenseBudget" Multiplicity="1" />
+    <End Type="FinancePortalModel.TravelExpenseCostBudget" Role="TravelExpenseCostBudget" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="TravelExpense">
+      <Principal Role="TravelExpenseBudget">
         <PropertyRef Name="ID" />
       </Principal>
-      <Dependent Role="TravelExpenseAttachmentFile">
-        <PropertyRef Name="TravelExpenseID" />
+      <Dependent Role="TravelExpenseCostBudget">
+        <PropertyRef Name="BudgetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseCostBudget_TravelExpenseCost">
+    <End Type="FinancePortalModel.TravelExpenseCost" Role="TravelExpenseCost" Multiplicity="1" />
+    <End Type="FinancePortalModel.TravelExpenseCostBudget" Role="TravelExpenseCostBudget" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpenseCost">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseCostBudget">
+        <PropertyRef Name="CostID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseCostDetail_TravelExpenseCostBudget">
+    <End Type="FinancePortalModel.TravelExpenseCostBudget" Role="TravelExpenseCostBudget" Multiplicity="1" />
+    <End Type="FinancePortalModel.TravelExpenseCostDetail" Role="TravelExpenseCostDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpenseCostBudget">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseCostDetail">
+        <PropertyRef Name="CostBudgetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserRole_User">
+    <End Type="FinancePortalModel.User" Role="User" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FinancePortalModel.UserRole" Role="UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="UserId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

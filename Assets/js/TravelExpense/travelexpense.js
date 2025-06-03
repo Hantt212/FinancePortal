@@ -27,6 +27,9 @@ $(document).ready(function () {
     // 🔄 Load Budgets
     loadBudgets();
 
+    //
+    loadCostBudget();
+
     // ⚡ Preload data for Edit mode
     if (window.isEdit) {
         // 🔹 Preload Employees
@@ -447,6 +450,51 @@ function loadBudgets() {
         }
     });
 }
+
+function loadCostBudget() {
+    $.get('/TravelExpense/GetCostBudgetList', function (list) {
+        const costGroup = new Map();
+
+        // Group by CostName
+        list.forEach(item => {
+            const key = item.CostName;
+            if (!costGroup.has(key)) {
+                costGroup.set(key, []);
+            }
+            costGroup.get(key).push(item);
+        });
+
+        const card = $('#costCard');
+        card.empty(); // Clear previous content if needed
+
+        let index = 0;
+        costGroup.forEach((budgetList, key) => {
+            const options = budgetList.map(budget => `
+                <option value="${budget.BudgetID}">${budget.BudgetName}</option>
+            `).join("");
+
+            card.append(`
+                <div class="form-group">
+                    <div class="row">
+                     <label class="d-block">${key}($)</label>
+                        <div class="col-md-6">
+                           
+                            <input type="number" class="form-control" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                        </div>
+                        <div class="col-md-6">
+                           
+                            <select class="form-control" id="BudgetType_${index}">
+                                ${options}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `);
+            index++;
+        });
+    });
+}
+
 
 // 🎯 Bind input event to recalculate on change
 $(document).on('input', '.cost-input', function () {

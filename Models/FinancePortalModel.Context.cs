@@ -26,14 +26,17 @@ namespace FinancePortal.Models
         }
     
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<UserRole> UserRoles { get; set; }
-        public virtual DbSet<TravelExpenseBudget> TravelExpenseBudgets { get; set; }
-        public virtual DbSet<TravelExpenseCost> TravelExpenseCosts { get; set; }
-        public virtual DbSet<TravelExpenseEmployee> TravelExpenseEmployees { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<TravelExpenseStatu> TravelExpenseStatus { get; set; }
-        public virtual DbSet<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
         public virtual DbSet<TravelExpense> TravelExpenses { get; set; }
+        public virtual DbSet<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
         public virtual DbSet<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
+        public virtual DbSet<TravelExpenseBudget> TravelExpenseBudgets { get; set; }
+        public virtual DbSet<TravelExpenseCashInAdvance> TravelExpenseCashInAdvances { get; set; }
+        public virtual DbSet<TravelExpenseCost> TravelExpenseCosts { get; set; }
+        public virtual DbSet<TravelExpenseCostBudget> TravelExpenseCostBudgets { get; set; }
+        public virtual DbSet<TravelExpenseCostDetail> TravelExpenseCostDetails { get; set; }
+        public virtual DbSet<TravelExpenseEmployee> TravelExpenseEmployees { get; set; }
+        public virtual DbSet<TravelExpenseStatu> TravelExpenseStatus { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
     }
 }

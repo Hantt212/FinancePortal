@@ -27,6 +27,9 @@ $(document).ready(function () {
     // 🔄 Load Budgets
     loadBudgets();
 
+    //
+    loadCostBudget();
+
     // ⚡ Preload data for Edit mode
     if (window.isEdit) {
         // 🔹 Preload Employees
@@ -445,6 +448,41 @@ function loadBudgets() {
             $('#BudgetName').val(window.preloadedBudgetID);
             $('#BudgetName').trigger('change');
         }
+    });
+}
+
+function loadCostBudget() {
+    $.get('/TravelExpense/GetCostBudgetList', function (list) {
+        const grouped = new Map();
+
+        list.forEach(item => {
+            const key = item.department;
+            if (!grouped.has(key)) {
+                grouped.set(key, []);
+            }
+            grouped.get(key).push(item);
+        });
+
+        console.log(grouped);
+
+        //const dropdown = $('#BudgetName');
+        //dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
+
+        //list.forEach(b => {
+        //    dropdown.append(`
+        //        <option 
+        //            value="${b.ID}" 
+        //            data-amount="${b.BudgetAmount}" 
+        //            data-used="${b.BudgetUsed}" 
+        //            data-remaining="${b.BudgetRemaining}">
+        //            ${b.BudgetName}
+        //        </option>`);
+        //});
+
+        //if (window.isEdit && window.preloadedBudgetID) {
+        //    $('#BudgetName').val(window.preloadedBudgetID);
+        //    $('#BudgetName').trigger('change');
+        //}
     });
 }
 

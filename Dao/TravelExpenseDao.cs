@@ -78,10 +78,6 @@ namespace FinancePortal.Dao
                     RequesterSignature = model.RequesterSign,
                     CreatedBy = username,
                     CreatedDate = DateTime.Now,
-                    BudgetID = model.BudgetID,
-                    BudgetAmountAtSubmit = budget.BudgetAmount,
-                    BudgetUsedAtSubmit = budget.BudgetUsed,
-                    BudgetRemainingAtSubmit = budget.BudgetRemaining,
                     TarNo = model.TarNo,
                     IsShown = true,
                     StatusID = (int)TravelExpenseStatusEnum.RequesterPending // 🛑 NEW: Initial status
@@ -129,16 +125,16 @@ namespace FinancePortal.Dao
                 // 5. Insert Cost Details
                 if (model.CostDetails != null)
                 {
-                    db.TravelExpenseCosts.Add(new TravelExpenseCost
-                    {
-                        TravelExpenseID = travel.ID,
-                        CostAir = model.CostDetails.CostAir,
-                        CostHotel = model.CostDetails.CostHotel,
-                        CostMeal = model.CostDetails.CostMeal,
-                        CostOther = model.CostDetails.CostOther,
-                        CreatedBy = username,
-                        CreatedDate = DateTime.Now
-                    });
+                    //db.TravelExpenseCosts.Add(new TravelExpenseCost
+                    //{
+                    //    TravelExpenseID = travel.ID,
+                    //    CostAir = model.CostDetails.CostAir,
+                    //    CostHotel = model.CostDetails.CostHotel,
+                    //    CostMeal = model.CostDetails.CostMeal,
+                    //    CostOther = model.CostDetails.CostOther,
+                    //    CreatedBy = username,
+                    //    CreatedDate = DateTime.Now
+                    //});
                 }
 
                 // 6. Update Budget Usage
@@ -185,198 +181,198 @@ namespace FinancePortal.Dao
         {
             using (var db = new FinancePortalEntities())
             {
-                var username = HttpContext.Current.Session["Username"]?.ToString();
+                //var username = HttpContext.Current.Session["Username"]?.ToString();
 
-                // 1. Validate TravelExpense exists
-                var travel = db.TravelExpenses.FirstOrDefault(t => t.ID == model.ID && t.IsShown);
-                if (travel == null)
-                    throw new Exception("Travel Expense request not found.");
+                //// 1. Validate TravelExpense exists
+                //var travel = db.TravelExpenses.FirstOrDefault(t => t.ID == model.ID && t.IsShown);
+                //if (travel == null)
+                //    throw new Exception("Travel Expense request not found.");
 
-                // ❗ Block editing if already FC approved (or you can allow only partial fields)
-                if (travel.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
-                    throw new Exception("Cannot update. This travel expense is already fully approved.");
+                //// ❗ Block editing if already FC approved (or you can allow only partial fields)
+                //if (travel.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
+                //    throw new Exception("Cannot update. This travel expense is already fully approved.");
 
-                // 2. Validate Budget
-                var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == model.BudgetID && b.IsShown);
-                if (budget == null)
-                    throw new Exception("Selected budget not found or inactive.");
+                //// 2. Validate Budget
+                //var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == model.BudgetID && b.IsShown);
+                //if (budget == null)
+                //    throw new Exception("Selected budget not found or inactive.");
 
-                // 3. Save old estimated cost for budget adjustment
-                long oldEstimatedCost = travel.EstimatedCost;
+                //// 3. Save old estimated cost for budget adjustment
+                //long oldEstimatedCost = travel.EstimatedCost;
 
-                // 4. Update Cost Details
-                var costDetail = db.TravelExpenseCosts.FirstOrDefault(c => c.TravelExpenseID == travel.ID);
-                if (costDetail != null)
-                {
-                    costDetail.CostAir = model.CostDetails?.CostAir ?? 0;
-                    costDetail.CostHotel = model.CostDetails?.CostHotel ?? 0;
-                    costDetail.CostMeal = model.CostDetails?.CostMeal ?? 0;
-                    costDetail.CostOther = model.CostDetails?.CostOther ?? 0;
-                    costDetail.UpdatedBy = username;
-                    costDetail.UpdatedDate = DateTime.Now;
-                }
-                else if (model.CostDetails != null)
-                {
-                    db.TravelExpenseCosts.Add(new TravelExpenseCost
-                    {
-                        TravelExpenseID = travel.ID,
-                        CostAir = model.CostDetails.CostAir,
-                        CostHotel = model.CostDetails.CostHotel,
-                        CostMeal = model.CostDetails.CostMeal,
-                        CostOther = model.CostDetails.CostOther,
-                        CreatedBy = username,
-                        CreatedDate = DateTime.Now
-                    });
-                }
+                //// 4. Update Cost Details
+                //var costDetail = db.TravelExpenseCosts.FirstOrDefault(c => c.TravelExpenseID == travel.ID);
+                //if (costDetail != null)
+                //{
+                //    costDetail.CostAir = model.CostDetails?.CostAir ?? 0;
+                //    costDetail.CostHotel = model.CostDetails?.CostHotel ?? 0;
+                //    costDetail.CostMeal = model.CostDetails?.CostMeal ?? 0;
+                //    costDetail.CostOther = model.CostDetails?.CostOther ?? 0;
+                //    costDetail.UpdatedBy = username;
+                //    costDetail.UpdatedDate = DateTime.Now;
+                //}
+                //else if (model.CostDetails != null)
+                //{
+                //    db.TravelExpenseCosts.Add(new TravelExpenseCost
+                //    {
+                //        //TravelExpenseID = travel.ID,
+                //        //CostAir = model.CostDetails.CostAir,
+                //        //CostHotel = model.CostDetails.CostHotel,
+                //        //CostMeal = model.CostDetails.CostMeal,
+                //        //CostOther = model.CostDetails.CostOther,
+                //        //CreatedBy = username,
+                //        //CreatedDate = DateTime.Now
+                //    });
+                //}
 
-                // 5. Recalculate Estimated Cost
-                decimal totalCostUSD = (model.CostDetails?.CostAir ?? 0)
-                                     + (model.CostDetails?.CostHotel ?? 0)
-                                     + (model.CostDetails?.CostMeal ?? 0)
-                                     + (model.CostDetails?.CostOther ?? 0);
-                long newEstimatedCostVND = (long)(totalCostUSD * (model.ExchangeRate > 0 ? model.ExchangeRate : 1));
+                //// 5. Recalculate Estimated Cost
+                //decimal totalCostUSD = (model.CostDetails?.CostAir ?? 0)
+                //                     + (model.CostDetails?.CostHotel ?? 0)
+                //                     + (model.CostDetails?.CostMeal ?? 0)
+                //                     + (model.CostDetails?.CostOther ?? 0);
+                //long newEstimatedCostVND = (long)(totalCostUSD * (model.ExchangeRate > 0 ? model.ExchangeRate : 1));
 
-                // 6. Update TravelExpense main fields
-                travel.FromDate = model.FromDate;
-                travel.ToDate = model.ToDate;
-                travel.TripDays = model.TripDays;
-                travel.RequestDate = model.RequestDate;
-                travel.TripPurpose = model.TripPurpose;
-                travel.ExchangeRate = model.ExchangeRate;
-                travel.EstimatedCost = newEstimatedCostVND;
-                travel.BudgetID = model.BudgetID;
-                travel.RequesterSignature = model.RequesterSign;
-                travel.UpdatedBy = username;
-                travel.UpdatedDate = DateTime.Now;
+                //// 6. Update TravelExpense main fields
+                //travel.FromDate = model.FromDate;
+                //travel.ToDate = model.ToDate;
+                //travel.TripDays = model.TripDays;
+                //travel.RequestDate = model.RequestDate;
+                //travel.TripPurpose = model.TripPurpose;
+                //travel.ExchangeRate = model.ExchangeRate;
+                //travel.EstimatedCost = newEstimatedCostVND;
+                //travel.BudgetID = model.BudgetID;
+                //travel.RequesterSignature = model.RequesterSign;
+                //travel.UpdatedBy = username;
+                //travel.UpdatedDate = DateTime.Now;
 
-                // 7. Update Employees
-                var existingEmployees = db.TravelExpenseEmployees
-                                          .Where(e => e.TravelExpenseID == travel.ID)
-                                          .ToList();
+                //// 7. Update Employees
+                //var existingEmployees = db.TravelExpenseEmployees
+                //                          .Where(e => e.TravelExpenseID == travel.ID)
+                //                          .ToList();
 
-                foreach (var oldEmp in existingEmployees)
-                {
-                    var updatedEmp = model.Employees.FirstOrDefault(x => x.Code == oldEmp.EmployeeCode);
-                    if (updatedEmp != null)
-                    {
-                        oldEmp.FullName = updatedEmp.Name;
-                        oldEmp.Position = updatedEmp.Position;
-                        oldEmp.Division = updatedEmp.Division;
-                        oldEmp.Department = updatedEmp.Department;
-                        oldEmp.IsShown = true;
-                    }
-                    else
-                    {
-                        oldEmp.IsShown = false; // hide employee if no longer in list
-                    }
-                }
+                //foreach (var oldEmp in existingEmployees)
+                //{
+                //    var updatedEmp = model.Employees.FirstOrDefault(x => x.Code == oldEmp.EmployeeCode);
+                //    if (updatedEmp != null)
+                //    {
+                //        oldEmp.FullName = updatedEmp.Name;
+                //        oldEmp.Position = updatedEmp.Position;
+                //        oldEmp.Division = updatedEmp.Division;
+                //        oldEmp.Department = updatedEmp.Department;
+                //        oldEmp.IsShown = true;
+                //    }
+                //    else
+                //    {
+                //        oldEmp.IsShown = false; // hide employee if no longer in list
+                //    }
+                //}
 
-                // Add new employees if any
-                var existingCodes = existingEmployees.Select(e => e.EmployeeCode).ToList();
-                var newEmployees = model.Employees.Where(e => !existingCodes.Contains(e.Code)).ToList();
-                foreach (var emp in newEmployees)
-                {
-                    db.TravelExpenseEmployees.Add(new TravelExpenseEmployee
-                    {
-                        TravelExpenseID = travel.ID,
-                        EmployeeCode = emp.Code,
-                        FullName = emp.Name,
-                        Position = emp.Position,
-                        Division = emp.Division,
-                        Department = emp.Department,
-                        IsShown = true
-                    });
-                }
+                //// Add new employees if any
+                //var existingCodes = existingEmployees.Select(e => e.EmployeeCode).ToList();
+                //var newEmployees = model.Employees.Where(e => !existingCodes.Contains(e.Code)).ToList();
+                //foreach (var emp in newEmployees)
+                //{
+                //    db.TravelExpenseEmployees.Add(new TravelExpenseEmployee
+                //    {
+                //        TravelExpenseID = travel.ID,
+                //        EmployeeCode = emp.Code,
+                //        FullName = emp.Name,
+                //        Position = emp.Position,
+                //        Division = emp.Division,
+                //        Department = emp.Department,
+                //        IsShown = true
+                //    });
+                //}
 
-                // 8. Update Requester Approval Info (ApprovalStep 1)
-                var requesterApproval = db.TravelExpenseApprovals
-                    .FirstOrDefault(a => a.TravelExpenseID == travel.ID && a.ApprovalStep == (int)ApprovalStep.HOD && a.IsApproved == false);
+                //// 8. Update Requester Approval Info (ApprovalStep 1)
+                //var requesterApproval = db.TravelExpenseApprovals
+                //    .FirstOrDefault(a => a.TravelExpenseID == travel.ID && a.ApprovalStep == (int)ApprovalStep.HOD && a.IsApproved == false);
 
-                if (requesterApproval != null)
-                {
-                    requesterApproval.ApproverID = model.Approver.Code;
-                    requesterApproval.ApproverEmail = model.Approver.Email;
-                    requesterApproval.ApproverName = model.Approver.Name;
-                    requesterApproval.ApproverPosition = model.Approver.Position;
-                    requesterApproval.UpdatedBy = username;
-                    requesterApproval.UpdatedDate = DateTime.Now;
-                }
+                //if (requesterApproval != null)
+                //{
+                //    requesterApproval.ApproverID = model.Approver.Code;
+                //    requesterApproval.ApproverEmail = model.Approver.Email;
+                //    requesterApproval.ApproverName = model.Approver.Name;
+                //    requesterApproval.ApproverPosition = model.Approver.Position;
+                //    requesterApproval.UpdatedBy = username;
+                //    requesterApproval.UpdatedDate = DateTime.Now;
+                //}
 
-                // 9. Update Budget Usage
-                if (budget != null)
-                {
-                    // Reverse old usage
-                    budget.BudgetUsed -= oldEstimatedCost;
-                    budget.BudgetRemaining += oldEstimatedCost;
+                //// 9. Update Budget Usage
+                //if (budget != null)
+                //{
+                //    // Reverse old usage
+                //    budget.BudgetUsed -= oldEstimatedCost;
+                //    budget.BudgetRemaining += oldEstimatedCost;
 
-                    // Apply new usage
-                    budget.BudgetUsed += newEstimatedCostVND;
-                    budget.BudgetRemaining -= newEstimatedCostVND;
+                //    // Apply new usage
+                //    budget.BudgetUsed += newEstimatedCostVND;
+                //    budget.BudgetRemaining -= newEstimatedCostVND;
 
-                    budget.UpdatedBy = username;
-                    budget.UpdatedDate = DateTime.Now;
-                }
+                //    budget.UpdatedBy = username;
+                //    budget.UpdatedDate = DateTime.Now;
+                //}
 
-                travel.BudgetAmountAtSubmit = budget.BudgetAmount;
-                travel.BudgetUsedAtSubmit = budget.BudgetUsed;
-                travel.BudgetRemainingAtSubmit = budget.BudgetRemaining;
+                //travel.BudgetAmountAtSubmit = budget.BudgetAmount;
+                //travel.BudgetUsedAtSubmit = budget.BudgetUsed;
+                //travel.BudgetRemainingAtSubmit = budget.BudgetRemaining;
 
-                //If travel status is Reject, then update as a new travel
-                if (travel.StatusID == (int)TravelExpenseStatusEnum.HODRejected
-                    || travel.StatusID == (int)TravelExpenseStatusEnum.FCRejected)
-                {
-                    travel.StatusID = (int)TravelExpenseStatusEnum.RequesterPending;
-                }
+                ////If travel status is Reject, then update as a new travel
+                //if (travel.StatusID == (int)TravelExpenseStatusEnum.HODRejected
+                //    || travel.StatusID == (int)TravelExpenseStatusEnum.FCRejected)
+                //{
+                //    travel.StatusID = (int)TravelExpenseStatusEnum.RequesterPending;
+                //}
 
-                // 10. Update Attach Files
-                List<TravelExpenseAttachmentFile> travelFileList = db.TravelExpenseAttachmentFiles.Where(a => a.TravelExpenseID == travel.ID).ToList();
-                List<string> currFile = model.AttachmentFiles.Except(newAttachFiles).ToList();
-                foreach (var travelFile in travelFileList)
-                {
-                    TravelExpenseAttachmentFile travelExpenseAttachmentFile = db.TravelExpenseAttachmentFiles.Find(travelFile.ID);
-                    if (currFile.Contains(travelFile.FileName))
-                    {
-                        travelExpenseAttachmentFile.IsShown = true;
-                    }
-                    else
-                    {
-                        travelExpenseAttachmentFile.IsShown = false;
-                    }
-                    travelExpenseAttachmentFile.UpdatedBy = username;
-                    travelExpenseAttachmentFile.UpdatedDate = DateTime.Now;
-                }
+                //// 10. Update Attach Files
+                //List<TravelExpenseAttachmentFile> travelFileList = db.TravelExpenseAttachmentFiles.Where(a => a.TravelExpenseID == travel.ID).ToList();
+                //List<string> currFile = model.AttachmentFiles.Except(newAttachFiles).ToList();
+                //foreach (var travelFile in travelFileList)
+                //{
+                //    TravelExpenseAttachmentFile travelExpenseAttachmentFile = db.TravelExpenseAttachmentFiles.Find(travelFile.ID);
+                //    if (currFile.Contains(travelFile.FileName))
+                //    {
+                //        travelExpenseAttachmentFile.IsShown = true;
+                //    }
+                //    else
+                //    {
+                //        travelExpenseAttachmentFile.IsShown = false;
+                //    }
+                //    travelExpenseAttachmentFile.UpdatedBy = username;
+                //    travelExpenseAttachmentFile.UpdatedDate = DateTime.Now;
+                //}
 
 
-                //  Add Attach Files
-                foreach (var fileName in newAttachFiles)
-                {
-                    db.TravelExpenseAttachmentFiles.Add(new TravelExpenseAttachmentFile
-                    {
-                        TravelExpenseID = travel.ID,
-                        FileName = fileName,
-                        Type = (int)TypeAttachmentFile.TravelExpense,
-                        IsShown = true,
-                        CreatedBy = username,
-                        CreatedDate = DateTime.Now
-                    });
-                }
+                ////  Add Attach Files
+                //foreach (var fileName in newAttachFiles)
+                //{
+                //    db.TravelExpenseAttachmentFiles.Add(new TravelExpenseAttachmentFile
+                //    {
+                //        TravelExpenseID = travel.ID,
+                //        FileName = fileName,
+                //        Type = (int)TypeAttachmentFile.TravelExpense,
+                //        IsShown = true,
+                //        CreatedBy = username,
+                //        CreatedDate = DateTime.Now
+                //    });
+                //}
 
-                // 11. Save Changes
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var validationErrors in ex.EntityValidationErrors)
-                    {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
-                        }
-                    }
-                    throw; // rethrow to catch full error
-                }
+                //// 11. Save Changes
+                //try
+                //{
+                //    db.SaveChanges();
+                //}
+                //catch (DbEntityValidationException ex)
+                //{
+                //    foreach (var validationErrors in ex.EntityValidationErrors)
+                //    {
+                //        foreach (var validationError in validationErrors.ValidationErrors)
+                //        {
+                //            System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                //        }
+                //    }
+                //    throw; // rethrow to catch full error
+                //}
 
                 return true;
             }
@@ -595,6 +591,26 @@ namespace FinancePortal.Dao
             }
         }
 
+        public static List<CostBudgetInfoViewModel> GetCostBudgetList()
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var costBudget = (from cb in db.TravelExpenseCostBudgets
+                                           join c in db.TravelExpenseCosts on cb.CostID equals c.ID
+                                           join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                                           where cb.IsShown == true
+                                           select new CostBudgetInfoViewModel
+                                           {
+                                               ID = cb.ID,
+                                               CostID = cb.CostID,
+                                               CostName = c.CostName,
+                                               BudgetID = cb.BudgetID,
+                                               BudgetName = b.BudgetName
+                                           }).ToList();
+                return costBudget;
+            }
+        }
+
         public static object GetBudgetDetailsById(int id)
         {
             using (var db = new FinancePortalEntities())
@@ -730,7 +746,7 @@ namespace FinancePortal.Dao
                 if (t == null) return null;
 
                 var s = db.TravelExpenseStatus.FirstOrDefault(x => x.ID == t.StatusID);
-                var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == t.BudgetID);
+               // var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == t.BudgetID);
 
                 var approvals = db.TravelExpenseApprovals
                                   .Where(a => a.TravelExpenseID == t.ID)
@@ -787,14 +803,14 @@ namespace FinancePortal.Dao
                     StatusName = s?.DisplayName,
                     StatusColor = s?.ColorCode,
 
-                    Budget = budget != null ? new BudgetViewModel
-                    {
-                        BudgetID = budget.ID,
-                        BudgetName = budget.BudgetName,
-                        BudgetAmount = budget.BudgetAmount,
-                        BudgetUsed = budget.BudgetUsed,
-                        BudgetRemaining = budget.BudgetRemaining
-                    } : null,
+                    //Budget = budget != null ? new BudgetViewModel
+                    //{
+                    //    BudgetID = budget.ID,
+                    //    BudgetName = budget.BudgetName,
+                    //    BudgetAmount = budget.BudgetAmount,
+                    //    BudgetUsed = budget.BudgetUsed,
+                    //    BudgetRemaining = budget.BudgetRemaining
+                    //} : null,
 
                     Employees = db.TravelExpenseEmployees
                                  .Where(e => e.TravelExpenseID == t.ID && e.IsShown)
@@ -807,15 +823,15 @@ namespace FinancePortal.Dao
                                      Division = e.Division
                                  }).ToList(),
 
-                    CostDetails = db.TravelExpenseCosts
-                                    .Where(c => c.TravelExpenseID == t.ID)
-                                    .Select(c => new TravelExpenseCostViewModel
-                                    {
-                                        CostAir = c.CostAir,
-                                        CostHotel = c.CostHotel,
-                                        CostMeal = c.CostMeal,
-                                        CostOther = c.CostOther
-                                    }).FirstOrDefault() ?? new TravelExpenseCostViewModel(),
+                    //CostDetails = db.TravelExpenseCosts
+                    //                .Where(c => c.TravelExpenseID == t.ID)
+                    //                .Select(c => new TravelExpenseCostViewModel
+                    //                {
+                    //                    CostAir = c.CostAir,
+                    //                    CostHotel = c.CostHotel,
+                    //                    CostMeal = c.CostMeal,
+                    //                    CostOther = c.CostOther
+                    //                }).FirstOrDefault() ?? new TravelExpenseCostViewModel(),
 
                     Approvals = approvals.OrderBy(a => a.ApprovalStep).ToList(),
                     AttachmentFiles = db.TravelExpenseAttachmentFiles
@@ -856,15 +872,15 @@ namespace FinancePortal.Dao
                                       Division = e.Division
                                   }).ToList();
 
-                var cost = db.TravelExpenseCosts
-                             .Where(c => c.TravelExpenseID == t.ID)
-                             .Select(c => new TravelExpenseCostViewModel
-                             {
-                                 CostAir = c.CostAir,
-                                 CostHotel = c.CostHotel,
-                                 CostMeal = c.CostMeal,
-                                 CostOther = c.CostOther
-                             }).FirstOrDefault() ?? new TravelExpenseCostViewModel();
+                //var cost = db.TravelExpenseCosts
+                //             //.Where(c => c.TravelExpenseID == t.ID)
+                //             .Select(c => new TravelExpenseCostViewModel
+                //             {
+                //                 CostAir = c.CostAir,
+                //                 CostHotel = c.CostHotel,
+                //                 CostMeal = c.CostMeal,
+                //                 CostOther = c.CostOther
+                //             }).FirstOrDefault() ?? new TravelExpenseCostViewModel();
 
                 var files = db.TravelExpenseAttachmentFiles
                             .Where(c => c.TravelExpenseID.Equals(t.ID) && c.IsShown == true && c.Type == (int)TypeAttachmentFile.TravelExpense)
@@ -884,9 +900,9 @@ namespace FinancePortal.Dao
                     ExchangeRate = t.ExchangeRate,
                     RequesterSign = t.RequesterSignature,
                     CreatedDate = t.CreatedDate,
-                    BudgetID = t.BudgetID,
+                    //BudgetID = t.BudgetID,
                     AttachmentFiles = files,
-                    CostDetails = cost,
+                   // CostDetails = cost,
                     Employees = employees,
                     Approver = approver
                 };

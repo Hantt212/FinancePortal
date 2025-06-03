@@ -91,9 +91,9 @@ function loadUserRequests() {
                     title: "Actions",
                     orderable: false,
                     render: function (data, type, row) {
-                        const viewBtn = `<button class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
+                        const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
                             <i class="fa fa-eye"></i> View
-                        </button>`;
+                        </a>`;
 
                         const editBtn = data.EditMode
                             ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">

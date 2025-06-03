@@ -216,6 +216,8 @@ C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\FinancePortal\FinancePortal\bin\Micros
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\FinancePortal\FinancePortal\obj\Debug\FinancePortal.csproj.AssemblyReference.cache
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\FinancePortal\FinancePortal\obj\Debug\FinancePortal.csproj.CoreCompileInputs.cache
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\FinancePortal\FinancePortal\obj\Debug\FinanceP.DE22A81D.Up2Date
+C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.csproj.AssemblyReference.cache
+C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.csproj.CoreCompileInputs.cache
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\Common\buttons.print.min.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\chart.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\chart.umd.js
@@ -320,8 +322,6 @@ C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePor
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Newtonsoft.Json.xml
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Antlr3.Runtime.pdb
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.csproj.AssemblyReference.cache
-C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.csproj.CoreCompileInputs.cache
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinanceP.DE22A81D.Up2Date
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.dll
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.pdb

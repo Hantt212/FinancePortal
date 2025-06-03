@@ -18,13 +18,11 @@ namespace FinancePortal.Models
         public TravelExpense()
         {
             this.TravelExpenseApprovals = new HashSet<TravelExpenseApproval>();
-            this.TravelExpenseCosts = new HashSet<TravelExpenseCost>();
-            this.TravelExpenseEmployees = new HashSet<TravelExpenseEmployee>();
             this.TravelExpenseAttachmentFiles = new HashSet<TravelExpenseAttachmentFile>();
+            this.TravelExpenseEmployees = new HashSet<TravelExpenseEmployee>();
         }
     
         public int ID { get; set; }
-        public int BudgetID { get; set; }
         public int StatusID { get; set; }
         public Nullable<System.DateTime> FromDate { get; set; }
         public Nullable<System.DateTime> ToDate { get; set; }
@@ -32,27 +30,21 @@ namespace FinancePortal.Models
         public System.DateTime RequestDate { get; set; }
         public string TripPurpose { get; set; }
         public long EstimatedCost { get; set; }
-        public long ExchangeRate { get; set; }
+        public int ExchangeRate { get; set; }
         public string RequesterSignature { get; set; }
         public string TarNo { get; set; }
-        public Nullable<long> BudgetAmountAtSubmit { get; set; }
-        public Nullable<long> BudgetUsedAtSubmit { get; set; }
-        public Nullable<long> BudgetRemainingAtSubmit { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public bool IsShown { get; set; }
     
-        public virtual TravelExpenseBudget TravelExpenseBudget { get; set; }
         public virtual TravelExpenseStatu TravelExpenseStatu { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TravelExpenseCost> TravelExpenseCosts { get; set; }
+        public virtual ICollection<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TravelExpenseEmployee> TravelExpenseEmployees { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
     }
 }

@@ -14,7 +14,6 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="BudgetID" Type="int" Nullable="false" />
     <Property Name="StatusID" Type="int" Nullable="false" />
     <Property Name="FromDate" Type="datetime" />
     <Property Name="ToDate" Type="datetime" />
@@ -22,12 +21,9 @@
     <Property Name="RequestDate" Type="datetime" Nullable="false" />
     <Property Name="TripPurpose" Type="nvarchar(max)" />
     <Property Name="EstimatedCost" Type="bigint" Nullable="false" />
-    <Property Name="ExchangeRate" Type="bigint" Nullable="false" />
+    <Property Name="ExchangeRate" Type="int" Nullable="false" />
     <Property Name="RequesterSignature" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="TarNo" Type="nvarchar" MaxLength="50" Nullable="false" />
-    <Property Name="BudgetAmountAtSubmit" Type="bigint" />
-    <Property Name="BudgetUsedAtSubmit" Type="bigint" />
-    <Property Name="BudgetRemainingAtSubmit" Type="bigint" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
@@ -82,20 +78,53 @@
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
     <Property Name="IsShown" Type="bit" Nullable="false" />
   </EntityType>
+  <EntityType Name="TravelExpenseCashInAdvance">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="EmployeeID" Type="int" Nullable="false" />
+    <Property Name="EmployeeName" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="Department" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Reason" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RequiredCash" Type="int" Nullable="false" />
+    <Property Name="RequiredDate" Type="datetime" Nullable="false" />
+    <Property Name="ReturnedDate" Type="datetime" Nullable="false" />
+    <Property Name="BeneficialName" Type="nvarchar" MaxLength="150" />
+    <Property Name="BankBranch" Type="nvarchar" MaxLength="250" />
+  </EntityType>
   <EntityType Name="TravelExpenseCost">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
-    <Property Name="CostAir" Type="bigint" Nullable="false" />
-    <Property Name="CostHotel" Type="bigint" Nullable="false" />
-    <Property Name="CostMeal" Type="bigint" Nullable="false" />
-    <Property Name="CostOther" Type="bigint" Nullable="false" />
+    <Property Name="CostName" Type="nvarchar" MaxLength="200" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
     <Property Name="UpdatedDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="TravelExpenseCostBudget">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="CostID" Type="int" Nullable="false" />
+    <Property Name="BudgetID" Type="int" Nullable="false" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TravelExpenseCostDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="CostBudgetID" Type="int" Nullable="false" />
+    <Property Name="BudgetAmountAtSubmit" Type="bigint" Nullable="false" />
+    <Property Name="BudgetUsedAtSubmit" Type="bigint" Nullable="false" />
+    <Property Name="BudgetRemainingAtSubmit" Type="bigint" Nullable="false" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="TravelExpenseEmployee">
     <Key>
@@ -143,18 +172,6 @@
     <Property Name="RoleId" Type="int" Nullable="false" />
     <Property Name="IsShown" Type="bit" />
   </EntityType>
-  <Association Name="FK_TravelExpense_BudgetID">
-    <End Role="TravelExpenseBudget" Type="Self.TravelExpenseBudget" Multiplicity="1" />
-    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="TravelExpenseBudget">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="TravelExpense">
-        <PropertyRef Name="BudgetID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_TravelExpense_TravelExpenseStatus">
     <End Role="TravelExpenseStatus" Type="Self.TravelExpenseStatus" Multiplicity="1" />
     <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
@@ -191,15 +208,39 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_TravelExpenseCost_TravelExpense">
-    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
-    <End Role="TravelExpenseCost" Type="Self.TravelExpenseCost" Multiplicity="*" />
+  <Association Name="FK_TravelExpenseCostBudget_TravelExpenseBudget">
+    <End Role="TravelExpenseBudget" Type="Self.TravelExpenseBudget" Multiplicity="1" />
+    <End Role="TravelExpenseCostBudget" Type="Self.TravelExpenseCostBudget" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="TravelExpense">
+      <Principal Role="TravelExpenseBudget">
         <PropertyRef Name="ID" />
       </Principal>
-      <Dependent Role="TravelExpenseCost">
-        <PropertyRef Name="TravelExpenseID" />
+      <Dependent Role="TravelExpenseCostBudget">
+        <PropertyRef Name="BudgetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseCostBudget_TravelExpenseCost">
+    <End Role="TravelExpenseCost" Type="Self.TravelExpenseCost" Multiplicity="1" />
+    <End Role="TravelExpenseCostBudget" Type="Self.TravelExpenseCostBudget" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpenseCost">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseCostBudget">
+        <PropertyRef Name="CostID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelExpenseCostDetail_TravelExpenseCostBudget">
+    <End Role="TravelExpenseCostBudget" Type="Self.TravelExpenseCostBudget" Multiplicity="1" />
+    <End Role="TravelExpenseCostDetail" Type="Self.TravelExpenseCostDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpenseCostBudget">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TravelExpenseCostDetail">
+        <PropertyRef Name="CostBudgetID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -251,15 +292,14 @@
     <EntitySet Name="TravelExpenseApproval" EntityType="Self.TravelExpenseApproval" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="Self.TravelExpenseAttachmentFiles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseBudget" EntityType="Self.TravelExpenseBudget" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseCashInAdvance" EntityType="Self.TravelExpenseCashInAdvance" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseCost" EntityType="Self.TravelExpenseCost" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseCostBudget" EntityType="Self.TravelExpenseCostBudget" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TravelExpenseCostDetail" EntityType="Self.TravelExpenseCostDetail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseEmployee" EntityType="Self.TravelExpenseEmployee" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseStatus" EntityType="Self.TravelExpenseStatus" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK_TravelExpense_BudgetID" Association="Self.FK_TravelExpense_BudgetID">
-      <End Role="TravelExpenseBudget" EntitySet="TravelExpenseBudget" />
-      <End Role="TravelExpense" EntitySet="TravelExpense" />
-    </AssociationSet>
     <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="Self.FK_TravelExpense_TravelExpenseStatus">
       <End Role="TravelExpenseStatus" EntitySet="TravelExpenseStatus" />
       <End Role="TravelExpense" EntitySet="TravelExpense" />
@@ -272,9 +312,17 @@
       <End Role="TravelExpense" EntitySet="TravelExpense" />
       <End Role="TravelExpenseAttachmentFiles" EntitySet="TravelExpenseAttachmentFiles" />
     </AssociationSet>
-    <AssociationSet Name="FK_TravelExpenseCost_TravelExpense" Association="Self.FK_TravelExpenseCost_TravelExpense">
-      <End Role="TravelExpense" EntitySet="TravelExpense" />
+    <AssociationSet Name="FK_TravelExpenseCostBudget_TravelExpenseBudget" Association="Self.FK_TravelExpenseCostBudget_TravelExpenseBudget">
+      <End Role="TravelExpenseBudget" EntitySet="TravelExpenseBudget" />
+      <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudget" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseCostBudget_TravelExpenseCost" Association="Self.FK_TravelExpenseCostBudget_TravelExpenseCost">
       <End Role="TravelExpenseCost" EntitySet="TravelExpenseCost" />
+      <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudget" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelExpenseCostDetail_TravelExpenseCostBudget" Association="Self.FK_TravelExpenseCostDetail_TravelExpenseCostBudget">
+      <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudget" />
+      <End Role="TravelExpenseCostDetail" EntitySet="TravelExpenseCostDetail" />
     </AssociationSet>
     <AssociationSet Name="FK_TravelExpenseEmployee_TravelExpense" Association="Self.FK_TravelExpenseEmployee_TravelExpense">
       <End Role="TravelExpense" EntitySet="TravelExpense" />

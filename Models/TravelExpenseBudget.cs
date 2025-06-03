@@ -17,7 +17,7 @@ namespace FinancePortal.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TravelExpenseBudget()
         {
-            this.TravelExpenses = new HashSet<TravelExpense>();
+            this.TravelExpenseCostBudgets = new HashSet<TravelExpenseCostBudget>();
         }
     
         public int ID { get; set; }
@@ -32,6 +32,6 @@ namespace FinancePortal.Models
         public bool IsShown { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TravelExpense> TravelExpenses { get; set; }
+        public virtual ICollection<TravelExpenseCostBudget> TravelExpenseCostBudgets { get; set; }
     }
 }

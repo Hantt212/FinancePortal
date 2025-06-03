@@ -96,6 +96,12 @@ namespace FinancePortal.Controllers
             return Json(budgets, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetCostBudgetList()
+        {
+            var costBudget = TravelExpenseDao.GetCostBudgetList();
+            return Json(costBudget, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpGet]
         public JsonResult GenerateTARNo()
         {

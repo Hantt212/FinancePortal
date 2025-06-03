@@ -17,7 +17,7 @@ namespace FinancePortal.ViewModels
         public int BudgetID { get; set; }
         public string TripPurpose { get; set; }
         public long EstimatedCost { get; set; }
-        public long ExchangeRate { get; set; }
+        public int ExchangeRate { get; set; }
         public DateTime CreatedDate { get; set; }
         public string RequesterSign { get; set; }
         public int StatusID { get; set; }
