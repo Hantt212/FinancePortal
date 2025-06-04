@@ -8,7 +8,6 @@ $(document).ready(function () {
         });
     }
 
-
     // 🖱️ Double click Exchange Rate to edit
     $('#ExchangeRate').on('dblclick', function () {
         $(this).prop('readonly', false);

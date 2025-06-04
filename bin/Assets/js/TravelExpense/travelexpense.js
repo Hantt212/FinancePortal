@@ -8,7 +8,6 @@ $(document).ready(function () {
         });
     }
 
-
     // 🖱️ Double click Exchange Rate to edit
     $('#ExchangeRate').on('dblclick', function () {
         $(this).prop('readonly', false);
@@ -41,18 +40,18 @@ $(document).ready(function () {
 
         // 🔹 Preload Cost Details
         if (window.preloadedCostDetails) {
-            var costDetails = window.preloadedCostDetails;
-            costDetails.forEach(detail => {
-                document.querySelectorAll('.type-budget').forEach(select => {
-                    Array.from(select.options).forEach(option => {
-                        if (option.value == detail.CostBudgetID) {
-                            option.selected = true;
-                            var selectedTag = option.closest('row').find;
-                            selectedTag.value = detail.CostAmount;
-                        }
-                    })
-                });
-            })
+            //var costDetails = window.preloadedCostDetails;
+            //costDetails.forEach(detail => {
+            //    document.querySelectorAll('.type-budget').forEach(select => {
+            //        Array.from(select.options).forEach(option => {
+            //            if (option.value == detail.CostBudgetID) {
+            //                option.selected = true;
+            //                var selectedTag = option.closest('row').find;
+            //                selectedTag.value = detail.CostAmount;
+            //            }
+            //        })
+            //    });
+            //})
             
             //$('#CostAir').val(window.preloadedCostDetails.CostAir || 0);
             //$('#CostHotel').val(window.preloadedCostDetails.CostHotel || 0);
@@ -491,41 +490,44 @@ function loadCostBudget() {
         let index = 0;
         costGroup.forEach((costDetailList, key) => {
             const options = costDetailList.map(detail => `
-                <option value="${detail.ID}">${detail.BudgetName}</option>
-            `).join("");
+            <option value="${detail.ID}">${detail.BudgetName}</option>
+        `).join("");
 
             card.append(`
-                <div class="form-group">
-                    <div class="row">
-                     <label class="d-block">${key}($)</label>
-                        <div class="col-md-6">
-                            <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
-                        </div>
-                        <div class="col-md-6">
-                            <select class="form-control type-budget" id="BudgetType_${index}">
-                                ${options}
-                            </select>
-                        </div>
+            <div class="form-group">
+                <div class="row">
+                    <label class="d-block">${key}($)</label>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control type-budget" id="BudgetType_${index}">
+                            ${options}
+                        </select>
                     </div>
                 </div>
-            `);
+            </div>
+        `);
             index++;
         });
 
-
+        // Load preloaded values
         var costDetails = window.preloadedCostDetails;
         costDetails.forEach(detail => {
-            document.querySelectorAll('.type-budget').forEach(select => {
-                Array.from(select.options).forEach(option => {
-                    if (option.value == detail.CostBudgetID) {
-                        option.selected = true;
-                        var selectedTag = option.closest('.row').find('input[type="number"]');
-                        selectedTag.value = detail.CostAmount;
+            $('.type-budget').each(function () {
+                const $select = $(this);
+                $select.find('option').each(function () {
+                    if (this.value == detail.CostBudgetID) {
+                        $(this).prop('selected', true);
+                        // Traverse to the sibling input in the same .row
+                        const $input = $select.closest('.row').find('input[type="number"]');
+                        $input.val(detail.CostAmount);
                     }
-                })
+                });
             });
-        })
+        });
     });
+
 }
 
 

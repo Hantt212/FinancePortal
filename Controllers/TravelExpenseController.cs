@@ -240,7 +240,7 @@ namespace FinancePortal.Controllers
             string role = System.Web.HttpContext.Current.Session["UserRole"]?.ToString();
 
             // 🔄 Update statuses based on role
-            TravelExpenseDao.UpdateStatusWhenViewingRequests(role, employeeCode, username);
+           // TravelExpenseDao.UpdateStatusWhenViewingRequests(role, employeeCode, username);
 
             // ✅ Return filtered list
             var list = TravelExpenseDao.GetRequestSummariesByUser(username, employeeCode, role);

@@ -80,7 +80,7 @@ namespace FinancePortal.Dao
                     CreatedDate = DateTime.Now,
                     TarNo = model.TarNo,
                     IsShown = true,
-                    StatusID = (int)TravelExpenseStatusEnum.RequesterPending // 🛑 NEW: Initial status
+                    StatusID = (int)TravelExpenseStatusEnum.WaitingHOD // 🛑 NEW: Initial status
                 };
 
                 db.TravelExpenses.Add(travel);
@@ -189,8 +189,8 @@ namespace FinancePortal.Dao
                     throw new Exception("Travel Expense request not found.");
 
                 // ❗ Block editing if already FC approved (or you can allow only partial fields)
-                if (travel.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
-                    throw new Exception("Cannot update. This travel expense is already fully approved.");
+                //if (travel.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
+                //    throw new Exception("Cannot update. This travel expense is already fully approved.");
 
                 // 2. Validate Budget
                 //var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == model.BudgetID && b.IsShown);
@@ -343,10 +343,10 @@ namespace FinancePortal.Dao
                 //travel.BudgetRemainingAtSubmit = budget.BudgetRemaining;
 
                 //If travel status is Reject, then update as a new travel
-                if (travel.StatusID == (int)TravelExpenseStatusEnum.HODRejected
-                    || travel.StatusID == (int)TravelExpenseStatusEnum.FCRejected)
+                if (travel.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD
+                    || travel.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)
                 {
-                    travel.StatusID = (int)TravelExpenseStatusEnum.RequesterPending;
+                    travel.StatusID = (int)TravelExpenseStatusEnum.WaitingHOD;
                 }
 
                 // 10. Update Attach Files
@@ -482,7 +482,7 @@ namespace FinancePortal.Dao
                     return false;
                 }
 
-                if (travel.StatusID != (int)TravelExpenseStatusEnum.HODPending)
+                if (travel.StatusID != (int)TravelExpenseStatusEnum.WaitingHOD)
                 {
                     message = "Request is not in HOD Pending status.";
                     return false;
@@ -503,7 +503,7 @@ namespace FinancePortal.Dao
                 approval.UpdatedDate = DateTime.Now;
 
                 // Update travel expense status
-                travel.StatusID = (int)TravelExpenseStatusEnum.HODApproved;
+                travel.StatusID = (int)TravelExpenseStatusEnum.WaitingGL;
                 travel.UpdatedBy = approverName;
                 travel.UpdatedDate = DateTime.Now;
 
@@ -932,81 +932,81 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static void UpdateStatusWhenViewingRequests(string role, string employeeCode, string username)
-        {
-            using (var db = new FinancePortalEntities())
-            {
-                var now = DateTime.Now;
+        //public static void UpdateStatusWhenViewingRequests(string role, string employeeCode, string username)
+        //{
+        //    using (var db = new FinancePortalEntities())
+        //    {
+        //        var now = DateTime.Now;
 
-                if (role == HODRole)
-                {
-                    // 🔄 Update all requests where approval step = 1 and current status = RequesterPending
-                    var pendingRequests = (from t in db.TravelExpenses
-                                           join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
-                                           where a.ApproverID == employeeCode &&
-                                                 a.ApprovalStep == (int)ApprovalStep.HOD && t.IsShown == true &&
-                                                 t.StatusID == (int)TravelExpenseStatusEnum.RequesterPending
-                                           select t).ToList();
+        //        if (role == HODRole)
+        //        {
+        //            // 🔄 Update all requests where approval step = 1 and current status = RequesterPending
+        //            var pendingRequests = (from t in db.TravelExpenses
+        //                                   join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
+        //                                   where a.ApproverID == employeeCode &&
+        //                                         a.ApprovalStep == (int)ApprovalStep.HOD && t.IsShown == true &&
+        //                                         t.StatusID == (int)TravelExpenseStatusEnum.RequesterPending
+        //                                   select t).ToList();
 
-                    foreach (var req in pendingRequests)
-                    {
-                        req.StatusID = (int)TravelExpenseStatusEnum.HODPending;
-                        //req.UpdatedDate = now;
-                    }
-                }
-                else if (role == GLRole)
-                {
-                    // 🔄 Update all requests where approval step = 2 and current status = HODApproved
-                    var pendingRequests = (from t in db.TravelExpenses
-                                           join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
-                                           where a.ApproverID == employeeCode &&
-                                                 a.ApprovalStep == (int)ApprovalStep.GL && t.IsShown == true &&
-                                                 t.StatusID == (int)TravelExpenseStatusEnum.HODApproved
-                                           select t).ToList();
+        //            foreach (var req in pendingRequests)
+        //            {
+        //                req.StatusID = (int)TravelExpenseStatusEnum.HODPending;
+        //                //req.UpdatedDate = now;
+        //            }
+        //        }
+        //        else if (role == GLRole)
+        //        {
+        //            // 🔄 Update all requests where approval step = 2 and current status = HODApproved
+        //            var pendingRequests = (from t in db.TravelExpenses
+        //                                   join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
+        //                                   where a.ApproverID == employeeCode &&
+        //                                         a.ApprovalStep == (int)ApprovalStep.GL && t.IsShown == true &&
+        //                                         t.StatusID == (int)TravelExpenseStatusEnum.HODApproved
+        //                                   select t).ToList();
 
-                    foreach (var req in pendingRequests)
-                    {
-                        req.StatusID = (int)TravelExpenseStatusEnum.GLPending;
-                    }
-                }
-                else if (role == FCRole)
-                {
-                    // 🔄 Update all requests where approval step = 2 and current status = GLApproved
-                    var pendingRequests = (from t in db.TravelExpenses
-                                           join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
-                                           where a.ApproverID == employeeCode &&
-                                                 a.ApprovalStep == (int)ApprovalStep.FC && t.IsShown == true &&
-                                                 t.StatusID == (int)TravelExpenseStatusEnum.GLApproved
-                                           select t).ToList();
+        //            foreach (var req in pendingRequests)
+        //            {
+        //                req.StatusID = (int)TravelExpenseStatusEnum.GLPending;
+        //            }
+        //        }
+        //        else if (role == FCRole)
+        //        {
+        //            // 🔄 Update all requests where approval step = 2 and current status = GLApproved
+        //            var pendingRequests = (from t in db.TravelExpenses
+        //                                   join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
+        //                                   where a.ApproverID == employeeCode &&
+        //                                         a.ApprovalStep == (int)ApprovalStep.FC && t.IsShown == true &&
+        //                                         t.StatusID == (int)TravelExpenseStatusEnum.GLApproved
+        //                                   select t).ToList();
 
-                    foreach (var req in pendingRequests)
-                    {
-                        req.StatusID = (int)TravelExpenseStatusEnum.FCPending;
-                        //req.UpdatedDate = now;
-                    }
-                }
-                else if (role == RequesterRole)
-                {
-                    // ✅ Update all of the requester’s own requests that are FCApproved to DONE
-                    var approvedRequests = db.TravelExpenses
-                        .Where(t => t.CreatedBy == username &&
-                                    t.IsShown &&
-                                    t.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
-                        .ToList();
+        //            foreach (var req in pendingRequests)
+        //            {
+        //                req.StatusID = (int)TravelExpenseStatusEnum.FCPending;
+        //                //req.UpdatedDate = now;
+        //            }
+        //        }
+        //        else if (role == RequesterRole)
+        //        {
+        //            // ✅ Update all of the requester’s own requests that are FCApproved to DONE
+        //            var approvedRequests = db.TravelExpenses
+        //                .Where(t => t.CreatedBy == username &&
+        //                            t.IsShown &&
+        //                            t.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
+        //                .ToList();
 
-                    foreach (var req in approvedRequests)
-                    {
-                        req.StatusID = (int)TravelExpenseStatusEnum.Done;
-                        //req.UpdatedDate = now;
-                    }
-                }
-                else
-                {
-                    return;
-                }
-                db.SaveChanges();
-            }
-        }
+        //            foreach (var req in approvedRequests)
+        //            {
+        //                req.StatusID = (int)TravelExpenseStatusEnum.Done;
+        //                //req.UpdatedDate = now;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return;
+        //        }
+        //        db.SaveChanges();
+        //    }
+        //}
 
         public static OperationResult HandleHODApproval(int requestId, string approverUsername, bool isApprove)
         {
@@ -1041,8 +1041,8 @@ namespace FinancePortal.Dao
                     return new OperationResult { Success = false, Message = "Travel request not found." };
 
                 request.StatusID = isApprove
-                    ? (int)TravelExpenseStatusEnum.HODApproved
-                    : (int)TravelExpenseStatusEnum.HODRejected;
+                    ? (int)TravelExpenseStatusEnum.WaitingGL
+                    : (int)TravelExpenseStatusEnum.RejectedHOD;
                 request.UpdatedBy = approverUsername;
                 request.UpdatedDate = now;
 
@@ -1107,9 +1107,7 @@ namespace FinancePortal.Dao
                 approval.UpdatedDate = now;
                 approval.UpdatedBy = approverUsername;
 
-                request.StatusID = isApprove
-                    ? (int)TravelExpenseStatusEnum.GLApproved
-                    : (int)TravelExpenseStatusEnum.GLPending;
+                request.StatusID = (int)TravelExpenseStatusEnum.WaitingFC;
                 request.UpdatedBy = approverUsername;
                 request.UpdatedDate = now;
 
@@ -1179,8 +1177,8 @@ namespace FinancePortal.Dao
                 approval.UpdatedBy = approverUsername;
 
                 request.StatusID = isApprove
-                    ? (int)TravelExpenseStatusEnum.FCApproved
-                    : (int)TravelExpenseStatusEnum.FCRejected;
+                    ? (int)TravelExpenseStatusEnum.TARApproved
+                    : (int)TravelExpenseStatusEnum.RejectedFC;
                 request.UpdatedBy = approverUsername;
                 request.UpdatedDate = now;
 
@@ -1204,7 +1202,7 @@ namespace FinancePortal.Dao
                 if (request == null)
                     return new OperationResult { Success = false, Message = "Request not found." };
 
-                request.StatusID = (int)TravelExpenseStatusEnum.RequesterCancelled;
+                request.StatusID = (int)TravelExpenseStatusEnum.Cancelled;
                 request.UpdatedBy = approverUsername;
                 request.UpdatedDate = now;
 

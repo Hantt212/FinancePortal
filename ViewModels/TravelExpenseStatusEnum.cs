@@ -7,17 +7,13 @@ namespace FinancePortal.ViewModels
 {
     public enum TravelExpenseStatusEnum
     {
-        RequesterPending = 1,
-        RequesterCancelled = 2,
-        HODPending = 3,
-        HODApproved = 4,
-        HODRejected = 5,
-        GLPending = 6,
-        GLApproved = 7,
-        FCPending = 8,
-        FCApproved = 9,
-        FCRejected = 10,
-        Done = 11
+        Cancelled = 1,
+        WaitingHOD = 2,
+        RejectedHOD = 3,
+        WaitingGL = 4,
+        WaitingFC = 5,
+        RejectedFC = 6,
+        TARApproved = 7
     }
 
     public enum ApprovalStep

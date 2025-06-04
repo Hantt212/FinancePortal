@@ -1,20 +1,16 @@
 ﻿
 const StatusEnum = {
-    RequesterPending: 1,
-    RequesterCancelled: 2,
-    HODPending: 3,
-    HODApproved: 4,
-    HODRejected: 5,
-    GLPending: 6,
-    GLApproved: 7,
-    FCPending: 8,
-    FCApproved: 9,
-    FCRejected: 10,
-    Done: 11
+    Cancelled: 1,
+    WaitingHOD: 2,
+    RejectedHOD: 3,
+    WaitingGL: 4,
+    WaitingFC: 5,
+    RejectedFC: 6,
+    TARApproved: 7
 };
 
 const LabelStatusEnum = {
-    Pending: 'Pending',
+    Waiting: 'Waiting',
     Approved: 'Approved',
     Rejected: 'Rejected',
     NotAssigned: 'Not Assigned',
@@ -201,19 +197,19 @@ function showApprovalSections(role, approvals, statusID) {
     showFCSection(fc, statusID);
 
     // Approve/Reject buttons (based on role + section still pending)
-    if (role === RoleEnum.HOD && statusID === StatusEnum.HODPending) {
+    if (role === RoleEnum.HOD && statusID === StatusEnum.WaitingHOD) {
         $('#approvalActions').removeClass('d-none');
         $('#rejectBtn').show();
-    } else if (role === RoleEnum.GL && statusID === StatusEnum.GLPending) {
+    } else if (role === RoleEnum.GL && statusID === StatusEnum.WaitingGL) {
         $('#approvalActions').removeClass('d-none');
         $('#rejectBtn').hide();
-    } else if (role === RoleEnum.FC && statusID === StatusEnum.FCPending) {
+    } else if (role === RoleEnum.FC && statusID === StatusEnum.WaitingFC) {
         $('#approvalActions').removeClass('d-none');
         $('#rejectBtn').show();
     }
 
     //Cancel buttons
-    if (role === RoleEnum.Requester && statusID <= StatusEnum.HODPending) {
+    if (role === RoleEnum.Requester && statusID < StatusEnum.RejectedHOD) {
         $('#cancelActions').removeClass('d-none');
     } else {
         $('#cancelActions').addClass('d-none');
@@ -229,13 +225,11 @@ function showHODSection(hod, statusID) {
 
     let statusLabel = LabelStatusEnum.NotReviewed;
 
-    if (statusID === StatusEnum.HODPending) {
-        statusLabel = LabelStatusEnum.Pending;
-    } else if (statusID === StatusEnum.HODApproved) {
-        statusLabel = LabelStatusEnum.Approved;
-    } else if (statusID === StatusEnum.HODRejected) {
+    if (statusID === StatusEnum.WaitingHOD) {
+        statusLabel = LabelStatusEnum.Waiting;
+    } else if (statusID === StatusEnum.RejectedHOD) {
         statusLabel = LabelStatusEnum.Rejected;
-    } else if (statusID > StatusEnum.HODRejected) {
+    } else if (statusID > StatusEnum.RejectedHOD) {
         statusLabel = LabelStatusEnum.Approved;
     }
 
@@ -262,13 +256,11 @@ function showFCSection(fc, statusID) {
 
     let statusLabel = LabelStatusEnum.NotAssigned;
 
-    if (statusID === StatusEnum.FCPending) {
-        statusLabel = LabelStatusEnum.Pending;
-    } else if (statusID === StatusEnum.FCApproved) {
-        statusLabel = LabelStatusEnum.Approved;
-    } else if (statusID === StatusEnum.FCRejected) {
+    if (statusID === StatusEnum.WaitingFC) {
+        statusLabel = LabelStatusEnum.Waiting;
+    } else if (statusID === StatusEnum.RejectedFC) {
         statusLabel = LabelStatusEnum.Rejected;
-    } else if (statusID > StatusEnum.FCRejected) {
+    } else if (statusID === StatusEnum.TARApproved) {
         statusLabel = LabelStatusEnum.Approved;
     }
 
@@ -287,9 +279,9 @@ function setApprovalStatusBadge(selector, status) {
             label = 'Approved';
             backgroundColor = '#28a745';
             break;
-        case 'Pending':
+        case 'Waiting':
             badgeClass = 'badge-warning';
-            label = 'Pending';
+            label = 'Waiting';
             backgroundColor = '#ffc107';
             break;
         case 'Rejected':
