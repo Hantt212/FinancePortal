@@ -131,7 +131,8 @@ namespace FinancePortal.Dao
                             TravelExpenseID = travel.ID,
                             CostBudgetID = costDetail.CostBudgetID,
                             CostAmount = costDetail.CostAmount,
-                    });
+                            IsShown = true
+                        });
                     }
                    
                 }

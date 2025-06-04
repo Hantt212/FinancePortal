@@ -41,10 +41,23 @@ $(document).ready(function () {
 
         // 🔹 Preload Cost Details
         if (window.preloadedCostDetails) {
-            $('#CostAir').val(window.preloadedCostDetails.CostAir || 0);
-            $('#CostHotel').val(window.preloadedCostDetails.CostHotel || 0);
-            $('#CostMeal').val(window.preloadedCostDetails.CostMeal || 0);
-            $('#CostOther').val(window.preloadedCostDetails.CostOther || 0);
+            var costDetails = window.preloadedCostDetails;
+            costDetails.forEach(detail => {
+                document.querySelectorAll('.type-budget').forEach(select => {
+                    Array.from(select.options).forEach(option => {
+                        if (option.value == detail.CostBudgetID) {
+                            option.selected = true;
+                            var selectedTag = option.closest('row').find;
+                            selectedTag.value = detail.CostAmount;
+                        }
+                    })
+                });
+            })
+            
+            //$('#CostAir').val(window.preloadedCostDetails.CostAir || 0);
+            //$('#CostHotel').val(window.preloadedCostDetails.CostHotel || 0);
+            //$('#CostMeal').val(window.preloadedCostDetails.CostMeal || 0);
+            //$('#CostOther').val(window.preloadedCostDetails.CostOther || 0);
         }
 
         if (window.preloadedExchangeRate) {
@@ -489,7 +502,7 @@ function loadCostBudget() {
                             <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
                         </div>
                         <div class="col-md-6">
-                            <select class="form-control" id="BudgetType_${index}">
+                            <select class="form-control type-budget" id="BudgetType_${index}">
                                 ${options}
                             </select>
                         </div>
@@ -498,6 +511,20 @@ function loadCostBudget() {
             `);
             index++;
         });
+
+
+        var costDetails = window.preloadedCostDetails;
+        costDetails.forEach(detail => {
+            document.querySelectorAll('.type-budget').forEach(select => {
+                Array.from(select.options).forEach(option => {
+                    if (option.value == detail.CostBudgetID) {
+                        option.selected = true;
+                        var selectedTag = option.closest('.row').find('input[type="number"]');
+                        selectedTag.value = detail.CostAmount;
+                    }
+                })
+            });
+        })
     });
 }
 
