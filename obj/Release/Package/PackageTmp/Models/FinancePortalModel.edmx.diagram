@@ -4,24 +4,30 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="b51e75a1195f4ae997340b0c794b8a39" Name="Diagram1">
-        <EntityTypeShape EntityType="FinancePortalModel.Role" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="FinancePortalModel.UserRole" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <AssociationConnector Association="FinancePortalModel.FK_UserRole_Role" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseBudget" Width="1.625" PointX="8.5" PointY="3.375" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCost" Width="2.625" PointX="13.125" PointY="3.75" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpense" Width="1.5" PointX="10.875" PointY="4.375" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseEmployee" Width="3.25" PointX="11.375" PointY="13" />
-        <AssociationConnector Association="FinancePortalModel.FK_TravelExpense_BudgetID" />
-        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseCost_TravelExpense" />
-        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" />
-        <EntityTypeShape EntityType="FinancePortalModel.User" Width="1.5" PointX="3.375" PointY="5" />
-        <AssociationConnector Association="FinancePortalModel.FK_UserRole_User" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseStatu" Width="1.5" PointX="0.75" PointY="4.875" />
+      <Diagram DiagramId="b51e75a1195f4ae997340b0c794b8a39" Name="Diagram1" ZoomLevel="84">
+        <EntityTypeShape EntityType="FinancePortalModel.Role" Width="1.5" PointX="7.75" PointY="9" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpense" Width="1.5" PointX="3" PointY="4.5" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseApproval" Width="1.5" PointX="5.25" PointY="8.625" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseAttachmentFile" Width="1.5" PointX="5.25" PointY="4.875" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseBudget" Width="1.5" PointX="7.75" PointY="1" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCashInAdvance" Width="1.5" PointX="9.75" PointY="4.75" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCost" Width="1.5" PointX="7.75" PointY="5.375" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCostBudget" Width="1.5" PointX="10" PointY="1.375" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCostDetail" Width="1.5" PointX="12.25" PointY="1.125" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseEmployee" Width="1.5" PointX="5.25" PointY="1.375" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseStatu" Width="1.5" PointX="0.75" PointY="5.875" />
+        <EntityTypeShape EntityType="FinancePortalModel.User" Width="1.5" PointX="7.75" PointY="12.5" />
+        <EntityTypeShape EntityType="FinancePortalModel.UserRole" Width="1.5" PointX="10" PointY="8.875" />
+        <AssociationConnector Association="FinancePortalModel.FK_UserRole_Role" />
         <AssociationConnector Association="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseApproval" Width="1.5" PointX="13.125" PointY="8" />
         <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" />
-        </Diagram>
+        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" />
+        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" />
+        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget" />
+        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseCost" />
+        <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget" />
+        <AssociationConnector Association="FinancePortalModel.FK_UserRole_User" />
+      </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -82,7 +82,7 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TravelExpenseID" Type="int" Nullable="false" />
     <Property Name="EmployeeID" Type="int" Nullable="false" />
     <Property Name="EmployeeName" Type="nvarchar" MaxLength="150" Nullable="false" />
@@ -99,7 +99,7 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CostName" Type="nvarchar" MaxLength="200" />
+    <Property Name="CostName" Type="nvarchar" MaxLength="200" Nullable="false" />
     <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="CreatedDate" Type="datetime" Nullable="false" />
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
@@ -109,18 +109,19 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CostID" Type="int" Nullable="false" />
     <Property Name="BudgetID" Type="int" Nullable="false" />
-    <Property Name="IsShown" Type="bit" Nullable="false" />
+    <Property Name="IsShown" Type="bit" />
   </EntityType>
   <EntityType Name="TravelExpenseCostDetail">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TravelExpenseID" Type="int" Nullable="false" />
     <Property Name="CostBudgetID" Type="int" Nullable="false" />
+    <Property Name="CostAmount" Type="int" Nullable="false" />
     <Property Name="BudgetAmountAtSubmit" Type="bigint" Nullable="false" />
     <Property Name="BudgetUsedAtSubmit" Type="bigint" Nullable="false" />
     <Property Name="BudgetRemainingAtSubmit" Type="bigint" Nullable="false" />

@@ -5,51 +5,9 @@
       <EntityTypeMapping TypeName="FinancePortalModel.Role">
         <MappingFragment StoreEntitySet="Role">
           <ScalarProperty Name="IsShown" ColumnName="IsShown" />
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
           <ScalarProperty Name="RoleDescription" ColumnName="RoleDescription" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="UserRoles">
-      <EntityTypeMapping TypeName="FinancePortalModel.UserRole">
-        <MappingFragment StoreEntitySet="UserRole">
-          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
-          <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
           <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="TravelExpenseBudgets">
-      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseBudget">
-        <MappingFragment StoreEntitySet="TravelExpenseBudget">
-          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
-          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-          <ScalarProperty Name="BudgetRemaining" ColumnName="BudgetRemaining" />
-          <ScalarProperty Name="BudgetUsed" ColumnName="BudgetUsed" />
-          <ScalarProperty Name="BudgetAmount" ColumnName="BudgetAmount" />
-          <ScalarProperty Name="BudgetName" ColumnName="BudgetName" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="TravelExpenseCosts">
-      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCost">
-        <MappingFragment StoreEntitySet="TravelExpenseCost">
-          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CostOther" ColumnName="CostOther" />
-          <ScalarProperty Name="CostMeal" ColumnName="CostMeal" />
-          <ScalarProperty Name="CostHotel" ColumnName="CostHotel" />
-          <ScalarProperty Name="CostAir" ColumnName="CostAir" />
-          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -71,47 +29,6 @@
           <ScalarProperty Name="ToDate" ColumnName="ToDate" />
           <ScalarProperty Name="FromDate" ColumnName="FromDate" />
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
-          <ScalarProperty Name="BudgetID" ColumnName="BudgetID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="TravelExpenseEmployees">
-      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseEmployee">
-        <MappingFragment StoreEntitySet="TravelExpenseEmployee">
-          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
-          <ScalarProperty Name="Department" ColumnName="Department" />
-          <ScalarProperty Name="Division" ColumnName="Division" />
-          <ScalarProperty Name="Position" ColumnName="Position" />
-          <ScalarProperty Name="FullName" ColumnName="FullName" />
-          <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
-          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Users">
-      <EntityTypeMapping TypeName="FinancePortalModel.User">
-        <MappingFragment StoreEntitySet="User">
-          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
-          <ScalarProperty Name="IsWindowsAccount" ColumnName="IsWindowsAccount" />
-          <ScalarProperty Name="UserEmailAddress" ColumnName="UserEmailAddress" />
-          <ScalarProperty Name="Password" ColumnName="Password" />
-          <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
-          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-          <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
-          <ScalarProperty Name="UserName" ColumnName="UserName" />
-          <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="TravelExpenseStatus">
-      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseStatu">
-        <MappingFragment StoreEntitySet="TravelExpenseStatus">
-          <ScalarProperty Name="ColorCode" ColumnName="ColorCode" />
-          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -133,6 +50,140 @@
           <ScalarProperty Name="ApprovalStep" ColumnName="ApprovalStep" />
           <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
           <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseAttachmentFiles">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseAttachmentFile">
+        <MappingFragment StoreEntitySet="TravelExpenseAttachmentFiles">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="FileName" ColumnName="FileName" />
+          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseBudgets">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseBudget">
+        <MappingFragment StoreEntitySet="TravelExpenseBudget">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="BudgetRemaining" ColumnName="BudgetRemaining" />
+          <ScalarProperty Name="BudgetUsed" ColumnName="BudgetUsed" />
+          <ScalarProperty Name="BudgetAmount" ColumnName="BudgetAmount" />
+          <ScalarProperty Name="BudgetName" ColumnName="BudgetName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseCashInAdvances">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCashInAdvance">
+        <MappingFragment StoreEntitySet="TravelExpenseCashInAdvance">
+          <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+          <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
+          <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
+          <ScalarProperty Name="RequiredDate" ColumnName="RequiredDate" />
+          <ScalarProperty Name="RequiredCash" ColumnName="RequiredCash" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+          <ScalarProperty Name="Department" ColumnName="Department" />
+          <ScalarProperty Name="EmployeeName" ColumnName="EmployeeName" />
+          <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
+          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseCosts">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCost">
+        <MappingFragment StoreEntitySet="TravelExpenseCost">
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CostName" ColumnName="CostName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseCostBudgets">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCostBudget">
+        <MappingFragment StoreEntitySet="TravelExpenseCostBudget">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="BudgetID" ColumnName="BudgetID" />
+          <ScalarProperty Name="CostID" ColumnName="CostID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseCostDetails">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCostDetail">
+        <MappingFragment StoreEntitySet="TravelExpenseCostDetail">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="BudgetRemainingAtSubmit" ColumnName="BudgetRemainingAtSubmit" />
+          <ScalarProperty Name="BudgetUsedAtSubmit" ColumnName="BudgetUsedAtSubmit" />
+          <ScalarProperty Name="BudgetAmountAtSubmit" ColumnName="BudgetAmountAtSubmit" />
+          <ScalarProperty Name="CostAmount" ColumnName="CostAmount" />
+          <ScalarProperty Name="CostBudgetID" ColumnName="CostBudgetID" />
+          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseEmployees">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseEmployee">
+        <MappingFragment StoreEntitySet="TravelExpenseEmployee">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="Department" ColumnName="Department" />
+          <ScalarProperty Name="Division" ColumnName="Division" />
+          <ScalarProperty Name="Position" ColumnName="Position" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
+          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelExpenseStatus">
+      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseStatu">
+        <MappingFragment StoreEntitySet="TravelExpenseStatus">
+          <ScalarProperty Name="ColorCode" ColumnName="ColorCode" />
+          <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="FinancePortalModel.User">
+        <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="IsWindowsAccount" ColumnName="IsWindowsAccount" />
+          <ScalarProperty Name="UserEmailAddress" ColumnName="UserEmailAddress" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserRoles">
+      <EntityTypeMapping TypeName="FinancePortalModel.UserRole">
+        <MappingFragment StoreEntitySet="UserRole">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

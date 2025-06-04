@@ -25,7 +25,7 @@ $(document).ready(function () {
     formatExchangeRate();
 
     // 🔄 Load Budgets
-    loadBudgets();
+   // loadBudgets();
 
     //
     loadCostBudget();
@@ -300,10 +300,10 @@ $('#submitTravelBtn').click(function () {
         showToast("Estimated Cost must be greater than 0.", "warning");
         return;
     }
-    if (!budgetID) {
-        showToast("Please select a Budget.", "warning");
-        return;
-    }
+    //if (!budgetID) {
+    //    showToast("Please select a Budget.", "warning");
+    //    return;
+    //}
     if (isNaN(exchangeRate) || exchangeRate <= 0) {
         showToast("Exchange Rate must be greater than 0.", "warning");
         return;
@@ -340,6 +340,19 @@ $('#submitTravelBtn').click(function () {
         attachmentFileList.push($(this).find('a').text());
     })
 
+    // Get CostDetail
+    var costDetailList = [];
+    document.querySelectorAll('#costCard .cost-input').forEach(item => {
+        if (+item.value > 0) {
+            var row = $(item).closest('.row');
+            var costBudgetID = +row.find('select').val();
+            costDetailList.push({
+                CostAmount: +item.value,
+                CostBudgetID: costBudgetID
+            })
+        }
+    });
+
     // 📦 Prepare final payload
     const payload = {
         id: parseInt(requestID),
@@ -354,12 +367,7 @@ $('#submitTravelBtn').click(function () {
         estimatedCost,
         exchangeRate,
         requesterSign,
-        costDetails: {
-            costAir: parseFloat($('#CostAir').val()) || 0,
-            costHotel: parseFloat($('#CostHotel').val()) || 0,
-            costMeal: parseFloat($('#CostMeal').val()) || 0,
-            costOther: parseFloat($('#CostOther').val()) || 0
-        },
+        costDetails: costDetailList,
         approver: {
             code: approverCode,
             name: approverName,
@@ -428,63 +436,71 @@ function updateEstimatedCost() {
     $('#EstimatedCost').val(formatNumber(estimatedVND));
 }
 
-function loadBudgets() {
-    $.get('/TravelExpense/GetBudgets', function (budgets) {
-        const dropdown = $('#BudgetName');
-        dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
+//function loadBudgets() {
+//    $.get('/TravelExpense/GetBudgets', function (budgets) {
+//        const dropdown = $('#BudgetName');
+//        dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
 
-        budgets.forEach(b => {
-            dropdown.append(`
-                <option 
-                    value="${b.ID}" 
-                    data-amount="${b.BudgetAmount}" 
-                    data-used="${b.BudgetUsed}" 
-                    data-remaining="${b.BudgetRemaining}">
-                    ${b.BudgetName}
-                </option>`);
-        });
+//        budgets.forEach(b => {
+//            dropdown.append(`
+//                <option 
+//                    value="${b.ID}" 
+//                    data-amount="${b.BudgetAmount}" 
+//                    data-used="${b.BudgetUsed}" 
+//                    data-remaining="${b.BudgetRemaining}">
+//                    ${b.BudgetName}
+//                </option>`);
+//        });
 
-        if (window.isEdit && window.preloadedBudgetID) {
-            $('#BudgetName').val(window.preloadedBudgetID);
-            $('#BudgetName').trigger('change');
-        }
-    });
-}
+//        if (window.isEdit && window.preloadedBudgetID) {
+//            $('#BudgetName').val(window.preloadedBudgetID);
+//            $('#BudgetName').trigger('change');
+//        }
+//    });
+//}
 
 function loadCostBudget() {
     $.get('/TravelExpense/GetCostBudgetList', function (list) {
-        const grouped = new Map();
+        const costGroup = new Map();
 
+        // Group by CostName
         list.forEach(item => {
-            const key = item.department;
-            if (!grouped.has(key)) {
-                grouped.set(key, []);
+            const key = item.CostName;
+            if (!costGroup.has(key)) {
+                costGroup.set(key, []);
             }
-            grouped.get(key).push(item);
+            costGroup.get(key).push(item);
         });
 
-        console.log(grouped);
+        const card = $('#costCard');
+        card.empty(); // Clear previous content if needed
 
-        //const dropdown = $('#BudgetName');
-        //dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
+        let index = 0;
+        costGroup.forEach((costDetailList, key) => {
+            const options = costDetailList.map(detail => `
+                <option value="${detail.ID}">${detail.BudgetName}</option>
+            `).join("");
 
-        //list.forEach(b => {
-        //    dropdown.append(`
-        //        <option 
-        //            value="${b.ID}" 
-        //            data-amount="${b.BudgetAmount}" 
-        //            data-used="${b.BudgetUsed}" 
-        //            data-remaining="${b.BudgetRemaining}">
-        //            ${b.BudgetName}
-        //        </option>`);
-        //});
-
-        //if (window.isEdit && window.preloadedBudgetID) {
-        //    $('#BudgetName').val(window.preloadedBudgetID);
-        //    $('#BudgetName').trigger('change');
-        //}
+            card.append(`
+                <div class="form-group">
+                    <div class="row">
+                     <label class="d-block">${key}($)</label>
+                        <div class="col-md-6">
+                            <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-control" id="BudgetType_${index}">
+                                ${options}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `);
+            index++;
+        });
     });
 }
+
 
 // 🎯 Bind input event to recalculate on change
 $(document).on('input', '.cost-input', function () {
@@ -572,7 +588,7 @@ $('#saveBudgetBtn').click(function () {
             if (res.success) {
                 $('#addBudgetModal').modal('hide');
                 showToast("Budget added successfully", "success");
-                loadBudgets();
+               // loadBudgets();
             } else {
                 showToast(res.message || "Add budget failed", "danger");
             }

@@ -25,6 +25,7 @@
 <input type="hidden" id="RequestID" value="@(Model?.ID ?? 0)" />
 
 <!-- 🔹 Form Container -->
+
 <div class="card-body section-padding" style="margin-left:2%; width: 96%; margin-top: 60px;">
     <div class="card o-hidden border-0 shadow-lg row">
         <div class="col-lg-12">
@@ -34,8 +35,9 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="mb-0 font-weight-bold">TRAVEL EXPENSE FORM</h3>
                     <h5 class="mb-0 text-muted font-weight-bold">
-                        TAR No: <span id="tarNumber">@Model?.TarNo ?? "TAR-NEW"</span>
+                        TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
                     </h5>
+                    <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)" />
                 </div>
 
                 <!-- 🔸 Travel Info -->
@@ -78,61 +80,55 @@
                             <textarea id="TripPurpose" class="form-control" rows="3">@(Model != null ? Model.TripPurpose : "")</textarea>
                         </div>
 
+
+
+
+
                         <!-- 🔸 Budget Details & Cost Details -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card mb-4">
+
+
+
+                        <div class="row mt-4">
+                            <div class="col-md-6 d-flex">
+                                <div class="card mb-4 w-100">
                                     <h5 class="card-header d-flex align-items-center" style="background: #9ddef2;">
-                                        <span class="font-weight-bold">Budget Details <span class="text-danger">*</span></span>
-                                        <button class="btn btn-sm btn-outline-primary ms-auto" data-toggle="modal" data-target="#addBudgetModal">
-                                            <i class="fa fa-plus-circle"></i> Add Budget
-                                        </button>
+                                        <span class="font-weight-bold">Attachment Files</span>
                                     </h5>
                                     <div class="card-body">
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Budget Name</label>
-                                            <select id="BudgetName" class="form-control" data-selected-id="@Model?.BudgetID"></select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Budget Amount</label>
-                                            <input type="text" id="BudgetAmount" class="form-control" readonly />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Budget Used</label>
-                                            <input type="text" id="BudgetUsed" class="form-control" readonly />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Budget Remaining</label>
-                                            <input type="text" id="BudgetRemaining" class="form-control" readonly />
-                                        </div>
+                                        <form id="travelExpenseForm" enctype="multipart/form-data" class="mb-4">
+                                            <div class="form-group mb-2">
+                                                <label class="font-weight-bold">Attach file(s)</label>
+                                                <input type="file" name="attachmentFiles" id="AttachmentFiles" class="form-control-file" multiple />
+                                            </div>
+
+                                            <ul id="fileList" class="list-group">
+                                                @if (Model != null)
+                                                {
+                                                    foreach (var fileName in Model.AttachmentFiles)
+                                                    {
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center border-bottom">
+                                                            <a style="color: #007bff" href="~/Upload/@fileName" target="_blank">@fileName</a>
+                                                            <button class="btn btn-sm btn-danger ms-2" style="cursor: pointer;" onclick="this.closest('li').remove();">
+                                                                <i class="fa fa-trash me-1"></i><span>Remove</span>
+                                                            </button>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="card mb-4">
+                            <div class="col-md-6 d-flex">
+                                <div class="card mb-4 w-100">
                                     <h5 class="card-header font-weight-bold" style="background: #9ddef2;">Cost Details</h5>
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label>Air Ticket ($)</label>
-                                            <input type="number" id="CostAir" class="form-control cost-input" value="0" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Hotel ($)</label>
-                                            <input type="number" id="CostHotel" class="form-control cost-input" value="0" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Meal ($)</label>
-                                            <input type="number" id="CostMeal" class="form-control cost-input" value="0" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Other ($)</label>
-                                            <input type="number" id="CostOther" class="form-control cost-input" value="0" />
-                                        </div>
+                                    <div class="card-body" id="costCard">
                                     </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- 🔸 Exchange Rate & Estimated Cost -->
                         <div class="row">
@@ -187,7 +183,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">Approver Code</label>
                                             <div class="input-group">
-                                                <input type="number" id="approverCode" class="form-control" value="@(Model?.Approver?.Code ?? "")" />                                              
+                                                <input type="number" id="approverCode" class="form-control" value="@(Model?.Approver?.Code ?? "")" />
                                             </div>
                                         </div>
 
@@ -372,12 +368,7 @@ else
         window.preloadedEmployees = [];
         window.preloadedApprover = null;
         window.preloadedBudgetID = null;
-        window.preloadedCostDetails = {
-            costAir: 0,
-            costHotel: 0,
-            costMeal: 0,
-            costOther: 0
-        };
+        window.preloadedCostDetails = [];
         window.preloadedExchangeRate = 25000;
     </script>
 }

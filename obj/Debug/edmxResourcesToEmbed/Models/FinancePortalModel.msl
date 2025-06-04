@@ -130,6 +130,7 @@
           <ScalarProperty Name="BudgetRemainingAtSubmit" ColumnName="BudgetRemainingAtSubmit" />
           <ScalarProperty Name="BudgetUsedAtSubmit" ColumnName="BudgetUsedAtSubmit" />
           <ScalarProperty Name="BudgetAmountAtSubmit" ColumnName="BudgetAmountAtSubmit" />
+          <ScalarProperty Name="CostAmount" ColumnName="CostAmount" />
           <ScalarProperty Name="CostBudgetID" ColumnName="CostBudgetID" />
           <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
           <ScalarProperty Name="ID" ColumnName="ID" />

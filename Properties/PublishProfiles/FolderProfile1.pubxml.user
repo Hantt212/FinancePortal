@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>C:\Nghia Publish Files\FinancePortal</_PublishTargetUrl>
-    <History>True|2025-06-03T08:14:54.0185420Z||;True|2025-05-06T15:04:03.0313580+07:00||;</History>
+    <_PublishTargetUrl>C:\IIS Publish\FinancePortal</_PublishTargetUrl>
+    <History>True|2025-06-03T08:17:05.6327272Z||;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -262,58 +264,13 @@
     <File Include="Assets/css/main.css">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
-    <File Include="Assets/images/16122024170985_Slide36_Vi.JPG">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/1dd0280b1750cb0e9241.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/2.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/35dd6cf524eafeb4a7fb.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/8f218cd97c81a0dff990.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/AFF Cup_1080x675 %28241230%29.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
     <File Include="Assets/images/attach.png">
       <publishTime>06/02/2025 13:12:49</publishTime>
-    </File>
-    <File Include="Assets/images/back.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/BejingDuck.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
     <File Include="Assets/images/bgr_header.jpg">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
     <File Include="Assets/images/c45f8d7543359e6bc724.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/Ch Ký.PNG">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/Chu Ky.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/chu-ky-email-la-gi-tao-chu-ky-email-chuyen-nghiep-sieu-don-gian.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/chu-ky-wikici.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/chữ kí to.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/Chữ ký Lydia.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/Chữ Ký.PNG">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
     <File Include="Assets/images/dept.png">
@@ -322,19 +279,7 @@
     <File Include="Assets/images/employee.png">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
-    <File Include="Assets/images/icon_hotel.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/icon_share.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/icon_web.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
     <File Include="Assets/images/imageedit_48_5868348992.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/LiveFish.png">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
     <File Include="Assets/images/logo_Holiday.png">
@@ -343,40 +288,10 @@
     <File Include="Assets/images/logo_Intercon.png">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
-    <File Include="Assets/images/logo_ixora.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/logo_thegrand.jpg">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/minorjackpotwin.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/m_signature.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/no photo icon.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
     <File Include="Assets/images/position.png">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
-    <File Include="Assets/images/signature.JPG">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/Signature.PNG">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/the grand logo.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
     <File Include="Assets/images/The Grand_HT_logo.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/The Grand_HT_logo2.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/The Grand_HT_logo_Green.jpg">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
     <File Include="Assets/images/the_grand1.JPG">
@@ -391,13 +306,7 @@
     <File Include="Assets/images/The_Grand_3.jpg">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
-    <File Include="Assets/images/voucher.jfif">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
     <File Include="Assets/images/voucher.png">
-      <publishTime>04/08/2025 09:20:50</publishTime>
-    </File>
-    <File Include="Assets/images/welcome.jpg">
       <publishTime>04/08/2025 09:20:50</publishTime>
     </File>
     <File Include="Assets/js/Common/bootstrap.min.js">
@@ -557,10 +466,10 @@
       <publishTime>06/17/2024 03:47:02</publishTime>
     </File>
     <File Include="bin/FinancePortal.dll">
-      <publishTime>06/03/2025 15:14:47</publishTime>
+      <publishTime>06/03/2025 15:17:00</publishTime>
     </File>
     <File Include="bin/FinancePortal.pdb">
-      <publishTime>06/03/2025 15:14:47</publishTime>
+      <publishTime>06/03/2025 15:17:00</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNet.Identity.Core.dll">
       <publishTime>06/21/2023 17:16:52</publishTime>
@@ -1004,7 +913,7 @@
       <publishTime>04/08/2025 09:18:16</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>06/03/2025 15:14:47</publishTime>
+      <publishTime>06/03/2025 15:17:00</publishTime>
     </File>
   </ItemGroup>
 </Project>

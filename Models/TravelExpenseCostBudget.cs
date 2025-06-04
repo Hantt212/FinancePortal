@@ -23,7 +23,7 @@ namespace FinancePortal.Models
         public int ID { get; set; }
         public int CostID { get; set; }
         public int BudgetID { get; set; }
-        public bool IsShown { get; set; }
+        public Nullable<bool> IsShown { get; set; }
     
         public virtual TravelExpenseBudget TravelExpenseBudget { get; set; }
         public virtual TravelExpenseCost TravelExpenseCost { get; set; }

@@ -1,4 +1,40 @@
-﻿$(document).ready(function () {
+﻿
+const StatusEnum = {
+    RequesterPending: 1,
+    RequesterCancelled: 2,
+    HODPending: 3,
+    HODApproved: 4,
+    HODRejected: 5,
+    GLPending: 6,
+    GLApproved: 7,
+    FCPending: 8,
+    FCApproved: 9,
+    FCRejected: 10,
+    Done: 11
+};
+
+const LabelStatusEnum = {
+    Pending: 'Pending',
+    Approved: 'Approved',
+    Rejected: 'Rejected',
+    NotAssigned: 'Not Assigned',
+    NotReviewed: 'Not Reviewed'
+}
+
+const RoleEnum = {
+    Requester: 'Requester',
+    HOD: 'HOD',
+    GL: 'GL',
+    FC: 'FC',
+}
+
+const StepEnum = {
+    HOD: 1,
+    GL: 2,
+    FC: 3
+}
+
+$(document).ready(function () {
     loadUserRequests();
 });
 
@@ -51,21 +87,16 @@ function loadUserRequests() {
                     }
                 },
                 {
-                    data: "ID",
+                    data: null,
                     title: "Actions",
                     orderable: false,
                     render: function (data, type, row) {
-                        const role = sessionStorage.getItem("currentUserRole");
-                        const status = row.DisplayName;
-
-                        const canEdit = role === "Requester" && status === "Requester Pending";
-
-                        const viewBtn = `<button class="btn btn-sm btn-outline-info btn-view-request" data-id="${data}">
+                        const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
                             <i class="fa fa-eye"></i> View
-                        </button>`;
+                        </a>`;
 
-                        const editBtn = canEdit
-                            ? `<a href="/TravelExpense/Index/${data}" class="btn btn-sm btn-outline-primary ml-1">
+                        const editBtn = data.EditMode
+                            ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
                                 <i class="fa fa-edit"></i> Edit
                                </a>`
                             : "";
@@ -108,9 +139,9 @@ function fillViewModal(data) {
 
     // 🔹 Budget
     $('#viewBudgetName').text(data.Budget?.BudgetName || "");
-    $('#viewBudgetAmount').text(formatNumber(data.Budget?.BudgetAmount || 0));
-    $('#viewBudgetUsed').text(formatNumber(data.Budget?.BudgetUsed || 0));
-    $('#viewBudgetRemaining').text(formatNumber(data.Budget?.BudgetRemaining || 0));
+    $('#viewBudgetAmount').text(formatNumber(data.BudgetAmountAtSubmit || 0));
+    $('#viewBudgetUsed').text(formatNumber(formatNumber(data.BudgetUsedAtSubmit) || 0));
+    $('#viewBudgetRemaining').text(formatNumber(data.BudgetRemainingAtSubmit || 0));
 
     // 🔹 Cost Details
     $('#viewCostAir').text(data.CostDetails?.CostAir ?? 0);
@@ -125,6 +156,13 @@ function fillViewModal(data) {
     (data.Employees || []).forEach(emp => {
         const item = `<li class="list-group-item">${emp.Name} - ${emp.Position}</li>`;
         $('#viewEmployeeList').append(item);
+    });
+
+    // Attachment File
+    $('#ddAttachment').empty();
+    (data.AttachmentFiles || []).forEach(name => {
+        const file = `<li><a  style="color: #007bff" class="dropdown-item" href="/Upload/${name}" target="_blank">${name}</a></li>`
+        $('#ddAttachment').append(file);
     });
 
     // 🔹 Requester Signature
@@ -142,13 +180,13 @@ function resetApprovalSections() {
     $('#approvalActions').addClass('d-none');
     $('#hodSection').addClass('d-none');
     $('#fcSection').addClass('d-none');
-    //$('#hodSection').hide();
-    //$('#fcSection').hide();
+    $('#cancelActions').addClass('d-none');
 }
 
 function showApprovalSections(role, approvals, statusID) {
-    const hod = approvals.find(a => a.ApprovalStep === 1);
-    const fc = approvals.find(a => a.ApprovalStep === 2);
+    const hod = approvals.find(a => a.ApprovalStep === StepEnum.HOD);
+    const gl = approvals.find(a => a.ApprovalStep === StepEnum.GL);
+    const fc = approvals.find(a => a.ApprovalStep === StepEnum.FC);
 
     resetApprovalSections();
 
@@ -163,10 +201,22 @@ function showApprovalSections(role, approvals, statusID) {
     showFCSection(fc, statusID);
 
     // Approve/Reject buttons (based on role + section still pending)
-    if (role === "HOD" && statusID === 2) {
+    if (role === RoleEnum.HOD && statusID === StatusEnum.HODPending) {
         $('#approvalActions').removeClass('d-none');
-    } else if (role === "FC" && statusID === 5) {
+        $('#rejectBtn').show();
+    } else if (role === RoleEnum.GL && statusID === StatusEnum.GLPending) {
         $('#approvalActions').removeClass('d-none');
+        $('#rejectBtn').hide();
+    } else if (role === RoleEnum.FC && statusID === StatusEnum.FCPending) {
+        $('#approvalActions').removeClass('d-none');
+        $('#rejectBtn').show();
+    }
+
+    //Cancel buttons
+    if (role === RoleEnum.Requester && statusID <= StatusEnum.HODPending) {
+        $('#cancelActions').removeClass('d-none');
+    } else {
+        $('#cancelActions').addClass('d-none');
     }
 }
 
@@ -177,16 +227,16 @@ function showHODSection(hod, statusID) {
     $('#viewHODSignature').text(hod.ApproverSignature || "N/A");
     $('#viewHODSignDate').text(formatJSONDate(hod.ApproverSignDate) || "N/A");
 
-    let statusLabel = "Not Reviewed";
+    let statusLabel = LabelStatusEnum.NotReviewed;
 
-    if (statusID === 2) {
-        statusLabel = "Pending";
-    } else if (statusID === 3) {
-        statusLabel = "Approved";
-    } else if (statusID === 4) {
-        statusLabel = "Rejected";
-    } else if (statusID > 4) {
-        statusLabel = "Approved";
+    if (statusID === StatusEnum.HODPending) {
+        statusLabel = LabelStatusEnum.Pending;
+    } else if (statusID === StatusEnum.HODApproved) {
+        statusLabel = LabelStatusEnum.Approved;
+    } else if (statusID === StatusEnum.HODRejected) {
+        statusLabel = LabelStatusEnum.Rejected;
+    } else if (statusID > StatusEnum.HODRejected) {
+        statusLabel = LabelStatusEnum.Approved;
     }
 
     setApprovalStatusBadge("#hodApprovalStatus", statusLabel);
@@ -200,7 +250,7 @@ function setFallbackHODSection() {
     $('#viewHODPosition').text("N/A");
     $('#viewHODSignature').text("N/A");
     $('#viewHODSignDate').text("N/A");
-    setApprovalStatusBadge('#hodApprovalStatus', 'Not Assigned');
+    setApprovalStatusBadge('#hodApprovalStatus', LabelStatusEnum.NotAssigned);
 }
 
 function showFCSection(fc, statusID) {
@@ -210,17 +260,17 @@ function showFCSection(fc, statusID) {
     $('#viewFCSignature').text(fc?.ApproverSignature || "N/A");
     $('#viewFCSignDate').text(formatJSONDate(fc?.ApproverSignDate) || "N/A");
 
-    let statusLabel = "Not Assigned";
+    let statusLabel = LabelStatusEnum.NotAssigned;
 
-    if (statusID === 5) {
-        statusLabel = "Pending";
-    } else if (statusID === 6) {
-        statusLabel = "Approved";
-    } else if (statusID === 7) {
-        statusLabel = "Rejected";
-    } else if (statusID > 7) {
-        statusLabel = "Approved";
-    } 
+    if (statusID === StatusEnum.FCPending) {
+        statusLabel = LabelStatusEnum.Pending;
+    } else if (statusID === StatusEnum.FCApproved) {
+        statusLabel = LabelStatusEnum.Approved;
+    } else if (statusID === StatusEnum.FCRejected) {
+        statusLabel = LabelStatusEnum.Rejected;
+    } else if (statusID > StatusEnum.FCRejected) {
+        statusLabel = LabelStatusEnum.Approved;
+    }
 
     setApprovalStatusBadge("#fcApprovalStatus", statusLabel);
     $('#fcSection').removeClass('d-none');
@@ -228,7 +278,7 @@ function showFCSection(fc, statusID) {
 
 function setApprovalStatusBadge(selector, status) {
     let badgeClass = 'badge-secondary';
-    let label = 'Not Assigned';
+    let label = LabelStatusEnum.NotAssigned;
     let backgroundColor = '#6c757d'; // Default: Not Assigned (secondary)
 
     switch (status) {
@@ -247,15 +297,15 @@ function setApprovalStatusBadge(selector, status) {
             label = 'Rejected';
             backgroundColor = '#dc3545';
             break;
-        case 'Not Reviewed':
+        case LabelStatusEnum.NotReviewed:
             badgeClass = 'badge-info';
-            label = 'Not Reviewed';
+            label = LabelStatusEnum.NotReviewed;
             backgroundColor = '#17a2b8';
             break;
-        case 'Not Assigned':
+        case LabelStatusEnum.NotAssigned:
         default:
             // Keep default styles
-            label = 'Not Assigned';
+            label = LabelStatusEnum.NotAssigned;
             break;
     }
 
@@ -269,69 +319,116 @@ function setApprovalStatusBadge(selector, status) {
         .text(label);
 }
 
-let pendingApprovalAction = null;
+let userAction = null;
 
 $('#approveBtn').click(() => {
-    pendingApprovalAction = true;
+    userAction = 1;
     $('#confirmApprovalMessage').text("Are you sure you want to APPROVE this request?");
     $('#confirmApprovalModal').modal('show');
 });
 
 $('#rejectBtn').click(() => {
-    pendingApprovalAction = false;
+    userAction = 0;
     $('#confirmApprovalMessage').text("Are you sure you want to REJECT this request?");
+    $('#confirmApprovalModal').modal('show');
+});
+
+$('#cancelBtn').click(() => {
+    userAction = -1 ;
+    $('#confirmApprovalMessage').text("Are you sure you want to CANCEL this request?");
     $('#confirmApprovalModal').modal('show');
 });
 
 $('#confirmApprovalBtn').click(() => {
     $('#confirmApprovalModal').modal('hide');
-    submitApproval(pendingApprovalAction);
+    submitApproval(userAction);
 });
 
-function submitApproval(isApprove) {   
-        const role = sessionStorage.getItem("currentUserRole") || "";
-        const requestId = $('#viewRequestID').val();
 
-        if (!requestId) {
-            showToast("Missing Request ID", "danger");
-            return;
-        }
+function submitApproval(userAction) {
+
+    const role = sessionStorage.getItem("currentUserRole") || "";
+    const requestId = $('#viewRequestID').val();
+
+    if (!requestId) {
+        showToast("Missing Request ID", "danger");
+        return;
+    }
+
+    //Cancel TravelExpense Request
+    if (userAction < 0) {
+        $.ajax({
+            url: '/TravelExpense/CancelByRequester',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                requestID: +requestId
+            }) ,
+            success: function (res) {
+                if (res.success) {
+                    showToast("Request cancelled successfully!", "success");
+
+                    // Refresh modal contents in real-time
+                    loadRequestDetails(requestId);
+                } else {
+                    showToast(res.message || "Failed to cancel request", "danger");
+                }
+            },
+            error: function () {
+                showToast("Server error while approving request", "danger");
+            }
+        });
+
+    } else { //Approve or Reject TravelExpense Request
+       
 
         const payload = {
             requestId: parseInt(requestId),
-            isApprove: isApprove
+            isApprove: userAction == 0 ? false : true
         };
 
-        const url = role === "HOD"
-            ? '/TravelExpense/ApproveByHOD'
-            : role === "FC"
-                ? '/TravelExpense/ApproveByFC'
-                : null;
+
+        let url;
+        switch (role) {
+            case RoleEnum.HOD:
+                url = '/TravelExpense/ApproveByHOD';
+                break;
+            case RoleEnum.GL:
+                url = '/TravelExpense/ApproveByGL';
+                break;
+            case RoleEnum.FC:
+                url = '/TravelExpense/ApproveByFC';
+                break;
+            default:
+                url = null;
+        }
 
         if (!url) {
             showToast("Unauthorized action for current role", "warning");
             return;
         }
 
-    $.ajax({
-        url: url,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(payload),
-        success: function (res) {
-            if (res.success) {
-                showToast("Approval status updated successfully!", "success");
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.success) {
+                    showToast("Approval status updated successfully!", "success");
 
-                // Refresh modal contents in real-time
-                loadRequestDetails(payload.requestId);
-            } else {
-                showToast(res.message || "Failed to update approval", "danger");
+                    // Refresh modal contents in real-time
+                    loadRequestDetails(payload.requestId);
+                } else {
+                    showToast(res.message || "Failed to update approval", "danger");
+                }
+            },
+            error: function () {
+                showToast("Server error while approving request", "danger");
             }
-        },
-        error: function () {
-            showToast("Server error while approving request", "danger");
-        }
-    });
+        });
+    }
+    
 }
 
 $('#closeViewModalBtn').click(function () {
@@ -425,6 +522,7 @@ function formatJSONDate(jsonDate) {
 function formatNumber(num) {
     return num.toLocaleString('de-DE'); // e.g. 1.234.567
 }
+
 function showToast(message, type = "success") {
     var toastEl = $("#toastMessage");
 

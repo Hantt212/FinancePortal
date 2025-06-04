@@ -17,6 +17,7 @@ namespace FinancePortal.Models
         public int ID { get; set; }
         public int TravelExpenseID { get; set; }
         public int CostBudgetID { get; set; }
+        public int CostAmount { get; set; }
         public long BudgetAmountAtSubmit { get; set; }
         public long BudgetUsedAtSubmit { get; set; }
         public long BudgetRemainingAtSubmit { get; set; }

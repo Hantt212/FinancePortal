@@ -2,9 +2,12 @@
 // 🔄 Init all fields for new/edit
 $(document).ready(function () {
     // Generate TAR Number
-    $.get('/TravelExpense/GenerateTARNo', function (res) {
-        $('#tarNumber').text(res.tarNo);
-    });
+    if ($('#tarNumber').text() == "" || $('#tarNumber').text() == null) {
+        $.get('/TravelExpense/GenerateTARNo', function (res) {
+            $('#tarNumber').text(res.tarNo);
+        });
+    }
+
 
     // 🖱️ Double click Exchange Rate to edit
     $('#ExchangeRate').on('dblclick', function () {
@@ -22,7 +25,10 @@ $(document).ready(function () {
     formatExchangeRate();
 
     // 🔄 Load Budgets
-    loadBudgets();
+   // loadBudgets();
+
+    //
+    loadCostBudget();
 
     // ⚡ Preload data for Edit mode
     if (window.isEdit) {
@@ -198,6 +204,53 @@ $('#employeeCodeInput').on('input', function () {
     });
 });
 
+document.getElementById('AttachmentFiles').addEventListener('change', function () {
+    const fileList = document.getElementById('fileList');
+
+    // Get existing file names from the list
+    const existingFiles = Array.from(fileList.querySelectorAll('a'))
+        .map(a => a.textContent.trim());
+
+    Array.from(this.files).forEach((file) => {
+        if (existingFiles.includes(file.name)) {
+            console.warn(`File "${file.name}" is already added.`);
+            return; // Skip duplicate
+        }
+
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center border-bottom';
+
+        // Create anchor with file name
+        const hrefSpan = document.createElement('a');
+        hrefSpan.textContent = file.name;
+        //hrefSpan.href = '/Upload/' + encodeURIComponent(file.name);
+        hrefSpan.style.color = '#007bff';
+        hrefSpan.setAttribute('target', '_blank');
+
+        // Remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn btn-sm btn-danger ms-2';
+        removeBtn.innerHTML = '<i class="fa fa-trash me-1"></i><span>Remove</span>';
+        removeBtn.style.cursor = 'pointer';
+
+        removeBtn.onclick = () => {
+            li.remove();
+        };
+
+        // Append to list
+        li.appendChild(hrefSpan);
+        li.appendChild(removeBtn);
+        fileList.appendChild(li);
+    });
+});
+
+document.querySelectorAll('#fileList .btn-danger').forEach(btn => {
+    btn.onclick = function () {
+        this.closest('li')?.remove();
+    };
+});
+
+
 $('#submitTravelBtn').click(function () {
     const fromDate = $('#BusinessDateFrom').val().trim();
     const toDate = $('#BusinessDateTo').val().trim();
@@ -206,6 +259,7 @@ $('#submitTravelBtn').click(function () {
     const tripPurpose = $('#TripPurpose').val().trim();
     const tarNo = $('#tarNumber').text().trim();
     const requestID = parseInt($('#RequestID').val()) || 0;
+    const statusID = parseInt($('#travelStatusID').val()) || 0;
 
     const estimatedCostRaw = $('#EstimatedCost').val().replace(/\./g, '').replace(/,/g, '');
     const exchangeRateRaw = $('#ExchangeRate').val().replace(/\./g, '').replace(/,/g, '');
@@ -219,6 +273,7 @@ $('#submitTravelBtn').click(function () {
     const approverEmail = $('#approverEmail').val().trim();
     const requesterSign = $('#requesterSign').val().trim();
     const employeeRows = $('#employeeListTable tbody tr');
+    const attachmentFileRows = $("#fileList li");
 
     // ✅ Validation
     if (!tarNo) {
@@ -245,10 +300,10 @@ $('#submitTravelBtn').click(function () {
         showToast("Estimated Cost must be greater than 0.", "warning");
         return;
     }
-    if (!budgetID) {
-        showToast("Please select a Budget.", "warning");
-        return;
-    }
+    //if (!budgetID) {
+    //    showToast("Please select a Budget.", "warning");
+    //    return;
+    //}
     if (isNaN(exchangeRate) || exchangeRate <= 0) {
         showToast("Exchange Rate must be greater than 0.", "warning");
         return;
@@ -279,6 +334,25 @@ $('#submitTravelBtn').click(function () {
         });
     });
 
+    //Attachment file
+    const attachmentFileList = [];
+    attachmentFileRows.each(function () {
+        attachmentFileList.push($(this).find('a').text());
+    })
+
+    // Get CostDetail
+    var costDetailList = [];
+    document.querySelectorAll('#costCard .cost-input').forEach(item => {
+        if (+item.value > 0) {
+            var row = $(item).closest('.row');
+            var costBudgetID = +row.find('select').val();
+            costDetailList.push({
+                CostAmount: +item.value,
+                CostBudgetID: costBudgetID
+            })
+        }
+    });
+
     // 📦 Prepare final payload
     const payload = {
         id: parseInt(requestID),
@@ -286,39 +360,41 @@ $('#submitTravelBtn').click(function () {
         tarNo,
         fromDate,
         toDate,
+        statusID,
         tripDays,
         requestDate,
         tripPurpose,
         estimatedCost,
         exchangeRate,
         requesterSign,
-        costDetails: {
-            costAir: parseFloat($('#CostAir').val()) || 0,
-            costHotel: parseFloat($('#CostHotel').val()) || 0,
-            costMeal: parseFloat($('#CostMeal').val()) || 0,
-            costOther: parseFloat($('#CostOther').val()) || 0
-        },
+        costDetails: costDetailList,
         approver: {
             code: approverCode,
             name: approverName,
             email: approverEmail,
             position: $('#approverPosition').val().trim()
         },
-        employees: employees
+        employees: employees,
+        attachmentFiles: attachmentFileList
     };
 
-    console.log("payload: ", payload);
+
 
     // 🔄 Disable button while submitting
     const btn = $(this);
     btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Submitting...');
 
+    var formData = new FormData(document.getElementById('travelExpenseForm'));
+    formData.append("Payload", JSON.stringify(payload));
+
+
     // 📤 Submit via AJAX
     $.ajax({
         url: '/TravelExpense/SubmitForm',
         type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(payload),
+        data: formData,
+        processData: false, // important
+        contentType: false, // important
         success: function (res) {
             if (res.success) {
                 const msg = requestID > 0 ? "Travel Expense updated successfully!" : "Travel Expense created successfully!";
@@ -360,28 +436,71 @@ function updateEstimatedCost() {
     $('#EstimatedCost').val(formatNumber(estimatedVND));
 }
 
-function loadBudgets() {
-    $.get('/TravelExpense/GetBudgets', function (budgets) {
-        const dropdown = $('#BudgetName');
-        dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
+//function loadBudgets() {
+//    $.get('/TravelExpense/GetBudgets', function (budgets) {
+//        const dropdown = $('#BudgetName');
+//        dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
 
-        budgets.forEach(b => {
-            dropdown.append(`
-                <option 
-                    value="${b.ID}" 
-                    data-amount="${b.BudgetAmount}" 
-                    data-used="${b.BudgetUsed}" 
-                    data-remaining="${b.BudgetRemaining}">
-                    ${b.BudgetName}
-                </option>`);
+//        budgets.forEach(b => {
+//            dropdown.append(`
+//                <option 
+//                    value="${b.ID}" 
+//                    data-amount="${b.BudgetAmount}" 
+//                    data-used="${b.BudgetUsed}" 
+//                    data-remaining="${b.BudgetRemaining}">
+//                    ${b.BudgetName}
+//                </option>`);
+//        });
+
+//        if (window.isEdit && window.preloadedBudgetID) {
+//            $('#BudgetName').val(window.preloadedBudgetID);
+//            $('#BudgetName').trigger('change');
+//        }
+//    });
+//}
+
+function loadCostBudget() {
+    $.get('/TravelExpense/GetCostBudgetList', function (list) {
+        const costGroup = new Map();
+
+        // Group by CostName
+        list.forEach(item => {
+            const key = item.CostName;
+            if (!costGroup.has(key)) {
+                costGroup.set(key, []);
+            }
+            costGroup.get(key).push(item);
         });
 
-        if (window.isEdit && window.preloadedBudgetID) {
-            $('#BudgetName').val(window.preloadedBudgetID);
-            $('#BudgetName').trigger('change');
-        }
+        const card = $('#costCard');
+        card.empty(); // Clear previous content if needed
+
+        let index = 0;
+        costGroup.forEach((costDetailList, key) => {
+            const options = costDetailList.map(detail => `
+                <option value="${detail.ID}">${detail.BudgetName}</option>
+            `).join("");
+
+            card.append(`
+                <div class="form-group">
+                    <div class="row">
+                     <label class="d-block">${key}($)</label>
+                        <div class="col-md-6">
+                            <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-control" id="BudgetType_${index}">
+                                ${options}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `);
+            index++;
+        });
     });
 }
+
 
 // 🎯 Bind input event to recalculate on change
 $(document).on('input', '.cost-input', function () {
@@ -469,7 +588,7 @@ $('#saveBudgetBtn').click(function () {
             if (res.success) {
                 $('#addBudgetModal').modal('hide');
                 showToast("Budget added successfully", "success");
-                loadBudgets();
+               // loadBudgets();
             } else {
                 showToast(res.message || "Add budget failed", "danger");
             }

@@ -28,7 +28,7 @@ namespace FinancePortal.ViewModels
         public List<string> AttachmentFiles { get; set; } = new List<string>();
 
         // 🔥 NEW SECTION: Cost Details
-        public TravelExpenseCostViewModel CostDetails { get; set; } = new TravelExpenseCostViewModel();
+        public List<TravelExpenseCostDetailViewModel> CostDetails { get; set; } = new List<TravelExpenseCostDetailViewModel>();
     }
 
 }

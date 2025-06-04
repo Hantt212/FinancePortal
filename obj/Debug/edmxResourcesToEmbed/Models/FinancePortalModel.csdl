@@ -141,7 +141,7 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
     <Property Name="EmployeeID" Type="Int32" Nullable="false" />
     <Property Name="EmployeeName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -158,7 +158,7 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="CostName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CostName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -169,10 +169,10 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="CostID" Type="Int32" Nullable="false" />
     <Property Name="BudgetID" Type="Int32" Nullable="false" />
-    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <Property Name="IsShown" Type="Boolean" />
     <NavigationProperty Name="TravelExpenseBudget" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseBudget" />
     <NavigationProperty Name="TravelExpenseCost" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseCost" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseCost" />
     <NavigationProperty Name="TravelExpenseCostDetails" Relationship="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseCostDetail" />
@@ -181,9 +181,10 @@
     <Key>
       <PropertyRef Name="ID" />
     </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
     <Property Name="CostBudgetID" Type="Int32" Nullable="false" />
+    <Property Name="CostAmount" Type="Int32" Nullable="false" />
     <Property Name="BudgetAmountAtSubmit" Type="Int64" Nullable="false" />
     <Property Name="BudgetUsedAtSubmit" Type="Int64" Nullable="false" />
     <Property Name="BudgetRemainingAtSubmit" Type="Int64" Nullable="false" />

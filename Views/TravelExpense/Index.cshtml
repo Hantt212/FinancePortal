@@ -124,34 +124,6 @@
                                 <div class="card mb-4 w-100">
                                     <h5 class="card-header font-weight-bold" style="background: #9ddef2;">Cost Details</h5>
                                     <div class="card-body" id="costCard">
-                                        @*<div class="form-group">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label class="d-block">Air Ticket ($)</label>
-                                                    <input type="number" class="form-control" id="CostHotel" placeholder="Amount ($)" value="0" />
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="d-block">Budget Type</label>
-                                                    <select class="form-control" id="CustomCostType">
-                                                        <option value="taxi">Taxi</option>
-                                                        <option value="parking">Parking</option>
-                                                        <option value="wifi">Wi-Fi</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Hotel ($)</label>
-                                            <input type="number" id="CostHotel" class="form-control cost-input" value="0" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Meal ($)</label>
-                                            <input type="number" id="CostMeal" class="form-control cost-input" value="0" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Other ($)</label>
-                                            <input type="number" id="CostOther" class="form-control cost-input" value="0" />
-                                        </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -396,12 +368,7 @@ else
         window.preloadedEmployees = [];
         window.preloadedApprover = null;
         window.preloadedBudgetID = null;
-        window.preloadedCostDetails = {
-            costAir: 0,
-            costHotel: 0,
-            costMeal: 0,
-            costOther: 0
-        };
+        window.preloadedCostDetails = [];
         window.preloadedExchangeRate = 25000;
     </script>
 }
