@@ -496,14 +496,48 @@ function loadCostBudget() {
             card.append(`
             <div class="form-group">
                 <div class="row">
-                    <label class="d-block">${key}($)</label>
-                    <div class="col-md-6">
-                        <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                   
+                    <div class="col-md-2 ">
+                        <div class="d-flex justify-content-between">
+                          <div class="input-group">
+                              <button class="input-group-prepend btn btn-info" style="width: 50%;text-align: left" type="button">${key}</button>
+                              <input type="number" class="form-control cost-input w-30" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                              <span class="input-group-text">($)</span>
+                          </div>
+                        </div>
+                        
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <select class="form-control type-budget" id="BudgetType_${index}">
                             ${options}
                         </select>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="d-flex justify-content-between">
+                        <div class="input-group mb-3" style="width: 32%;">
+                          <div class="input-group-prepend">
+                            <button class="btn btn-primary" type="button">Amount</button>
+                          </div>
+                          <input type="text" class="form-control" value="0">
+                          <span class="input-group-text">($)</span>
+                        </div>
+
+                        <div class="input-group mb-3" style="width: 32%;">
+                          <div class="input-group-prepend">
+                            <button class="btn btn-secondary" type="button">Used</button>
+                          </div>
+                          <input type="text" class="form-control" value="0">
+                          <span class="input-group-text">($)</span>
+                        </div>
+
+                        <div class="input-group mb-3" style="width: 32%;">
+                          <div class="input-group-prepend">
+                            <button class="btn btn-warning" type="button">Remain</button>
+                          </div>
+                          <input type="text" class="form-control" value="0">
+                          <span class="input-group-text">($)</span>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>
