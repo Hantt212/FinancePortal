@@ -118,24 +118,7 @@ namespace FinancePortal.Dao
                 // 5. Add cost details
                 foreach (var costDetail in model.CostDetails)
                 {
-                    db.TravelExpenseCostDetails.Add(new TravelExpenseCostDetail
-                    {
-                        TravelExpenseID = travel.ID,
-                        CostBudgetID = costDetail.CostBudgetID,
-                        CostAmount = costDetail.CostAmount,
-                        IsShown = true
-                    });
-                }
-
-                db.SaveChanges(); // Save cost details before budget update
-
-                // 6. Update budget usage
-                var costDetailList = db.TravelExpenseCostDetails
-                    .Where(cd => cd.TravelExpenseID == travel.ID)
-                    .ToList();
-
-                foreach (var costDetail in costDetailList)
-                {
+                    // Update budget 
                     var budgetInfo = GetBudgetInfoByCostBudget(costDetail.CostBudgetID);
                     var budget = db.TravelExpenseBudgets.Find(budgetInfo.BudgetID);
 
@@ -146,6 +129,19 @@ namespace FinancePortal.Dao
                         budget.UpdatedBy = username;
                         budget.UpdatedDate = DateTime.Now;
                     }
+
+                    // Add cost detail
+                    db.TravelExpenseCostDetails.Add(new TravelExpenseCostDetail
+                    {
+                        TravelExpenseID = travel.ID,
+                        CostBudgetID = costDetail.CostBudgetID,
+                        CostAmount = costDetail.CostAmount,
+                        BudgetAmountAtSubmit = budget.BudgetAmount,
+                        BudgetRemainingAtSubmit = budget.BudgetRemaining,
+                        BudgetUsedAtSubmit = budget.BudgetUsed,
+                        IsShown = true
+                    });
+                    db.SaveChanges();
                 }
 
                 // 7. Add attachment files
@@ -195,9 +191,6 @@ namespace FinancePortal.Dao
                 if (travel == null)
                     throw new Exception("Travel Expense request not found.");
 
-                // ❗ Block editing if already FC approved (or you can allow only partial fields)
-                //if (travel.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
-                //    throw new Exception("Cannot update. This travel expense is already fully approved.");
 
                 // 2. Validate Budget
                 var newCostDetails = model.CostDetails;
@@ -206,7 +199,6 @@ namespace FinancePortal.Dao
 
                 // 2. Save old estimated cost for budget adjustment
                 long oldEstimatedCost = travel.EstimatedCost;
-                // Incoming items from model
                
                 // 4. Update Cost Details
                 // Existing records from DB
@@ -230,23 +222,28 @@ namespace FinancePortal.Dao
 
                         // Update cost detail
                         currentCostDetail.CostAmount = inputItem.CostAmount;
+                        currentCostDetail.BudgetAmountAtSubmit = budget.BudgetAmount;
+                        currentCostDetail.BudgetRemainingAtSubmit = budget.BudgetRemaining;
+                        currentCostDetail.BudgetUsedAtSubmit = budget.BudgetUsed;
                     }
                     else
                     {
+                        // Update budget
+                        budget.BudgetRemaining -= inputItem.CostAmount;
+                        budget.BudgetUsed += inputItem.CostAmount;
+
                         // Add new cost detail
                         var newCostDetail = new TravelExpenseCostDetail
                         {
                             TravelExpenseID = travel.ID,
                             CostBudgetID = inputItem.CostBudgetID,
                             CostAmount = inputItem.CostAmount,
+                            BudgetAmountAtSubmit = budget.BudgetAmount,
+                            BudgetRemainingAtSubmit = budget.BudgetRemaining,
+                            BudgetUsedAtSubmit = budget.BudgetUsed,
                             IsShown = true
                         };
                         db.TravelExpenseCostDetails.Add(newCostDetail);
-
-                        // Update budget
-                        budget.BudgetRemaining -= inputItem.CostAmount;
-                        budget.BudgetUsed += inputItem.CostAmount;
-
                     }
                     budget.UpdatedBy = username;
                     budget.UpdatedDate = DateTime.Now;
@@ -262,14 +259,20 @@ namespace FinancePortal.Dao
                 foreach (var item in itemsToRemove)
                 {
                     TravelExpenseCostDetail detail = db.TravelExpenseCostDetails.Find(item.ID);
-                    detail.IsShown = false;
-
+                    
+                    // Update Budget
                     var budgetInfo = GetBudgetInfoByCostBudget(detail.CostBudgetID);
                     var budget = db.TravelExpenseBudgets.Find(budgetInfo.BudgetID);
                     budget.BudgetRemaining += detail.CostAmount;
                     budget.BudgetUsed -= detail.CostAmount;
                     budget.UpdatedBy = username;
                     budget.UpdatedDate = DateTime.Now;
+
+                    // Update Cost detail
+                    detail.IsShown = false;
+                    detail.BudgetAmountAtSubmit = budget.BudgetAmount;
+                    detail.BudgetRemainingAtSubmit = budget.BudgetRemaining;
+                    detail.BudgetUsedAtSubmit = budget.BudgetUsed;
 
                     db.SaveChanges();
                 }
