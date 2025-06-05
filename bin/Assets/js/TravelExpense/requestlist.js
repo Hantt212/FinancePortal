@@ -257,7 +257,7 @@ function showFCSection(fc, statusID) {
     let statusLabel = LabelStatusEnum.NotAssigned;
 
     if (statusID === StatusEnum.WaitingFC) {
-        statusLabel = LabelStatusEnum.Pending;
+        statusLabel = LabelStatusEnum.Waiting;
     } else if (statusID === StatusEnum.RejectedFC) {
         statusLabel = LabelStatusEnum.Rejected;
     } else if (statusID === StatusEnum.TARApproved) {
@@ -279,9 +279,9 @@ function setApprovalStatusBadge(selector, status) {
             label = 'Approved';
             backgroundColor = '#28a745';
             break;
-        case 'Pending':
+        case 'Waiting':
             badgeClass = 'badge-warning';
-            label = 'Pending';
+            label = 'Waiting';
             backgroundColor = '#ffc107';
             break;
         case 'Rejected':

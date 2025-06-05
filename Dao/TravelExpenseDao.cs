@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Services.Description;
 
 namespace FinancePortal.Dao
 {
@@ -655,6 +656,29 @@ namespace FinancePortal.Dao
                 return budget;
             }
         }
+
+        public static List<CostBudgetInfoViewModel> GetBudgetDetailByCostBudget(List<int> costBudgetIDList)
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var list = (from cb in db.TravelExpenseCostBudgets
+                              join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                              where cb.IsShown == true
+                                    && costBudgetIDList.Contains(cb.ID)
+                              select new CostBudgetInfoViewModel
+                              {
+                                  ID = cb.ID,
+                                  BudgetID = b.ID,
+                                  BudgetName = b.BudgetName,
+                                  BudgetAmount = b.BudgetAmount,
+                                  BudgetRemaining = b.BudgetRemaining,
+                                  BudgetUsed = b.BudgetUsed
+                              }).ToList();
+
+                return list;
+            }
+        }
+
 
         #endregion
 

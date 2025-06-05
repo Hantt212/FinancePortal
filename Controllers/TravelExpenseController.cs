@@ -223,6 +223,16 @@ namespace FinancePortal.Controllers
             return Json(new { success = true, data = result }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetBudgetDetailByCostBudget(List<int> costBudgetIDList)
+        {
+            var result = TravelExpenseDao.GetBudgetDetailByCostBudget(costBudgetIDList);
+            if (result == null)
+                return Json(new { success = false, message = "Budget not found." }, JsonRequestBehavior.AllowGet);
+
+            return Json(new { success = true, data = result }, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
         #region Request List

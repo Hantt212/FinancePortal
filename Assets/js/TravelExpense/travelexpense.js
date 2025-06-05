@@ -485,83 +485,129 @@ function loadCostBudget() {
         });
 
         const card = $('#costCard');
-        card.empty(); // Clear previous content if needed
+        card.empty();
 
         let index = 0;
+
         costGroup.forEach((costDetailList, key) => {
-            const options = costDetailList.map(detail => `
-            <option value="${detail.ID}">${detail.BudgetName}</option>
-        `).join("");
+            let options = '';
+
+            costDetailList.forEach(detail => {
+                options += `<option value="${detail.ID}">${detail.BudgetName}</option>`;
+            });
 
             card.append(`
-            <div class="form-group">
-                <div class="row">
-                   
-                    <div class="col-md-2 ">
-                        <div class="d-flex justify-content-between">
-                          <div class="input-group">
-                              <button class="input-group-prepend btn btn-info" style="width: 50%;text-align: left" type="button">${key}</button>
-                              <input type="number" class="form-control cost-input w-30" id="CostType_${index}" placeholder="Amount ($)" value="0" />
-                              <span class="input-group-text">($)</span>
-                          </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <button class="input-group-prepend btn btn-info" style="width: 50%; text-align: left;" type="button">${key}</button>
+                                <input type="number" class="form-control cost-input w-30" id="CostType_${index}" positionRow="${index}" placeholder="Amount ($)" value="0" />
+                                <span class="input-group-text">($)</span>
+                            </div>
                         </div>
-                        
-                    </div>
-                    <div class="col-md-4">
-                        <select class="form-control type-budget" id="BudgetType_${index}">
-                            ${options}
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="d-flex justify-content-between">
-                        <div class="input-group mb-3" style="width: 32%;">
-                          <div class="input-group-prepend">
-                            <button class="btn btn-primary" type="button">Amount</button>
-                          </div>
-                          <input type="text" class="form-control" value="0">
-                          <span class="input-group-text">($)</span>
+                        <div class="col-md-4">
+                            <select class="form-control type-budget" positionRow="${index}" id="BudgetType_${index}">
+                                ${options}
+                            </select>
                         </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div class="input-group" style="width: 32%;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary" type="button">Amount</button>
+                                    </div>
+                                    <input type="text" class="form-control" value="0" id="amount${index}">
+                                    <span class="input-group-text">($)</span>
+                                </div>
 
-                        <div class="input-group mb-3" style="width: 32%;">
-                          <div class="input-group-prepend">
-                            <button class="btn btn-secondary" type="button">Used</button>
-                          </div>
-                          <input type="text" class="form-control" value="0">
-                          <span class="input-group-text">($)</span>
-                        </div>
+                                <div class="input-group" style="width: 32%;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-secondary" type="button">Used</button>
+                                    </div>
+                                    <input type="text" class="form-control" value="0" id="used${index}">
+                                    <span class="input-group-text">($)</span>
+                                </div>
 
-                        <div class="input-group mb-3" style="width: 32%;">
-                          <div class="input-group-prepend">
-                            <button class="btn btn-warning" type="button">Remain</button>
-                          </div>
-                          <input type="text" class="form-control" value="0">
-                          <span class="input-group-text">($)</span>
+                                <div class="input-group" style="width: 32%;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-warning" type="button">Remain</button>
+                                    </div>
+                                    <input type="text" class="form-control" value="0" id="remain${index}">
+                                    <span class="input-group-text">($)</span>
+                                </div>
+                            </div>
+
                         </div>
-                      </div>
                     </div>
                 </div>
-            </div>
-        `);
+            `);
+
             index++;
         });
 
         // Load preloaded values
-        var costDetails = window.preloadedCostDetails;
+        const costDetails = window.preloadedCostDetails || [];
         costDetails.forEach(detail => {
             $('.type-budget').each(function () {
                 const $select = $(this);
                 $select.find('option').each(function () {
                     if (this.value == detail.CostBudgetID) {
                         $(this).prop('selected', true);
-                        // Traverse to the sibling input in the same .row
                         const $input = $select.closest('.row').find('input[type="number"]');
                         $input.val(detail.CostAmount);
                     }
                 });
             });
         });
-    });
 
+        //row selected
+        var costBudgetIDList = [];
+        var rowList = [];
+
+        $('select option:selected').each(function () {
+            const selectElement = $(this).parent('select');
+            const rowSelected = selectElement.attr('positionRow');
+            const costBudgetID = $(this).val();
+
+            costBudgetIDList.push(+costBudgetID);
+
+            rowList.push({
+                costBudgetID: +costBudgetID,
+                rowSelected: rowSelected
+            });
+        });
+
+        // Update corresponding amount, used, remain fields
+        $.ajax({
+            url: '/TravelExpense/GetBudgetDetailByCostBudget',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ costBudgetIDList: costBudgetIDList }),
+            success: function (res) {
+                if (res.success) {
+                    var result = res.data;
+                    result.forEach(item => {
+                        // Find the matching row by costBudgetID
+                        var row = rowList.find(r => r.costBudgetID === item.ID);
+
+                        if (row) {
+                            $('#amount' + row.rowSelected).val(item.BudgetAmount || 0);
+                            $('#used' + row.rowSelected).val(item.BudgetUsed || 0);
+                            $('#remain' + row.rowSelected).val(item.BudgetRemaining || 0);
+                        }
+                    });
+                } else {
+                    showToast(res.message || "Get budget information failed.", "danger");
+                }
+            },
+            error: function () {
+                showToast("Error retrieving budget info.", "danger");
+            }
+        });
+
+        
+    });
 }
 
 
