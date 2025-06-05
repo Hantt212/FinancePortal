@@ -74,7 +74,7 @@ $(document).ready(function () {
         }
 
         // 🔹 Update Estimated Cost after preloading Cost Details
-        updateEstimatedCost();
+        //  updateEstimatedCost();
     }
     else {
         // 🆕 Only if it's a new TravelExpense, reset costs to 0
@@ -501,7 +501,7 @@ function loadCostBudget() {
                     <div class="row">
                         <div class="col-md-2">
                             <div class="input-group">
-                                <button class="input-group-prepend btn btn-info" style="width: 50%; text-align: left;" type="button">${key}</button>
+                                <button class="input-group-prepend btn" style="width: 50%; text-align: left; background:#9ddef2" type="button">${key}</button>
                                 <input type="number" class="form-control cost-input w-30" id="CostType_${index}" positionRow="${index}" placeholder="Amount ($)" value="0" />
                                 <span class="input-group-text">($)</span>
                             </div>
@@ -515,9 +515,9 @@ function loadCostBudget() {
                             <div class="d-flex justify-content-between mb-3">
                                 <div class="input-group" style="width: 32%;">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-primary" type="button">Amount</button>
+                                        <button class="btn btn-secondary" type="button">Amount</button>
                                     </div>
-                                    <input type="text" class="form-control" value="0" id="amount${index}">
+                                    <input type="text" class="form-control" value="0" id="amount${index}" readonly>
                                     <span class="input-group-text">($)</span>
                                 </div>
 
@@ -531,7 +531,7 @@ function loadCostBudget() {
 
                                 <div class="input-group" style="width: 32%;">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-warning" type="button">Remain</button>
+                                        <button class="btn btn-secondary" type="button">Remain</button>
                                     </div>
                                     <input type="text" class="form-control" value="0" id="remain${index}">
                                     <span class="input-group-text">($)</span>
@@ -724,24 +724,24 @@ $('#BudgetName').on('change', function () {
     $('#BudgetRemaining').val(formatNumber(selected.data('remaining') || 0));
 });
 
-function resetTravelExpenseForm() {
-    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
-    $('#TripPurpose').val('');
-    $('#TripDays').val('');
-    $('#EstimatedCost').val('');
-    $('#ExchangeRate').val('25000');
-    $('#BudgetName').val('');
-    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
-    $('.cost-input').val(0);
+//function resetTravelExpenseForm() {
+//    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
+//    $('#TripPurpose').val('');
+//    $('#TripDays').val('');
+//    $('#EstimatedCost').val('');
+//    $('#ExchangeRate').val('25000');
+//    $('#BudgetName').val('');
+//    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
+//    $('.cost-input').val(0);
 
-    // Clear employee table
-    $('#employeeListTable tbody').empty();
+//    // Clear employee table
+//    $('#employeeListTable tbody').empty();
 
-    // Clear approver
-    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
-    $('#approverSign').val('');
-    $('#approverInfoFields').hide();
-}
+//    // Clear approver
+//    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
+//    $('#approverSign').val('');
+//    $('#approverInfoFields').hide();
+//}
 
 function showToast(message, type = "success") {
     var toastEl = $("#toastMessage");

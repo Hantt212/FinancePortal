@@ -74,7 +74,7 @@ $(document).ready(function () {
         }
 
         // 🔹 Update Estimated Cost after preloading Cost Details
-        updateEstimatedCost();
+        //  updateEstimatedCost();
     }
     else {
         // 🆕 Only if it's a new TravelExpense, reset costs to 0
@@ -563,8 +563,19 @@ function loadCostBudget() {
 
         //row selected
         var costBudgetIDList = [];
+        var rowList = [];
+
         $('select option:selected').each(function () {
-            costBudgetIDList.push(+$(this).val());
+            const selectElement = $(this).parent('select');
+            const rowSelected = selectElement.attr('positionRow');
+            const costBudgetID = $(this).val();
+
+            costBudgetIDList.push(+costBudgetID);
+
+            rowList.push({
+                costBudgetID: +costBudgetID,
+                rowSelected: rowSelected
+            });
         });
 
         // Update corresponding amount, used, remain fields
@@ -577,12 +588,16 @@ function loadCostBudget() {
                 if (res.success) {
                     var result = res.data;
                     result.forEach(item => {
-                        $('#amount' + item.ID).val(item.BudgetAmount || 0);
-                        $('#used' + item.ID).val(item.BudgetUsed || 0);
-                        $('#remain' + item.ID).val(item.BudgetRemaining || 0);
+                        // Find the matching row by costBudgetID
+                        var row = rowList.find(r => r.costBudgetID === item.ID);
+
+                        if (row) {
+                            $('#amount' + row.rowSelected).val(item.BudgetAmount || 0);
+                            $('#used' + row.rowSelected).val(item.BudgetUsed || 0);
+                            $('#remain' + row.rowSelected).val(item.BudgetRemaining || 0);
+                        }
                     });
                 } else {
-                   
                     showToast(res.message || "Get budget information failed.", "danger");
                 }
             },
@@ -590,6 +605,7 @@ function loadCostBudget() {
                 showToast("Error retrieving budget info.", "danger");
             }
         });
+
         
     });
 }
@@ -708,24 +724,24 @@ $('#BudgetName').on('change', function () {
     $('#BudgetRemaining').val(formatNumber(selected.data('remaining') || 0));
 });
 
-function resetTravelExpenseForm() {
-    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
-    $('#TripPurpose').val('');
-    $('#TripDays').val('');
-    $('#EstimatedCost').val('');
-    $('#ExchangeRate').val('25000');
-    $('#BudgetName').val('');
-    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
-    $('.cost-input').val(0);
+//function resetTravelExpenseForm() {
+//    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
+//    $('#TripPurpose').val('');
+//    $('#TripDays').val('');
+//    $('#EstimatedCost').val('');
+//    $('#ExchangeRate').val('25000');
+//    $('#BudgetName').val('');
+//    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
+//    $('.cost-input').val(0);
 
-    // Clear employee table
-    $('#employeeListTable tbody').empty();
+//    // Clear employee table
+//    $('#employeeListTable tbody').empty();
 
-    // Clear approver
-    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
-    $('#approverSign').val('');
-    $('#approverInfoFields').hide();
-}
+//    // Clear approver
+//    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
+//    $('#approverSign').val('');
+//    $('#approverInfoFields').hide();
+//}
 
 function showToast(message, type = "success") {
     var toastEl = $("#toastMessage");
