@@ -258,6 +258,12 @@ namespace FinancePortal.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetAllStatus() { 
+            var list = TravelExpenseDao.GetAllStatus();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public JsonResult GetRequestViewDetails(int id)
         {
             var result = TravelExpenseDao.GetRequestViewById(id);

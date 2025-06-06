@@ -839,6 +839,15 @@ namespace FinancePortal.Dao
             }
         }
 
+        public static List<string> GetAllStatus()
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var list = db.TravelExpenseStatus.Select(item => item.DisplayName).ToList();
+                return list;
+            }
+        }
+
         public static TravelExpenseViewModel GetRequestViewById(int id)
         {
             using (var db = new FinancePortalEntities())

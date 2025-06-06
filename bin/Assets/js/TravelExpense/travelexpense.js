@@ -24,9 +24,6 @@ $(document).ready(function () {
     formatExchangeRate();
 
     // 🔄 Load Budgets
-   // loadBudgets();
-
-    //
     loadCostBudget();
 
     // ⚡ Preload data for Edit mode
@@ -36,27 +33,6 @@ $(document).ready(function () {
             window.preloadedEmployees.forEach(emp => {
                 addEmployeeToTable(emp);
             });
-        }
-
-        // 🔹 Preload Cost Details
-        if (window.preloadedCostDetails) {
-            //var costDetails = window.preloadedCostDetails;
-            //costDetails.forEach(detail => {
-            //    document.querySelectorAll('.type-budget').forEach(select => {
-            //        Array.from(select.options).forEach(option => {
-            //            if (option.value == detail.CostBudgetID) {
-            //                option.selected = true;
-            //                var selectedTag = option.closest('row').find;
-            //                selectedTag.value = detail.CostAmount;
-            //            }
-            //        })
-            //    });
-            //})
-            
-            //$('#CostAir').val(window.preloadedCostDetails.CostAir || 0);
-            //$('#CostHotel').val(window.preloadedCostDetails.CostHotel || 0);
-            //$('#CostMeal').val(window.preloadedCostDetails.CostMeal || 0);
-            //$('#CostOther').val(window.preloadedCostDetails.CostOther || 0);
         }
 
         if (window.preloadedExchangeRate) {
@@ -72,9 +48,7 @@ $(document).ready(function () {
 
             $('#approverInfoFields').slideDown();
         }
-
-        // 🔹 Update Estimated Cost after preloading Cost Details
-        //  updateEstimatedCost();
+        
     }
     else {
         // 🆕 Only if it's a new TravelExpense, reset costs to 0
@@ -111,7 +85,38 @@ $(document).ready(function () {
             showToast("Server error while fetching preload info.", "danger");
         });
     }
+    
 });
+
+// Change budget type
+$(document).on('change', '.type-budget', function () {
+    var selectId = $(this).attr('id');             
+    var rowSelected = $(this).attr('positionrow');
+    var costBudgetID = $(this).val();  
+    
+    var costBudgetIDList = [];
+    costBudgetIDList.push(costBudgetID);
+    // Optional: AJAX request
+    $.ajax({
+        url: '/TravelExpense/GetBudgetDetailByCostBudget',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ costBudgetIDList: costBudgetIDList }),
+        success: function (res) {
+            if (res.success) {
+                $('#amount' + rowSelected).val(res.data[0].BudgetAmount || 0);
+                $('#used' + rowSelected).val(res.data[0].BudgetUsed || 0);
+                $('#remain' + rowSelected).val(res.data[0].BudgetRemaining || 0);
+            } else {
+                showToast(res.message || "Get budget information failed.", "danger");
+            }
+        },
+        error: function () {
+            showToast("Error retrieving budget info.", "danger");
+        }
+    });
+});
+
 
 $('#confirmAddEmployeeBtn').click(function () {
     if (!selectedEmployee) return;
@@ -447,30 +452,6 @@ function updateEstimatedCost() {
     // Display with dot separator
     $('#EstimatedCost').val(formatNumber(estimatedVND));
 }
-
-//function loadBudgets() {
-//    $.get('/TravelExpense/GetBudgets', function (budgets) {
-//        const dropdown = $('#BudgetName');
-//        dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
-
-//        budgets.forEach(b => {
-//            dropdown.append(`
-//                <option 
-//                    value="${b.ID}" 
-//                    data-amount="${b.BudgetAmount}" 
-//                    data-used="${b.BudgetUsed}" 
-//                    data-remaining="${b.BudgetRemaining}">
-//                    ${b.BudgetName}
-//                </option>`);
-//        });
-
-//        if (window.isEdit && window.preloadedBudgetID) {
-//            $('#BudgetName').val(window.preloadedBudgetID);
-//            $('#BudgetName').trigger('change');
-//        }
-//    });
-//}
-
 function loadCostBudget() {
     $.get('/TravelExpense/GetCostBudgetList', function (list) {
         const costGroup = new Map();
@@ -501,7 +482,7 @@ function loadCostBudget() {
                     <div class="row">
                         <div class="col-md-2">
                             <div class="input-group">
-                                <button class="input-group-prepend btn btn-info" style="width: 50%; text-align: left;" type="button">${key}</button>
+                                <button class="input-group-prepend btn" style="width: 50%; text-align: left; background:#9ddef2" type="button">${key}</button>
                                 <input type="number" class="form-control cost-input w-30" id="CostType_${index}" positionRow="${index}" placeholder="Amount ($)" value="0" />
                                 <span class="input-group-text">($)</span>
                             </div>
@@ -515,25 +496,25 @@ function loadCostBudget() {
                             <div class="d-flex justify-content-between mb-3">
                                 <div class="input-group" style="width: 32%;">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-primary" type="button">Amount</button>
+                                        <button class="btn btn-secondary" type="button">Amount</button>
                                     </div>
-                                    <input type="text" class="form-control" value="0" id="amount${index}">
+                                    <input type="text" class="form-control" value="0" id="amount${index}" readonly>
                                     <span class="input-group-text">($)</span>
                                 </div>
 
                                 <div class="input-group" style="width: 32%;">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-secondary" type="button">Used</button>
+                                        <button class="btn btn-warning" type="button">Used</button>
                                     </div>
-                                    <input type="text" class="form-control" value="0" id="used${index}">
+                                    <input type="text" class="form-control" value="0" id="used${index}" readonly>
                                     <span class="input-group-text">($)</span>
                                 </div>
 
                                 <div class="input-group" style="width: 32%;">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-warning" type="button">Remain</button>
+                                        <button class="btn btn-success" type="button">Remain</button>
                                     </div>
-                                    <input type="text" class="form-control" value="0" id="remain${index}">
+                                    <input type="text" class="form-control" value="0" id="remain${index}" readonly>
                                     <span class="input-group-text">($)</span>
                                 </div>
                             </div>

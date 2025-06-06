@@ -45,7 +45,16 @@
                 <th>Trip Purpose</th>
                 <th>Request Date</th>
                 <th>Estimated Cost (VND)</th>
-                <th>Status</th>
+                <th class="d-flex flex-row">
+                    <div class="p-2">Status</div>
+                    <div class="p-2">
+                        <select class="form-select" id="statusFilter">
+                            @*<option value="">All</option>
+                            <option value="Waiting for GL's Approval">Waiting for GL's Approval</option>
+                            <option value="Waiting for HOD's Approval">Waiting for HOD's Approval</option>*@
+                        </select>
+                    </div>
+                </th>
                 <th>Action</th>
             </tr>
         </thead>

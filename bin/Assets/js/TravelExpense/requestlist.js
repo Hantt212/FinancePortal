@@ -43,7 +43,23 @@ $(document).on('click', '.btn-view-request', function () {
     loadRequestDetails(requestId);
 });
 
+
+$(document).on('change', '#statusFilter', function () {
+    var table = $('#requestListTbl').DataTable();
+
+    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+    table.column(4).search(val ? '^' + val + '$' : '', true, false).draw();
+});
+
+
 function loadUserRequests() {
+
+    $.get('/TravelExpense/GetAllStatus', function (data) {
+        if (data) {
+            console.log(data)
+        }
+    });
+
     $.get('/TravelExpense/GetUserRequests', function (data) {
         const table = $('#requestListTbl').DataTable({
             data: data,
@@ -73,15 +89,16 @@ function loadUserRequests() {
                     }
                 },
                 {
-                    data: null,
-                    render: function (data) {
-                        const bgColor = data.ColorCode || '#6c757d';
-                        return `
-                            <span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">
-                                ${data.DisplayName || 'Unknown'}
-                            </span>`;
+                    data: 'DisplayName', // use DisplayName directly for filtering
+                    render: function (data, type, row) {
+                        if (type === 'display') {
+                            const bgColor = row.ColorCode || '#6c757d';
+                            return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
+                        }
+                        return data; // raw text used for filtering/sorting
                     }
                 },
+
                 {
                     data: null,
                     title: "Actions",
