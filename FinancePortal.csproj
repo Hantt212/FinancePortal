@@ -296,6 +296,7 @@
     <Content Include="Assets\images\The_Grand_1.jpg" />
     <Content Include="Assets\images\The_Grand_2.jpg" />
     <Content Include="Assets\images\The_Grand_3.jpg" />
+    <Content Include="Assets\images\user.png" />
     <Content Include="Assets\images\voucher.png" />
     <Content Include="Assets\js\Common\bootstrap.min.js" />
     <Content Include="Assets\js\Common\buttons.html5.min.js" />
@@ -518,7 +519,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Assets\images\AnnualReview\" />
     <Folder Include="Upload\" />
   </ItemGroup>
   <ItemGroup>

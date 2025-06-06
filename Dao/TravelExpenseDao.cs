@@ -33,10 +33,19 @@ namespace FinancePortal.Dao
                 var result = context.Database.SqlQuery<EmployeeViewModel>(
                    "EXEC spSelectEmployeeInfo @EmployeeID",
                    new SqlParameter("@EmployeeID", code)).FirstOrDefault();
+                if (result == null) return null;
 
-                result.EmployeeImage = String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(result.ImagePath));
+                if (result.ImagePath != null)
+                {
+                    result.EmployeeImage = String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(result.ImagePath));
+                }
+                else
+                {
+                    result.EmployeeImage = "/Assets/images/user.png";
+                }
                 return result;
             }
+            
         }
 
         public static bool SaveTravelExpense(TravelExpenseSubmitModel model, List<string> newAttachFiles)

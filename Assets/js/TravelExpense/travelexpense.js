@@ -120,8 +120,17 @@ $(document).on('change', '.type-budget', function () {
 
 $('#confirmAddEmployeeBtn').click(function () {
     if (!selectedEmployee) return;
+    //Check code duplicate, don't insert
+    var currEmpList = [];
+    $('#employeeListTable tbody tr').each(function () {
+        var firstTd = $(this).find('td:first');
+        currEmpList.push(firstTd.text());
+    });
 
-    var rowHtml = `
+    if (currEmpList.includes(selectedEmployee.Code) > 0) {
+        showToast("Employee is duplicated in list !", "danger");
+    } else {
+        var rowHtml = `
         <tr>
             <td>${selectedEmployee.Code}</td>
             <td>${selectedEmployee.Name}</td>
@@ -136,26 +145,16 @@ $('#confirmAddEmployeeBtn').click(function () {
         </tr>
     `;
 
-    $('#employeeListTable tbody').append(rowHtml);
-    $('#addEmployeeModal').modal('hide');
-    //$('#employeeCodeInput').val('');
-    //$('#employeeCardContainer').hide();
-    selectedEmployee = null;
-
-    // ✅ Show toast
-    showToast("Employee added to the list successfully!", "success");
-});
-
-$(document).ready(function () {
-    $('#addEmployeeModal').on('hidden.bs.modal', function () {
-        // Example action: Clear employee form fields when modal closes
+        $('#employeeListTable tbody').append(rowHtml);
+        $('#closeEmployeeModalBtn').click();
         $('#employeeCodeInput').val('');
         $('#employeeCardContainer').hide();
-        $('#empImage').attr('src', '');
-        $('#empCode, #empName, #empPosition, #empDepartment, #empDivision').text('');
+        selectedEmployee = null;
 
-        console.log('Add Employee Modal closed and reset');
-    });
+        // ✅ Show toast
+        showToast("Employee added to the list successfully!", "success");
+    }
+    
 });
 
 $(document).on('click', '.remove-employee', function () {
@@ -196,7 +195,7 @@ var selectedEmployee = null;
 
 $('#employeeCodeInput').on('input', function () {
     const code = $(this).val().trim();
-
+    
     if (!code || code.length < 5) {
         $('#employeeCardContainer').hide();       
         selectedEmployee = null;       

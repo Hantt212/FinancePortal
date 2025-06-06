@@ -120,8 +120,17 @@ $(document).on('change', '.type-budget', function () {
 
 $('#confirmAddEmployeeBtn').click(function () {
     if (!selectedEmployee) return;
+    //Check code duplicate, don't insert
+    var currEmpList = [];
+    $('#employeeListTable tbody tr').each(function () {
+        var firstTd = $(this).find('td:first');
+        currEmpList.push(firstTd.text());
+    });
 
-    var rowHtml = `
+    if (currEmpList.includes(selectedEmployee.Code) > 0) {
+        showToast("Employee is duplicated in list !", "danger");
+    } else {
+        var rowHtml = `
         <tr>
             <td>${selectedEmployee.Code}</td>
             <td>${selectedEmployee.Name}</td>
@@ -136,14 +145,16 @@ $('#confirmAddEmployeeBtn').click(function () {
         </tr>
     `;
 
-    $('#employeeListTable tbody').append(rowHtml);
-    $('#addEmployeeModal').modal('hide');
-    //$('#employeeCodeInput').val('');
-    //$('#employeeCardContainer').hide();
-    selectedEmployee = null;
+        $('#employeeListTable tbody').append(rowHtml);
+        $('#closeEmployeeModalBtn').click();
+        $('#employeeCodeInput').val('');
+        $('#employeeCardContainer').hide();
+        selectedEmployee = null;
 
-    // ✅ Show toast
-    showToast("Employee added to the list successfully!", "success");
+        // ✅ Show toast
+        showToast("Employee added to the list successfully!", "success");
+    }
+    
 });
 
 $(document).on('click', '.remove-employee', function () {
@@ -184,7 +195,7 @@ var selectedEmployee = null;
 
 $('#employeeCodeInput').on('input', function () {
     const code = $(this).val().trim();
-
+    
     if (!code || code.length < 5) {
         $('#employeeCardContainer').hide();       
         selectedEmployee = null;       
@@ -658,32 +669,32 @@ function addEmployeeToTable(emp) {
 
 $('#BusinessDateFrom, #BusinessDateTo').on('change', updateTripDays);
 
-$('#saveBudgetBtn').click(function () {
-    const name = $('#newBudgetName').val().trim();
-    const amountRaw = $('#newBudgetAmount').val().replace(/\./g, '').replace(/,/g, '');
-    const amount = parseFloat(amountRaw) || 0;
+//$('#saveBudgetBtn').click(function () {
+//    const name = $('#newBudgetName').val().trim();
+//    const amountRaw = $('#newBudgetAmount').val().replace(/\./g, '').replace(/,/g, '');
+//    const amount = parseFloat(amountRaw) || 0;
 
-    if (!name || amount <= 0) {
-        showToast("Please enter valid budget name and amount.", "warning");
-        return;
-    }
+//    if (!name || amount <= 0) {
+//        showToast("Please enter valid budget name and amount.", "warning");
+//        return;
+//    }
 
-    $.ajax({
-        url: '/TravelExpense/AddBudget',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ BudgetName: name, BudgetAmount: amount }),
-        success: function (res) {
-            if (res.success) {
-                $('#addBudgetModal').modal('hide');
-                showToast("Budget added successfully", "success");
-               // loadBudgets();
-            } else {
-                showToast(res.message || "Add budget failed", "danger");
-            }
-        }
-    });
-});
+//    $.ajax({
+//        url: '/TravelExpense/AddBudget',
+//        type: 'POST',
+//        contentType: 'application/json',
+//        data: JSON.stringify({ BudgetName: name, BudgetAmount: amount }),
+//        success: function (res) {
+//            if (res.success) {
+//                $('#addBudgetModal').modal('hide');
+//                showToast("Budget added successfully", "success");
+//               // loadBudgets();
+//            } else {
+//                showToast(res.message || "Add budget failed", "danger");
+//            }
+//        }
+//    });
+//});
 
 $('#newBudgetAmount').on('input', function () {
     let raw = $(this).val().replace(/\./g, '').replace(/,/g, '');
@@ -691,10 +702,10 @@ $('#newBudgetAmount').on('input', function () {
     $(this).val(num.toLocaleString('de-DE')); // Use dot for thousands
 });
 
-$('#addBudgetModal').on('hidden.bs.modal', function () {
-    $('#newBudgetName').val('');
-    $('#newBudgetAmount').val('');
-});
+//$('#addBudgetModal').on('hidden.bs.modal', function () {
+//    $('#newBudgetName').val('');
+//    $('#newBudgetAmount').val('');
+//});
 
 $('#BudgetName').on('change', function () {
     const selected = $(this).find('option:selected');
