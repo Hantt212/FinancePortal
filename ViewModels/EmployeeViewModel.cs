@@ -13,5 +13,7 @@ namespace FinancePortal.ViewModels
         public string Division { get; set; }
         public string Department { get; set; }
         public string Email { get; set; }
+        public byte[] ImagePath { get; set; }
+        public string EmployeeImage { get; set; }
     }
 }

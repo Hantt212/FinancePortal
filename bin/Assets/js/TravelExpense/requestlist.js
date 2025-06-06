@@ -56,7 +56,11 @@ function loadUserRequests() {
 
     $.get('/TravelExpense/GetAllStatus', function (data) {
         if (data) {
-            console.log(data)
+            var statusItem = $("#statusFilter");
+            statusItem.append(`<option value="">All</option>`);
+            data.forEach(status => {
+                statusItem.append(`<option value ="${status}">${status}</option>`)
+            })
         }
     });
 
@@ -68,8 +72,9 @@ function loadUserRequests() {
             dom: 'Bfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             columns: [
+                { data: 'Department' },
                 { data: 'TarNo' },
-                { data: 'TripPurpose' },
+              /*  { data: 'TripPurpose' },*/
                 {
                     data: 'RequestDate',
                     render: function (data) {

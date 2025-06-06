@@ -87,6 +87,7 @@
     <EntitySetMapping Name="TravelExpenseCashInAdvances">
       <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCashInAdvance">
         <MappingFragment StoreEntitySet="TravelExpenseCashInAdvance">
+          <ScalarProperty Name="test" ColumnName="test" />
           <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
           <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
           <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
@@ -164,6 +165,7 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="FinancePortalModel.User">
         <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="Department" ColumnName="Department" />
           <ScalarProperty Name="IsShown" ColumnName="IsShown" />
           <ScalarProperty Name="IsWindowsAccount" ColumnName="IsWindowsAccount" />
           <ScalarProperty Name="UserEmailAddress" ColumnName="UserEmailAddress" />

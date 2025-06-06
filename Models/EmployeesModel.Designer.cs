@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\nghiad.tran\source\repos\FinancePortal\Models\EmployeesModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\Models\EmployeesModel.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

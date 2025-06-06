@@ -30,6 +30,7 @@ namespace FinancePortal.Models
         public string UserEmailAddress { get; set; }
         public bool IsWindowsAccount { get; set; }
         public bool IsShown { get; set; }
+        public string Department { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserRole> UserRoles { get; set; }

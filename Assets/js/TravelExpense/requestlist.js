@@ -72,8 +72,9 @@ function loadUserRequests() {
             dom: 'Bfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             columns: [
+                { data: 'Department' },
                 { data: 'TarNo' },
-                { data: 'TripPurpose' },
+              /*  { data: 'TripPurpose' },*/
                 {
                     data: 'RequestDate',
                     render: function (data) {

@@ -138,8 +138,8 @@ $('#confirmAddEmployeeBtn').click(function () {
 
     $('#employeeListTable tbody').append(rowHtml);
     $('#addEmployeeModal').modal('hide');
-    $('#employeeCodeInput').val('');
-    $('#employeeCardContainer').hide();
+    //$('#employeeCodeInput').val('');
+    //$('#employeeCardContainer').hide();
     selectedEmployee = null;
 
     // ✅ Show toast
@@ -198,13 +198,12 @@ $('#employeeCodeInput').on('input', function () {
             if (res.success) {
                 selectedEmployee = res.data;
 
-                $('#empImage').attr('src', res.data.ImageUrl);
+                $('#empImage').attr('src', res.data.EmployeeImage);
                 $('#empName').text(res.data.Name);
                 $('#empCode').text(res.data.Code);
                 $('#empPosition').text(res.data.Position);
                 $('#empDivision').text(res.data.Division);
                 $('#empDepartment').text(res.data.Department);
-
                 $('#employeeCardContainer').show();
                 showToast("Employee found: " + res.data.Name, "success");                
             } else {

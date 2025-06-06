@@ -98,6 +98,7 @@
           <Property Name="ReturnedDate" Type="datetime" Nullable="false" />
           <Property Name="BeneficialName" Type="nvarchar" MaxLength="150" />
           <Property Name="BankBranch" Type="nvarchar" MaxLength="250" />
+          <Property Name="test" Type="nchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="TravelExpenseCost">
           <Key>
@@ -161,6 +162,7 @@
           <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EmployeeCode" Type="varchar" MaxLength="50" />
           <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Department" Type="nvarchar" MaxLength="100" />
           <Property Name="CreatedTime" Type="datetime" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="LastLogin" Type="datetime" />
@@ -499,6 +501,7 @@
           <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="test" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="TravelExpenseCost">
           <Key>
@@ -577,6 +580,7 @@
           <Property Name="IsWindowsAccount" Type="Boolean" Nullable="false" />
           <Property Name="IsShown" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="User" ToRole="UserRole" />
+          <Property Name="Department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="UserRole">
           <Key>
@@ -795,6 +799,7 @@
           <EntitySetMapping Name="TravelExpenseCashInAdvances">
             <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCashInAdvance">
               <MappingFragment StoreEntitySet="TravelExpenseCashInAdvance">
+                <ScalarProperty Name="test" ColumnName="test" />
                 <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
                 <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
                 <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
@@ -872,6 +877,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="FinancePortalModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="Department" ColumnName="Department" />
                 <ScalarProperty Name="IsShown" ColumnName="IsShown" />
                 <ScalarProperty Name="IsWindowsAccount" ColumnName="IsWindowsAccount" />
                 <ScalarProperty Name="UserEmailAddress" ColumnName="UserEmailAddress" />

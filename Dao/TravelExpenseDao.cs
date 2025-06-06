@@ -30,20 +30,11 @@ namespace FinancePortal.Dao
 
             using (var context = new AnnualEmployeeEntities())
             {
-                var result = (from e in context.Employees
-                              join d in context.Divisions on e.DivisionID equals d.DivisionID into div
-                              from d in div.DefaultIfEmpty()
-                              where e.EmployeeID == code
-                              select new EmployeeViewModel
-                              {
-                                  Code = e.EmployeeID,
-                                  Name = e.FullName,
-                                  Position = e.Position,
-                                  Department = e.DepartmentName,
-                                  Division = d != null ? d.DivisionName : "(No Division)",
-                                  Email = e.EmailAddress
-                              }).FirstOrDefault();
+                var result = context.Database.SqlQuery<EmployeeViewModel>(
+                   "EXEC spSelectEmployeeInfo @EmployeeID",
+                   new SqlParameter("@EmployeeID", code)).FirstOrDefault();
 
+                result.EmployeeImage = String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(result.ImagePath));
                 return result;
             }
         }
@@ -199,7 +190,7 @@ namespace FinancePortal.Dao
 
                 // 2. Save old estimated cost for budget adjustment
                 long oldEstimatedCost = travel.EstimatedCost;
-               
+
                 // 4. Update Cost Details
                 // Existing records from DB
                 var costDetails = db.TravelExpenseCostDetails
@@ -259,7 +250,7 @@ namespace FinancePortal.Dao
                 foreach (var item in itemsToRemove)
                 {
                     TravelExpenseCostDetail detail = db.TravelExpenseCostDetails.Find(item.ID);
-                    
+
                     // Update Budget
                     var budgetInfo = GetBudgetInfoByCostBudget(detail.CostBudgetID);
                     var budget = db.TravelExpenseBudgets.Find(budgetInfo.BudgetID);
@@ -351,7 +342,7 @@ namespace FinancePortal.Dao
                     requesterApproval.UpdatedDate = DateTime.Now;
                 }
 
-               
+
 
                 //If travel status is Reject, then update as a new travel
                 if (travel.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD
@@ -632,17 +623,17 @@ namespace FinancePortal.Dao
             using (var db = new FinancePortalEntities())
             {
                 var costBudget = (from cb in db.TravelExpenseCostBudgets
-                                           join c in db.TravelExpenseCosts on cb.CostID equals c.ID
-                                           join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
-                                           where cb.IsShown == true
-                                           select new CostBudgetInfoViewModel
-                                           {
-                                               ID = cb.ID,
-                                               CostID = cb.CostID,
-                                               CostName = c.CostName,
-                                               BudgetID = cb.BudgetID,
-                                               BudgetName = b.BudgetName
-                                           }).ToList();
+                                  join c in db.TravelExpenseCosts on cb.CostID equals c.ID
+                                  join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                                  where cb.IsShown == true
+                                  select new CostBudgetInfoViewModel
+                                  {
+                                      ID = cb.ID,
+                                      CostID = cb.CostID,
+                                      CostName = c.CostName,
+                                      BudgetID = cb.BudgetID,
+                                      BudgetName = b.BudgetName
+                                  }).ToList();
                 return costBudget;
             }
         }
@@ -672,18 +663,18 @@ namespace FinancePortal.Dao
             using (var db = new FinancePortalEntities())
             {
                 var list = (from cb in db.TravelExpenseCostBudgets
-                              join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
-                              where cb.IsShown == true
-                                    && costBudgetIDList.Contains(cb.ID)
-                              select new CostBudgetInfoViewModel
-                              {
-                                  ID = cb.ID,
-                                  BudgetID = b.ID,
-                                  BudgetName = b.BudgetName,
-                                  BudgetAmount = b.BudgetAmount,
-                                  BudgetRemaining = b.BudgetRemaining,
-                                  BudgetUsed = b.BudgetUsed
-                              }).ToList();
+                            join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                            where cb.IsShown == true
+                                  && costBudgetIDList.Contains(cb.ID)
+                            select new CostBudgetInfoViewModel
+                            {
+                                ID = cb.ID,
+                                BudgetID = b.ID,
+                                BudgetName = b.BudgetName,
+                                BudgetAmount = b.BudgetAmount,
+                                BudgetRemaining = b.BudgetRemaining,
+                                BudgetUsed = b.BudgetUsed
+                            }).ToList();
 
                 return list;
             }
@@ -787,54 +778,54 @@ namespace FinancePortal.Dao
 
             using (var db = new FinancePortalEntities())
             {
-                //var query = from t in db.TravelExpenses
-                //            join s in db.TravelExpenseStatus on t.StatusID equals s.ID
-                //            where t.IsShown == true
-                //            select new
-                //            {
-                //                t.ID,
-                //                t.TarNo,
-                //                t.TripPurpose,
-                //                t.RequestDate,
-                //                t.EstimatedCost,
-                //                t.CreatedBy,
-                //                s.DisplayName,
-                //                s.ColorCode
-                //            };
 
-                //if (role == RequesterRole)
-                //{
-                //    query = query.Where(t => t.CreatedBy == username);
-                //}
-                //else if (role == HODRole)
-                //{
-                //    query = query.Where(t =>
-                //        db.TravelExpenseApprovals.Any(a =>
-                //            a.TravelExpenseID == t.ID &&
-                //            a.ApprovalStep == (int)ApprovalStep.HOD &&
-                //            a.ApproverID == employeeCode));
-                //}
-                //else if (role == FCRole)
-                //{
-                //    query = query.Where(t =>
-                //        db.TravelExpenseApprovals.Any(a =>
-                //            a.TravelExpenseID == t.ID &&
-                //            a.ApprovalStep == (int)ApprovalStep.FC &&
-                //            a.ApproverID == employeeCode));
-                //}
-                //return query
-                //    .OrderByDescending(t => t.RequestDate)
-                //    .Take(maxItems)
-                //    .ToList<object>();
+                var query = from t in db.TravelExpenses
+                            join s in db.TravelExpenseStatus on t.StatusID equals s.ID
+                            join u in db.Users on t.CreatedBy equals u.UserName
+                            where t.IsShown == true &&
+                                (
+                                    (role == RequesterRole && t.CreatedBy == username) ||
+                                    (role == HODRole && db.TravelExpenseApprovals.Any(a =>
+                                        a.TravelExpenseID == t.ID &&
+                                        a.ApprovalStep == 1 &&
+                                        a.ApproverID == employeeCode)) ||
+                                    (role == FCRole && db.TravelExpenseApprovals.Any(a =>
+                                        a.TravelExpenseID == t.ID &&
+                                        a.ApprovalStep == 3 &&
+                                        a.ApproverID == employeeCode)) ||
+                                    (!new[] { RequesterRole, HODRole, FCRole }.Contains(role))
+                                )
+                            orderby t.RequestDate descending
+                            select new
+                            {
+                                ID = t.ID,
+                                Department = u.Department,
+                                TarNo = t.TarNo,
+                                TripPurpose = t.TripPurpose,
+                                RequestDate = t.RequestDate,
+                                EstimatedCost = t.EstimatedCost,
+                                CreatedBy = t.CreatedBy,
+                                DisplayName = s.DisplayName,
+                                ColorCode = s.ColorCode,
+                                EditMode =
+                                    (role == RequesterRole && (t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD 
+                                    || t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD 
+                                    || t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
+                                    (role == GLRole && t.StatusID < 8) ? 1 : 0 
+                            };
 
-                List<object> result = db.Database.SqlQuery<RequestSummariesByUserResult>(
-                    "EXEC GetRequestSummariesByUser @Role, @Username, @EmployeeCode",
-                    new SqlParameter("@Role", role),
-                    new SqlParameter("@Username", username),
-                    new SqlParameter("@EmployeeCode", employeeCode)
-                ).Take(maxItems)
-                 .ToList<object>();
-                return result;
+                return query.ToList<object>();
+
+
+
+                //List<object> result = db.Database.SqlQuery<RequestSummariesByUserResult>(
+                //    "EXEC GetRequestSummariesByUser @Role, @Username, @EmployeeCode",
+                //    new SqlParameter("@Role", role),
+                //    new SqlParameter("@Username", username),
+                //    new SqlParameter("@EmployeeCode", employeeCode)
+                //).Take(maxItems)
+                // .ToList<object>();
+                //return result;
 
             }
         }
@@ -847,7 +838,6 @@ namespace FinancePortal.Dao
                 return list;
             }
         }
-
         public static TravelExpenseViewModel GetRequestViewById(int id)
         {
             using (var db = new FinancePortalEntities())
@@ -856,7 +846,7 @@ namespace FinancePortal.Dao
                 if (t == null) return null;
 
                 var s = db.TravelExpenseStatus.FirstOrDefault(x => x.ID == t.StatusID);
-               // var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == t.BudgetID);
+                // var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == t.BudgetID);
 
                 var approvals = db.TravelExpenseApprovals
                                   .Where(a => a.TravelExpenseID == t.ID)
@@ -913,15 +903,6 @@ namespace FinancePortal.Dao
                     StatusName = s?.DisplayName,
                     StatusColor = s?.ColorCode,
 
-                    //Budget = budget != null ? new BudgetViewModel
-                    //{
-                    //    BudgetID = budget.ID,
-                    //    BudgetName = budget.BudgetName,
-                    //    BudgetAmount = budget.BudgetAmount,
-                    //    BudgetUsed = budget.BudgetUsed,
-                    //    BudgetRemaining = budget.BudgetRemaining
-                    //} : null,
-
                     Employees = db.TravelExpenseEmployees
                                  .Where(e => e.TravelExpenseID == t.ID && e.IsShown)
                                  .Select(e => new EmployeeViewModel
@@ -933,20 +914,11 @@ namespace FinancePortal.Dao
                                      Division = e.Division
                                  }).ToList(),
 
-                    //CostDetails = db.TravelExpenseCosts
-                    //                .Where(c => c.TravelExpenseID == t.ID)
-                    //                .Select(c => new TravelExpenseCostDetailViewModel
-                    //                {
-                    //                    CostAir = c.CostAir,
-                    //                    CostHotel = c.CostHotel,
-                    //                    CostMeal = c.CostMeal,
-                    //                    CostOther = c.CostOther
-                    //                }).FirstOrDefault() ?? new TravelExpenseCostDetailViewModel(),
 
                     Approvals = approvals.OrderBy(a => a.ApprovalStep).ToList(),
                     AttachmentFiles = db.TravelExpenseAttachmentFiles
                                     .Where(a => a.TravelExpenseID == t.ID && a.IsShown == true)
-                                    .Select (a => a.FileName).ToList(),
+                                    .Select(a => a.FileName).ToList(),
                 };
 
                 return model;
@@ -1106,7 +1078,7 @@ namespace FinancePortal.Dao
                     return new OperationResult { Success = false, Message = "HOD approval record not found." };
 
                 var glUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == GLRole &&  r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == GLRole && r.IsShown == true))
                             .FirstOrDefault();
 
                 if (isApprove)
@@ -1182,7 +1154,7 @@ namespace FinancePortal.Dao
                     return new OperationResult { Success = false, Message = "GL Approval record not found." };
 
                 var fcUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true ))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true))
                             .FirstOrDefault();
 
                 // Update approval
@@ -1296,7 +1268,7 @@ namespace FinancePortal.Dao
                 return new OperationResult
                 {
                     Success = true,
-                    Message = "Request cancel successfully." 
+                    Message = "Request cancel successfully."
                 };
             }
         }

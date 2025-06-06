@@ -45,10 +45,14 @@
           <Property Name="LastLogin" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6013: The table/view 'AnnualEmployee.dbo.EmployeeImagesView' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
-        <EntityType Name="EmployeeImagesView">
-          <Property Name="EmployeeID" Type="varchar" MaxLength="50" />
+warning 6013: The table/view 'AnnualEmployee.dbo.EmployeeImage' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="EmployeeImage">
+          <Property Name="ID" Type="int" />
+          <Property Name="FileName" Type="varchar" MaxLength="150" />
           <Property Name="EmployeeImage" Type="image" />
+          <Property Name="ContentType" Type="varchar" MaxLength="50" />
+          <Property Name="UploadedFromCEM" Type="bit" />
+          <Property Name="Old_EmployeeKeyID" Type="int" />
         </EntityType>-->
         <EntityContainer Name="AnnualEmployeeModelStoreContainer">
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />

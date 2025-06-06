@@ -25,5 +25,6 @@ namespace FinancePortal.Models
         public System.DateTime ReturnedDate { get; set; }
         public string BeneficialName { get; set; }
         public string BankBranch { get; set; }
+        public string test { get; set; }
     }
 }

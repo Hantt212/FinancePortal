@@ -58,6 +58,7 @@ namespace FinancePortal.Dao
             using (var db = new FinancePortalEntities())
             {
                 var user = db.Users.FirstOrDefault(u => u.UserId == userId && u.IsShown);
+                
                 if (user == null)
                     return null;
 
@@ -118,11 +119,14 @@ namespace FinancePortal.Dao
                     return false;
                 }
 
+
+                var empInfo = TravelExpenseDao.GetEmployeeByCode(model.EmployeeCode) ;
                 // Create user
                 var user = new User
                 {
                     UserName = model.UserName.Trim(),
                     EmployeeCode = model.EmployeeCode.Trim(),
+                    Department = empInfo == null ? "" : empInfo.Department,
                     UserEmailAddress = model.UserEmailAddress?.Trim(),
                     IsWindowsAccount = model.IsWindowsAccount,
                     Password = model.IsWindowsAccount ? null : model.Password?.Trim(),
@@ -193,9 +197,12 @@ namespace FinancePortal.Dao
                     return false;
                 }
 
+                var empInfo = TravelExpenseDao.GetEmployeeByCode(model.EmployeeCode);
+
                 // 📝 Update fields
                 user.UserName = model.UserName?.Trim();
                 user.EmployeeCode = model.EmployeeCode?.Trim();
+                user.Department = empInfo == null ? "" : empInfo.Department;
                 user.UserEmailAddress = model.UserEmailAddress?.Trim();
                 user.IsWindowsAccount = model.IsWindowsAccount;
                 user.IsActive = model.IsActive;

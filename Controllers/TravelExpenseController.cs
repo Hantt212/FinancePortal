@@ -14,7 +14,6 @@ namespace FinancePortal.Controllers
     public class TravelExpenseController : Controller
     {
         private FinancePortalEntities financeEntity = new FinancePortalEntities();
-        private AnnualEmployeeEntities employeeEntity = new AnnualEmployeeEntities();
 
         #region Expense Form
 

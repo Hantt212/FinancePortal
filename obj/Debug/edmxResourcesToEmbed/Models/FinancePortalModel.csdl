@@ -152,6 +152,7 @@
     <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
     <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="test" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
   </EntityType>
   <EntityType Name="TravelExpenseCost">
     <Key>
@@ -230,6 +231,7 @@
     <Property Name="IsWindowsAccount" Type="Boolean" Nullable="false" />
     <Property Name="IsShown" Type="Boolean" Nullable="false" />
     <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="User" ToRole="UserRole" />
+    <Property Name="Department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="UserRole">
     <Key>
