@@ -1208,7 +1208,7 @@ namespace FinancePortal.Dao
 
                 //Reject:Send mail to Requester
                 mailContent.RecipientTo = mailRequester;
-                mailContent.Content = "We would like to inform you that your travel expense request has been denied by Head Of Department";
+                mailContent.Content = "We would like to inform you that your travel expense request has been <strong>denied</strong> by Head Of Department";
                 SendEmail(mailContent);
 
                 db.SaveChanges();
@@ -1347,7 +1347,7 @@ namespace FinancePortal.Dao
                 }
                 else
                 {
-                    mailContent.Content = "We would like to inform you that your travel expense request has been denied by Finance Controller";
+                    mailContent.Content = "We would like to inform you that your travel expense request has been <strong>denied</strong> by Finance Controller";
                 }
                 SendEmail(mailContent);
 
@@ -1408,7 +1408,7 @@ namespace FinancePortal.Dao
                           box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                         }}
                         .header {{
-                          background-color: #d9534f;
+                          background-color: #9ddef2;
                           color: #ffffff;
                           padding: 15px;
                           text-align: center;
@@ -1472,7 +1472,7 @@ namespace FinancePortal.Dao
 
         public static void SendEmail(MailContentModel mailContent)
         {
-            string emailSender = "TravelExpense@thegrandhotram.com";
+            string emailSender = "travelexpense@thegrandhotram.com";
             string bodyContent = GetEmailContent(mailContent);
             try
             {
