@@ -14,6 +14,8 @@ using System.Net.Mail;
 using System.Net;
 using System.Web;
 using System.Web.Services.Description;
+using System.Runtime.Remoting.Lifetime;
+using System.Security.Policy;
 
 namespace FinancePortal.Dao
 {
@@ -167,7 +169,7 @@ namespace FinancePortal.Dao
                 mailContent.TarNumber = travel.TarNo;
                 mailContent.RecipientTo = model.Approver.Email;
                 mailContent.RecipientCc = mailRequester;
-                mailContent.Content = "We would like to inform you that you have a travel expense request";
+                mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
                 SendEmail(mailContent);
 
                 // 8. Final save with validation catch
@@ -1200,7 +1202,7 @@ namespace FinancePortal.Dao
                             //Approve:Send mail to GL
                             mailContent.RecipientTo = glUser.UserEmailAddress;
                             mailContent.RecipientCc = mailRequester;
-                            mailContent.Content = "We would like to inform you that you have a travel expense request";
+                            mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
                             SendEmail(mailContent);
                         }
                     }
@@ -1208,7 +1210,7 @@ namespace FinancePortal.Dao
 
                 //Reject:Send mail to Requester
                 mailContent.RecipientTo = mailRequester;
-                mailContent.Content = "We would like to inform you that your travel expense request has been <strong>denied</strong> by Head Of Department";
+                mailContent.Content = "Please be informed that your travel expense request has been <strong>denied</strong> by HOD.";
                 SendEmail(mailContent);
 
                 db.SaveChanges();
@@ -1290,7 +1292,7 @@ namespace FinancePortal.Dao
                     mailContent.TarNumber = request.TarNo;
                     mailContent.RecipientTo = fcUser.UserEmailAddress;
                     mailContent.RecipientCc = mailRequester;
-                    mailContent.Content = "We would like to inform you that you have a travel expense request";
+                    mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
                     SendEmail(mailContent);
                 }
 
@@ -1343,11 +1345,11 @@ namespace FinancePortal.Dao
                 mailContent.RecipientTo = mailRequester;
                 if (isApprove)
                 {
-                    mailContent.Content = "We would like to inform you that your travel expense request has been done";
+                    mailContent.Content = "Please be informed that your travel expense request has been done.";
                 }
                 else
                 {
-                    mailContent.Content = "We would like to inform you that your travel expense request has been <strong>denied</strong> by Finance Controller";
+                    mailContent.Content = "Please be informed that your travel expense request has been <strong>denied</strong> by FC.";
                 }
                 SendEmail(mailContent);
 
@@ -1408,7 +1410,7 @@ namespace FinancePortal.Dao
                           box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                         }}
                         .header {{
-                          background-color: #9ddef2;
+                          background-color: #ffc720;
                           color: #ffffff;
                           padding: 15px;
                           text-align: center;
