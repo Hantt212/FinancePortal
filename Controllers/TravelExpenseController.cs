@@ -4,8 +4,11 @@ using FinancePortal.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -180,6 +183,20 @@ namespace FinancePortal.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetAllCosts(int budgetID)
+        {
+            try
+            {
+                var budgets = TravelExpenseDao.GetAllCosts(budgetID); 
+                return Json(budgets, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
         public JsonResult GetAllBudgets()
         {
             try
@@ -194,7 +211,7 @@ namespace FinancePortal.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddBudget(TravelExpenseBudget model)
+        public JsonResult AddBudget(BudgetViewModel model)
         {
             try
             {
@@ -262,6 +279,8 @@ namespace FinancePortal.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+   
+
         [HttpGet]
         public JsonResult GetRequestViewDetails(int id)
         {
@@ -324,6 +343,10 @@ namespace FinancePortal.Controllers
 
             return Json(new { success = result.Success, message = result.Message });
         }
+
+
+        
+
 
         #endregion
     }

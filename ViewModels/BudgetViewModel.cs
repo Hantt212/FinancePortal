@@ -9,8 +9,9 @@ namespace FinancePortal.ViewModels
     {
         public int BudgetID { get; set; }
         public string BudgetName { get; set; }
-        public decimal BudgetAmount { get; set; }
-        public decimal BudgetUsed { get; set; }
-        public decimal BudgetRemaining { get; set; }
+        public long BudgetAmount { get; set; }
+        public long BudgetUsed { get; set; }
+        public long BudgetRemaining { get; set; }
+        public List<int> CostIDList { get; set; }
     }
 }

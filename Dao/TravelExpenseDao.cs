@@ -10,6 +10,8 @@ using System.Data.Entity.Validation;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Web;
 using System.Web.Services.Description;
 
@@ -157,6 +159,16 @@ namespace FinancePortal.Dao
                         CreatedDate = DateTime.Now
                     });
                 }
+                //8. Send email
+                var userRequester = db.Users.FirstOrDefault(item => item.UserName == username);
+                string mailRequester = userRequester?.UserEmailAddress ?? string.Empty;
+
+                var mailContent = new MailContentModel();
+                mailContent.TarNumber = travel.TarNo;
+                mailContent.RecipientTo = model.Approver.Email;
+                mailContent.RecipientCc = mailRequester;
+                mailContent.Content = "We would like to inform you that you have a travel expense request";
+                SendEmail(mailContent);
 
                 // 8. Final save with validation catch
                 try
@@ -527,7 +539,7 @@ namespace FinancePortal.Dao
 
         #region Expense Budget
 
-        public static bool AddBudget(TravelExpenseBudget model, out string message)
+        public static bool AddBudget(BudgetViewModel model, out string message)
         {
             message = string.Empty;
 
@@ -540,7 +552,7 @@ namespace FinancePortal.Dao
                 bool isDuplicate = db.TravelExpenseBudgets.Any(b =>
                     b.BudgetName.Trim().ToLower() == nameToCheck &&
                     b.IsShown &&
-                    b.ID != model.ID);
+                    b.ID != model.BudgetID);
 
                 if (isDuplicate)
                 {
@@ -548,7 +560,7 @@ namespace FinancePortal.Dao
                     return false;
                 }
 
-                if (model.ID == 0)
+                if (model.BudgetID == 0)
                 {
                     // ➕ Add new
                     var newBudget = new TravelExpenseBudget
@@ -563,11 +575,26 @@ namespace FinancePortal.Dao
                     };
 
                     db.TravelExpenseBudgets.Add(newBudget);
+                    db.SaveChanges();
+
+                    // Add TravelExpenseCostBudget
+                    foreach (var costID in model.CostIDList)
+                    {
+                        var costBudget = new TravelExpenseCostBudget
+                        {
+                            CostID = costID,
+                            BudgetID = newBudget.ID,
+                            IsShown = true
+                        };
+                        db.TravelExpenseCostBudgets.Add(costBudget);
+                        db.SaveChanges();
+                    }
+                    
                 }
                 else
                 {
                     // ✏️ Update existing
-                    var existing = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == model.ID);
+                    var existing = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == model.BudgetID);
                     if (existing == null)
                     {
                         message = "Budget not found.";
@@ -847,6 +874,38 @@ namespace FinancePortal.Dao
                 return list;
             }
         }
+
+        public static List<CostViewModel> GetAllCosts(int budgetID)
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var costInitList = db.TravelExpenseCosts
+                    .Select(item => new CostViewModel
+                    {
+                        CostID = item.ID,
+                        CostName = item.CostName,
+                        Checked = false,
+                    }).ToList();
+
+                if (budgetID > 0)
+                {
+                    var selectedCostIDs = db.TravelExpenseCostBudgets
+                        .Where(cb => cb.BudgetID == budgetID)
+                        .Select(cb => cb.CostID)
+                        .ToHashSet(); // Efficient lookup
+
+                    foreach (var cost in costInitList)
+                    {
+                        if (selectedCostIDs.Contains(cost.CostID))
+                        {
+                            cost.Checked = true;
+                        }
+                    }
+                }
+                return costInitList.OrderBy(item => item.CostID).ToList();
+            }
+        }
+
         public static TravelExpenseViewModel GetRequestViewById(int id)
         {
             using (var db = new FinancePortalEntities())
@@ -989,7 +1048,6 @@ namespace FinancePortal.Dao
                     ExchangeRate = t.ExchangeRate,
                     RequesterSign = t.RequesterSignature,
                     CreatedDate = t.CreatedDate,
-                    //BudgetID = t.BudgetID,
                     AttachmentFiles = files,
                     CostDetails = costDetails,
                     Employees = employees,
@@ -1112,6 +1170,10 @@ namespace FinancePortal.Dao
                 request.UpdatedBy = approverUsername;
                 request.UpdatedDate = now;
 
+                var userRequester = db.Users.FirstOrDefault(item => item.UserName == request.CreatedBy);
+                string mailRequester = userRequester?.UserEmailAddress ?? string.Empty;
+                var mailContent = new MailContentModel();
+                mailContent.TarNumber = request.TarNo;
 
                 if (isApprove)
                 {
@@ -1134,9 +1196,20 @@ namespace FinancePortal.Dao
                                 CreatedDate = now,
                                 CreatedBy = approverUsername
                             });
+
+                            //Approve:Send mail to GL
+                            mailContent.RecipientTo = glUser.UserEmailAddress;
+                            mailContent.RecipientCc = mailRequester;
+                            mailContent.Content = "We would like to inform you that you have a travel expense request";
+                            SendEmail(mailContent);
                         }
                     }
                 }
+
+                //Reject:Send mail to Requester
+                mailContent.RecipientTo = mailRequester;
+                mailContent.Content = "We would like to inform you that your travel expense request has been denied by Head Of Department";
+                SendEmail(mailContent);
 
                 db.SaveChanges();
                 return new OperationResult
@@ -1208,6 +1281,17 @@ namespace FinancePortal.Dao
                             });
                         }
                     }
+
+                    //Approve:Send mail to FC
+                    var userRequester = db.Users.FirstOrDefault(item => item.UserName == request.CreatedBy);
+                    string mailRequester = userRequester?.UserEmailAddress ?? string.Empty;
+
+                    var mailContent = new MailContentModel();
+                    mailContent.TarNumber = request.TarNo;
+                    mailContent.RecipientTo = fcUser.UserEmailAddress;
+                    mailContent.RecipientCc = mailRequester;
+                    mailContent.Content = "We would like to inform you that you have a travel expense request";
+                    SendEmail(mailContent);
                 }
 
                 db.SaveChanges();
@@ -1250,6 +1334,23 @@ namespace FinancePortal.Dao
 
                 db.SaveChanges();
 
+                //Approve:Send mail to Requester
+                var userRequester = db.Users.FirstOrDefault(item => item.UserName == request.CreatedBy);
+                string mailRequester = userRequester?.UserEmailAddress ?? string.Empty;
+
+                var mailContent = new MailContentModel();
+                mailContent.TarNumber = request.TarNo;
+                mailContent.RecipientTo = mailRequester;
+                if (isApprove)
+                {
+                    mailContent.Content = "We would like to inform you that your travel expense request has been done";
+                }
+                else
+                {
+                    mailContent.Content = "We would like to inform you that your travel expense request has been denied by Finance Controller";
+                }
+                SendEmail(mailContent);
+
                 return new OperationResult
                 {
                     Success = true,
@@ -1279,6 +1380,132 @@ namespace FinancePortal.Dao
                     Success = true,
                     Message = "Request cancel successfully."
                 };
+            }
+        }
+
+        public static string GetEmailContent(MailContentModel mailContent)
+        {
+            string content = $@"
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                      <meta charset=""UTF-8"">
+                      <style>
+                        body {{
+                          font-family: Arial, sans-serif;
+                          color: #333;
+                          background-color: #f0f2f5;
+                          margin: 0;
+                          padding: 0;
+                        }}
+                        .container {{
+                          padding: 20px;
+                          max-width: 600px;
+                          margin: 30px auto;
+                          background-color: #ffffff;
+                          border-radius: 8px;
+                          border: 1px solid #ddd;
+                          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                        }}
+                        .header {{
+                          background-color: #d9534f;
+                          color: #ffffff;
+                          padding: 15px;
+                          text-align: center;
+                          font-size: 22px;
+                          font-weight: bold;
+                          border-radius: 6px 6px 0 0;
+                        }}
+                        .content {{
+                          padding: 20px;
+                          font-size: 16px;
+                          line-height: 1.6;
+                        }}
+                        .content a {{
+                          color: #0275d8;
+                          text-decoration: none;
+                        }}
+                        .footer {{
+                          margin-top: 30px;
+                          font-size: 12px;
+                          color: #777;
+                          text-align: center;
+                          border-top: 1px solid #eee;
+                          padding-top: 10px;
+                        }}
+                        .padding-text {{
+                            padding: 20px
+                        }}
+                      </style>
+                    </head>
+                    <body>
+                      <div class=""container"">
+                        <div class=""header"">
+                          TAR NO: {mailContent.TarNumber}
+                        </div>
+                        <div class=""content"">
+                          <br>
+                          <br>
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Dear you,</p>
+
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;{mailContent.Content}</p>
+
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;You can view the details or take further action by clicking the link below:</p>
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;<a href=""http://localhost:18947/"" target=""_blank"">View Travel Expense Request</a></p>
+
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Thank you for your understanding.</p>
+
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Best regards,<br></p>
+                          <br>
+                          <br>
+                        </div>
+                        <div class=""footer"">
+                          &nbsp;&nbsp;&nbsp;&nbsp;This is an automated message. Please do not reply directly to this email.
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+                    ";
+
+            return content;
+        }
+
+        public static void SendEmail(MailContentModel mailContent)
+        {
+            string emailSender = "TravelExpense@thegrandhotram.com";
+            string bodyContent = GetEmailContent(mailContent);
+            try
+            {
+                string emailSubject = ConfigurationManager.AppSettings["EmailSubject"];
+                string smtpClientName = ConfigurationManager.AppSettings["SMTPClientName"];
+
+                MailMessage message = new MailMessage();
+                SmtpClient smtpClient = new SmtpClient(smtpClientName);
+
+                message.From = new MailAddress(emailSender);
+                message.To.Add(mailContent.RecipientTo);
+                message.CC.Add(mailContent.RecipientCc);
+                message.Subject = emailSubject;
+                message.IsBodyHtml = true;
+                message.Body = bodyContent;
+
+                smtpClient.Port = 25;
+
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtpClient.UseDefaultCredentials = false;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                      | SecurityProtocolType.Tls11
+                                      | SecurityProtocolType.Tls12;
+                smtpClient.Timeout = 100000;
+
+                smtpClient.Send(message);
+                message.Attachments.Dispose();
+
+
+            }
+            catch (Exception ex)
+            {
+
             }
         }
 

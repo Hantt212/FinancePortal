@@ -146,7 +146,7 @@ $('#confirmAddEmployeeBtn').click(function () {
     `;
 
         $('#employeeListTable tbody').append(rowHtml);
-        $('#closeEmployeeModalBtn').click();
+        $('#addEmployeeModal').modal('hide');
         $('#employeeCodeInput').val('');
         $('#employeeCardContainer').hide();
         selectedEmployee = null;

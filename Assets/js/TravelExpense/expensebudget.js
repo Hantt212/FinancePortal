@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
     loadBudgetTable();
-
     $('#saveBudgetBtn').click(function () {
         const id = $('#editBudgetId').val();
         const name = $('#newBudgetName').val().trim();
@@ -12,10 +11,18 @@
             return;
         }
 
+        // Get Cost Checked List
+        var costIDList = [];
+        $('#costContainer input[type="checkbox"]:checked').each(function () {
+            let costID = $(this).attr('id').replace('cost_', ''); // get ID without the "cost_" prefix
+            costIDList.push(+costID);
+        });
+
         const payload = {
-            ID: id ? parseInt(id) : 0,
+            BudgetID: id ? parseInt(id) : 0,
             BudgetName: name,
-            BudgetAmount: amount
+            BudgetAmount: amount,
+            CostIDList: costIDList
         };
 
         $.ajax({
@@ -46,11 +53,21 @@
     });
 });
 
-$('#addBudgetModal').on('hidden.bs.modal', function () {
+//$('#addBudgetModal').on('hidden.bs.modal', function () {
+//    $('#editBudgetId').val('');
+//    $('#newBudgetName').val('');
+//    $('#newBudgetAmount').val('');
+//    $('#budgetModalTitle').text('Add New Budget');
+    
+//});
+
+$(document).on('click', '.new-budget', function () {
     $('#editBudgetId').val('');
     $('#newBudgetName').val('');
     $('#newBudgetAmount').val('');
+    $('#costContainer').html('');
     $('#budgetModalTitle').text('Add New Budget');
+    loadCostInfo(0);
 });
 
 $(document).on('click', '.edit-budget', function () {
@@ -65,10 +82,41 @@ $(document).on('click', '.edit-budget', function () {
     $('#newBudgetName').val(rowData.BudgetName);
     $('#newBudgetAmount').val(formatNumber(rowData.BudgetAmount));
     $('#budgetModalTitle').text('Edit Budget');
+    loadCostInfo(rowData.ID)
 
     $('#addBudgetModal').modal('show');
 });
 
+
+function loadCostInfo(budgetID) {
+    $.get(`/TravelExpense/GetAllCosts?budgetID=${budgetID}`, function (data) {
+        if (data && data.length > 0) {
+            var html = ``;
+            for (var i = 0; i < data.length; i += 2) {
+                html += `
+            <div class="d-flex gap-4 mb-2 mt-3">
+                <div class="form-check d-flex align-items-center" style="width: 50%">
+                    <input type="checkbox" ${data[i].Checked ? 'checked' : ''} class="form-check-input custom-size me-2" id="cost_${data[i].CostID}">
+                    <label class="form-check-label ml-4" for="cost_${data[i].CostID}">${data[i].CostName}</label>
+                </div>`;
+
+                if (i + 1 < data.length) {
+                    html += `
+                <div class="form-check d-flex align-items-center" style="width: 50%">
+                    <input type="checkbox" ${data[i + 1].Checked ? 'checked' : ''} class="form-check-input custom-size me-2" id="cost_${data[i + 1].CostID}">
+                    <label class="form-check-label ml-4" for="cost_${data[i + 1].CostID}">${data[i + 1].CostName}</label>
+                </div>`;
+                } else {
+                    html += `<div style="width: 50%"></div>`; // filler if odd number
+                }
+
+                html += `</div>`;
+            }
+            $('#costContainer').html(html);
+        }
+    });
+
+}
 function loadBudgetTable() {
     $.get('/TravelExpense/GetAllBudgets', function (data) {
         // Destroy if exists
