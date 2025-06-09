@@ -850,7 +850,7 @@ namespace FinancePortal.Dao
                                     (role == RequesterRole && (t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD 
                                     || t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD 
                                     || t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
-                                    (role == GLRole && t.StatusID < 8) ? 1 : 0 ,
+                                    (role == GLRole && t.StatusID < 7) ? 1 : 0 ,
                                 CashMode = t.StatusID == (int)TravelExpenseStatusEnum.TARApproved ? 1 : 0
                             };
 
