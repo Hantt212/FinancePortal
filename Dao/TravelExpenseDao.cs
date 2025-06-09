@@ -123,8 +123,8 @@ namespace FinancePortal.Dao
                 foreach (var costDetail in model.CostDetails)
                 {
                     // Update budget 
-                    var budgetInfo = GetBudgetInfoByCostBudget(costDetail.CostBudgetID);
-                    var budget = db.TravelExpenseBudgets.Find(budgetInfo.BudgetID);
+                    //var budgetInfo = GetBudgetInfoByCostBudget(costDetail.CostBudgetID);
+                    var budget = db.TravelExpenseBudgets.Find(costDetail.BudgetID);
 
                     if (budget != null)
                     {
@@ -225,8 +225,8 @@ namespace FinancePortal.Dao
                 {
                     var currentCostDetail = costDetails.FirstOrDefault(c => c.CostBudgetID == inputItem.CostBudgetID);
 
-                    var budgetInfo = GetBudgetInfoByCostBudget(inputItem.CostBudgetID);
-                    var budget = db.TravelExpenseBudgets.Find(budgetInfo.BudgetID);
+                    //var budgetInfo = GetBudgetInfoByCostBudget(inputItem.CostBudgetID);
+                    var budget = db.TravelExpenseBudgets.Find(inputItem.BudgetID);
 
                     if (currentCostDetail != null)
                     {
@@ -670,7 +670,8 @@ namespace FinancePortal.Dao
                                       CostID = cb.CostID,
                                       CostName = c.CostName,
                                       BudgetID = cb.BudgetID,
-                                      BudgetName = b.BudgetName
+                                      BudgetName = b.BudgetName,
+                                      BudgetRemaining = b.BudgetRemaining
                                   }).ToList();
                 return costBudget;
             }

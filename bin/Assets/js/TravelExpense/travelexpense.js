@@ -327,10 +327,6 @@ $('#submitTravelBtn').click(function () {
         showToast("Estimated Cost must be greater than 0.", "warning");
         return;
     }
-    //if (!budgetID) {
-    //    showToast("Please select a Budget.", "warning");
-    //    return;
-    //}
     if (isNaN(exchangeRate) || exchangeRate <= 0) {
         showToast("Exchange Rate must be greater than 0.", "warning");
         return;
@@ -368,17 +364,87 @@ $('#submitTravelBtn').click(function () {
     })
 
     // Get CostDetail
-    var costDetailList = [];
-    document.querySelectorAll('#costCard .cost-input').forEach(item => {
-        if (+item.value > 0) {
-            var row = $(item).closest('.row');
-            var costBudgetID = +row.find('select').val();
-            costDetailList.push({
-                CostAmount: +item.value,
-                CostBudgetID: costBudgetID
-            })
-        }
-    });
+    //var costDetailList = [];
+    //document.querySelectorAll('#costCard .cost-input').forEach(item => {
+    //    if (+item.value > 0) {
+    //        var row = $(item).closest('.row');
+    //        var selectElement = row.find('select');
+    //        var costBudgetID = +selectElement.val();
+    //        costDetailList.push({
+    //            CostAmount: +item.value,
+    //            CostBudgetID: costBudgetID
+    //        })
+    //    }
+    //});
+    //document.querySelectorAll('#costCard .cost-input').forEach(item => {
+    //    if (+item.value > 0) {
+    //        var row = $(item).closest('.row');
+    //        var selectElement = row.find('select')[0]; // Get the DOM element from jQuery
+    //        var selectedOption = selectElement.options[selectElement.selectedIndex];
+    //        var costBudgetID = +selectedOption.value;
+    //        var budgetID = +selectedOption.getAttribute('budgetid');
+    //        var budgetRemain = +selectedOption.getAttribute('budgetremain');
+
+   
+    //        costDetailList.push({
+    //            CostAmount: item.value,
+    //            CostBudgetID: costBudgetID,
+    //            BudgetID: budgetID // Add this if you want to include it
+    //        });
+    //    }
+    //});
+
+    const costDetailList = [];
+    const usedBudgetIDs = new Set();
+
+    let budgetError = false;
+    try {
+
+        document.querySelectorAll('#costCard .cost-input').forEach(item => {
+            if (+item.value > 0) {
+                const row = $(item).closest('.row');
+                const selectElement = row.find('select')[0]; // Get the DOM element from jQuery
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const costBudgetID = +selectedOption.value;
+                const budgetID = +selectedOption.getAttribute('budgetid');
+                const budgetRemain = +selectedOption.getAttribute('budgetremain');
+                const budgetName = +selectedOption.getAttribute('budgetname');
+                const currentAmount = +item.value;
+
+                if (!usedBudgetIDs.has(budgetID)) {
+                    usedBudgetIDs.add(budgetID);
+                    costDetailList.push({
+                        CostAmount: currentAmount,
+                        CostBudgetID: costBudgetID,
+                        BudgetID: budgetID
+                    });
+                } else {
+                    // 1. Check sum CostAmount of budgetID
+                    const existingTotal = costDetailList
+                        .filter(detail => detail.BudgetID === budgetID)
+                        .reduce((sum, detail) => sum + (+detail.CostAmount), 0);
+
+                    const newTotal = existingTotal + currentAmount;
+
+                    // 2. If greater than budgetRemain, show error; else add to costDetailList
+                    if (newTotal > budgetRemain) {
+                        budgetError = true;
+                        throw new Error(`Total cost for BudgetID ${budgetName} exceeds the remaining budget.`);
+                    } else {
+                        costDetailList.push({
+                            CostAmount: currentAmount,
+                            CostBudgetID: costBudgetID,
+                            BudgetID: budgetID
+                        });
+                    }
+                }
+            }
+        });
+    }catch(e) {
+        showToast(e.message, "warning");
+        return;
+    }
+
 
     // 📦 Prepare final payload
     const payload = {
@@ -484,7 +550,7 @@ function loadCostBudget() {
             let options = '';
 
             costDetailList.forEach(detail => {
-                options += `<option value="${detail.ID}">${detail.BudgetName}</option>`;
+                options += `<option value="${detail.ID}" budgetID="${detail.BudgetID}" bugetRemain="${detail.BudgetRemaining}" bugetName="${detail.BudgetName}">${detail.BudgetName}</option>`;
             });
 
             card.append(`

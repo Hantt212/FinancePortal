@@ -168,9 +168,9 @@ function loadBudgetTable() {
                     orderable: false,
                     render: function (data, type, row) {
                         return `
-                <button class="btn btn-sm btn-outline-primary edit-budget" data-id="${row.ID}">
+                <a class="btn btn-sm btn-outline-primary edit-budget" data-id="${row.ID}">
                     <i class="fa fa-edit"></i> Edit
-                </button>
+                </a>
 
             `;
                     }
