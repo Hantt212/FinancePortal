@@ -1450,14 +1450,14 @@ namespace FinancePortal.Dao
                         <div class=""content"">
                           <br>
                           <br>
-                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Dear you,</p>
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Dear,</p>
 
                           <p>&nbsp;&nbsp;&nbsp;&nbsp;{mailContent.Content}</p>
 
                           <p>&nbsp;&nbsp;&nbsp;&nbsp;You can view the details or take further action by clicking the link below:</p>
                           <p>&nbsp;&nbsp;&nbsp;&nbsp;<a href=""http://localhost:18947/"" target=""_blank"">View Travel Expense Request</a></p>
 
-                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Thank you for your understanding.</p>
+                          <p>&nbsp;&nbsp;&nbsp;&nbsp;Thank you.</p>
 
                           <p>&nbsp;&nbsp;&nbsp;&nbsp;Best regards,<br></p>
                           <br>

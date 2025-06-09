@@ -57,6 +57,7 @@ function loadUserRequests() {
     $.get('/TravelExpense/GetAllStatus', function (data) {
         if (data) {
             var statusItem = $("#statusFilter");
+            statusItem.html('');
             statusItem.append(`<option value="">All</option>`);
             data.forEach(status => {
                 statusItem.append(`<option value ="${status}">${status}</option>`)
