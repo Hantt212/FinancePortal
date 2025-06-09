@@ -112,14 +112,19 @@ function loadUserRequests() {
                         const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
                             <i class="fa fa-eye"></i> View
                         </a>`;
-
+                        
                         const editBtn = data.EditMode
                             ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
                                 <i class="fa fa-edit"></i> Edit
                                </a>`
                             : "";
+                        const cashBtn = data.CashMode
+                            ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-success ml-1">
+                                <i class="fa fa-money"></i> CA
+                               </a>`
+                            : "";
 
-                        return `${viewBtn} ${editBtn}`;
+                        return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
                 }
             ]

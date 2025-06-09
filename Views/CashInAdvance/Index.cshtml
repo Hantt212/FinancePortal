@@ -1,0 +1,343 @@
+﻿@{
+    var isEdit = Model != null;
+    ViewBag.Title = "Cash In Advance Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- 🔔 Toast Notification -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed" style="top: 20px; right: 20px; z-index: 1055;">
+        <div class="toast" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header">
+                <div class="rounded mr-2" id="toastIcon" style="width: 15px; height: 15px;"></div>
+                <strong class="mr-auto" id="toastTitle">Notification</strong>
+                <small class="text-muted" id="toastTime">Just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Global variables -->
+<input type="hidden" id="RequestID" value="@(Model?.ID ?? 0)" />
+
+<!-- 🔹 Form Container -->
+
+<div class="card-body section-padding" style="margin-left:2%; width: 96%; margin-top: 60px;">
+    <div class="card o-hidden border-0 shadow-lg row">
+        <div class="col-lg-12">
+            <div class="col-md-12">
+
+                <!-- 🔹 Header with TAR No -->
+                @*<div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="mb-0 font-weight-bold">CASH IN ADVANCE FORM</h3>
+                    <h5 class="mb-0 text-muted font-weight-bold">
+                        TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
+                    </h5>
+                    <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)" />
+                </div>*@
+
+                <!-- 🔸 Travel Info -->
+                <div class="card mb-4">
+                    <h4 class="card-header text-center" style="background: #ffca2c;">
+                        Cash In Advance Form <span class="font-italic text-secondary">(Phiếu tạm ứng tiền mặt)</span>
+                    </h4>
+                    <div class="card-body">
+                        <div class="row equal-height">
+                            <!-- Personal Details -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <h5 class="card-header text-center" style="background: #9ddef2;">
+                                        Personal Details <span class="font-italic text-secondary"> (Thông tin cá nhân)</span>
+                                    </h5>
+                                    <div class="card-body">
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Employee Number <br /><span class="font-italic text-secondary">(Mã số nhân viên)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblEmployeeNumber"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Employee Name<br /><span class="font-italic text-secondary">(Tên nhân viên)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblEmployeeName"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Department <br /><span class="font-italic text-secondary"> (Bộ phận)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblDepartment"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Reason for Advance<br /><span class="font-italic text-secondary">(Lý do tạm ứng)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <textarea id="TripPurpose" class="form-control" rows="3">@(Model != null ? Model.TripPurpose : "")</textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Requirement Info -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <h5 class="card-header text-center" style="background: #9ddef2;">
+                                        Requirement Information <span class="font-italic text-secondary"> (Thông tin yêu cầu)</span>
+                                    </h5>
+                                    <div class="card-body">
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Cash Advance Required<br /><span class="font-italic text-secondary">(Số tiền tạm ứng)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblCashAdvance"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Date Required By<br /><span class="font-italic text-secondary">(Ngày yêu cầu)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblDateRequired"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Date/Month Returned By <br /><span class="font-italic text-secondary"> (Ngày hoàn ứng)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblReturnDate"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Balance Advance<br /><span class="font-italic text-secondary">(Số dư tạm ứng)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <label class="form-control" id="lblBalanceAdvance"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="mt-4">
+                            <strong class="danger">If cash advance amount is more than 5,000,000 VND, Bank account information:</strong>
+                        </p>
+                       
+
+                        <!-- 🔸 Employees Section -->
+                        <div class="card shadow border-0 mb-4 mt-4">
+                            <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
+                                <h5 class="m-0">Bank Information<span class="text-danger">*</span></h5>
+                            </div>
+                            <div class="card-body" style="overflow-x: auto;">
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 font-weight-bold">
+                                        Beneficial name
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="BName"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 font-weight-bold">
+                                        Beneficiary Bank-Branch
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="BBranch" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 font-weight-bold">
+                                        Account No.(VND)
+                                    </label>
+                                    <div class="col-md-8">
+                                        <input type="number" class="form-control" id="BAccountNo" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="control-label col-md-4 font-weight-bold">
+                                        Note <br /><span class="font-italic text-secondary"> (Ghi chú)</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        <label>
+                                            Minimum 5 business days is needed to process cash advance. If Cash Advance for Business Travel, please attach
+                                            Travel Request Approval. If Cash Advance for other purpose, please attach the supporting document.
+                                            Submit completed application to Finance Department. For cash over 5 million VND will process bank transfer
+                                            every week if submit not later than Wednesday of week.
+                                        </label>
+                                        <span class="font-italic text-secondary">
+                                            Phiếu tạm ứng tiền sẽ được xem xét và phê duyệt ít nhất trong vòng 05 ngày làm việc. Nếu tạm ứng đi công tác, vui
+                                            lòng đính kèm phiếu Yêu Cầu Công Tác. Nếu tạm ứng cho mục đích khác, vui lòng đính kèm chứng từ liên quan.
+                                            Tạm ứng từ 5 triệu VNĐ trở lên và bộ chứng từ tạm ứng khi nộp về Phòng Tài chính trước thứ 4 hàng tuần sẽ được
+                                            chuyển khoản ngân hàng vào tài khoản của nhân viên tạm ứng vào kỳ thanh toán tuần của Công ty.
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🔘 Submit Button -->
+                        <div class="tile-footer my-4 text-center">
+                            <button class="btn btn-primary btn-lg" id="submitTravelBtn" type="button" style="width:200px">
+                                <i class="fa fa-save" aria-hidden="true"></i> @(isEdit ? "Update" : "Submit")
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Employee Modal -->
+<div class="modal" id="addEmployeeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeLabel">Add Employee</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" id="closeEmployeeModalBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <!-- Search Input -->
+                <div class="input-group mb-3">
+                    <input type="text" id="employeeCodeInput" class="form-control" placeholder="Enter Employee Code">
+                </div>
+
+                <!-- Preview Card -->
+                <div id="employeeCardContainer" style="display: none;" class="mb-3">
+                    <div class="card shadow-sm">
+                        <h5 class="card-header text-center" style="background: #cce5ff;">
+                            Employee Information <span class="font-italic text-secondary">(Thông tin nhân viên)</span>
+                        </h5>
+                        <div class="card-body">
+                            <div class="row">
+
+                                <!-- Employee Image -->
+                                @*<div class="col-md-4 text-center align-self-center mb-3">
+                                        <img id="empImage" src="" class="img-fluid rounded-circle" style="max-width: 100px;" alt="Employee Photo" />
+                                    </div>*@
+                                <div class="col-md-4 text-center d-flex align-items-center justify-content-center mb-3" style="height: 90%;">
+                                    <img id="empImage" src="" class="img-fluid rounded-circle h-100 w-auto object-fit-cover" alt="Employee Photo" />
+                                </div>
+
+                                <!-- Info Fields -->
+                                <div class="col-md-8">
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 font-weight-bold">Code:</label>
+                                        <div class="col-sm-8"><span id="empCode"></span></div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 font-weight-bold">Name:</label>
+                                        <div class="col-sm-8"><span id="empName"></span></div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 font-weight-bold">Position:</label>
+                                        <div class="col-sm-8"><span id="empPosition"></span></div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 font-weight-bold">Department:</label>
+                                        <div class="col-sm-8"><span id="empDepartment"></span></div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-4 font-weight-bold">Division:</label>
+                                        <div class="col-sm-8"><span id="empDivision"></span></div>
+                                    </div>
+
+                                    <!-- Confirm Button -->
+                                    <div class="text-right mt-3">
+                                        <button class="btn btn-success" id="confirmAddEmployeeBtn">
+                                            <i class="fa fa-check-circle"></i> Add to List
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Preview -->
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .equal-height {
+        display: flex;
+        flex-direction: row;
+    }
+
+        .equal-height > div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .equal-height .card {
+            flex: 1;
+        }
+</style>
+<!-- JS hook -->
+@section travelExpenseScript {
+    @*<script src="~/Assets/js/Common/bootstrap.min.js"></script>*@
+    <script src="~/Assets/js/TravelExpense/travelexpense.js"></script>
+}
+
+@if (Model != null)
+{
+    <script>
+        window.isEdit = true;
+        window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees));
+        window.preloadedApprover = @Html.Raw(Json.Encode(Model.Approver));
+        window.preloadedBudgetID = @(Model.BudgetID);
+        window.preloadedCostDetails = @Html.Raw(Json.Encode(Model.CostDetails));
+        window.preloadedExchangeRate = @(Model.ExchangeRate);
+    </script>
+}
+else
+{
+    <script>
+        window.isEdit = false;
+        window.preloadedEmployees = [];
+        window.preloadedApprover = null;
+        window.preloadedBudgetID = null;
+        window.preloadedCostDetails = [];
+        window.preloadedExchangeRate = 25000;
+    </script>
+}
+

@@ -160,6 +160,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CashInAdvanceController.cs" />
     <Compile Include="Controllers\TravelExpenseController.cs" />
     <Compile Include="Dao\AccountDao.cs" />
     <Compile Include="Dao\TravelExpenseDao.cs" />
@@ -518,6 +519,7 @@
     <Content Include="Views\TravelExpense\ExpenseBudget.cshtml" />
     <Content Include="Views\TravelExpense\List.cshtml" />
     <Content Include="Views\Account\ManageUser.cshtml" />
+    <Content Include="Views\CashInAdvance\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

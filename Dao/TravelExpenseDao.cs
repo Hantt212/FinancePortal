@@ -825,11 +825,11 @@ namespace FinancePortal.Dao
                                     (role == RequesterRole && t.CreatedBy == username) ||
                                     (role == HODRole && db.TravelExpenseApprovals.Any(a =>
                                         a.TravelExpenseID == t.ID &&
-                                        a.ApprovalStep == 1 &&
+                                        a.ApprovalStep == 1 && // HOD Step
                                         a.ApproverID == employeeCode)) ||
                                     (role == FCRole && db.TravelExpenseApprovals.Any(a =>
                                         a.TravelExpenseID == t.ID &&
-                                        a.ApprovalStep == 3 &&
+                                        a.ApprovalStep == 3 && // FC Step
                                         a.ApproverID == employeeCode)) ||
                                     (!new[] { RequesterRole, HODRole, FCRole }.Contains(role))
                                 )
@@ -849,7 +849,8 @@ namespace FinancePortal.Dao
                                     (role == RequesterRole && (t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD 
                                     || t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD 
                                     || t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
-                                    (role == GLRole && t.StatusID < 8) ? 1 : 0 
+                                    (role == GLRole && t.StatusID < 8) ? 1 : 0 ,
+                                CashMode = t.StatusID == (int)TravelExpenseStatusEnum.TARApproved ? 1 : 0
                             };
 
                 return query.ToList<object>();
