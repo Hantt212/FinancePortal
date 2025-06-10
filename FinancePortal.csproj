@@ -163,9 +163,16 @@
     <Compile Include="Controllers\CashInAdvanceController.cs" />
     <Compile Include="Controllers\TravelExpenseController.cs" />
     <Compile Include="Dao\AccountDao.cs" />
+    <Compile Include="Dao\CashInAdvanceDao.cs" />
     <Compile Include="Dao\TravelExpenseDao.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CashInAdvance.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CashInAdvanceApproval.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Department.cs">
       <DependentUpon>EmployeesModel.tt</DependentUpon>
@@ -221,9 +228,6 @@
     <Compile Include="Models\TravelExpenseBudget.cs">
       <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\TravelExpenseCashInAdvance.cs">
-      <DependentUpon>FinancePortalModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\TravelExpenseCost.cs">
       <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
@@ -246,9 +250,11 @@
       <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="Utils\TokenHelper.cs" />
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ApprovalActionModel.cs" />
+    <Compile Include="ViewModels\CashInAdvanceViewModel.cs" />
     <Compile Include="ViewModels\MailContentModel.cs" />
     <Compile Include="ViewModels\CostViewModel.cs" />
     <Compile Include="ViewModels\CostBudgetInfoViewModel.cs" />
@@ -326,6 +332,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\js\TravelExpense\manageuser.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\js\TravelExpense\cashinadvance.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\js\TravelExpense\requestlist.js">

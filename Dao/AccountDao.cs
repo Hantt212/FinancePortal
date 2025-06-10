@@ -8,8 +8,8 @@ using System.Web.Mvc;
 
 namespace FinancePortal.Dao
 {
-	public class AccountDao
-	{
+    public class AccountDao
+    {
         public static List<object> GetAllUsers()
         {
             using (var db = new FinancePortalEntities())
@@ -58,7 +58,7 @@ namespace FinancePortal.Dao
             using (var db = new FinancePortalEntities())
             {
                 var user = db.Users.FirstOrDefault(u => u.UserId == userId && u.IsShown);
-                
+
                 if (user == null)
                     return null;
 
@@ -120,7 +120,7 @@ namespace FinancePortal.Dao
                 }
 
 
-                var empInfo = TravelExpenseDao.GetEmployeeByCode(model.EmployeeCode) ;
+                var empInfo = TravelExpenseDao.GetEmployeeByCode(model.EmployeeCode);
                 // Create user
                 var user = new User
                 {
@@ -134,7 +134,6 @@ namespace FinancePortal.Dao
                     CreatedTime = DateTime.Now,
                     IsShown = true
                 };
-
                 db.Users.Add(user);
                 db.SaveChanges();
 
@@ -176,7 +175,7 @@ namespace FinancePortal.Dao
                 // 🔁 Check duplicate username (exclude current user)
                 bool usernameExists = db.Users.Any(u =>
                     u.UserId != user.UserId &&
-                    u.UserName.ToLower() == newUserName &&                  
+                    u.UserName.ToLower() == newUserName &&
                     u.IsShown);
 
                 if (usernameExists)
@@ -188,7 +187,7 @@ namespace FinancePortal.Dao
                 // 🔁 Check duplicate employee code (exclude current user)
                 bool employeeExists = db.Users.Any(u =>
                     u.UserId != user.UserId &&
-                    u.EmployeeCode == newEmployeeCode &&                   
+                    u.EmployeeCode == newEmployeeCode &&
                     u.IsShown);
 
                 if (employeeExists)

@@ -363,37 +363,7 @@ $('#submitTravelBtn').click(function () {
         attachmentFileList.push($(this).find('a').text());
     })
 
-    // Get CostDetail
-    //var costDetailList = [];
-    //document.querySelectorAll('#costCard .cost-input').forEach(item => {
-    //    if (+item.value > 0) {
-    //        var row = $(item).closest('.row');
-    //        var selectElement = row.find('select');
-    //        var costBudgetID = +selectElement.val();
-    //        costDetailList.push({
-    //            CostAmount: +item.value,
-    //            CostBudgetID: costBudgetID
-    //        })
-    //    }
-    //});
-    //document.querySelectorAll('#costCard .cost-input').forEach(item => {
-    //    if (+item.value > 0) {
-    //        var row = $(item).closest('.row');
-    //        var selectElement = row.find('select')[0]; // Get the DOM element from jQuery
-    //        var selectedOption = selectElement.options[selectElement.selectedIndex];
-    //        var costBudgetID = +selectedOption.value;
-    //        var budgetID = +selectedOption.getAttribute('budgetid');
-    //        var budgetRemain = +selectedOption.getAttribute('budgetremain');
-
    
-    //        costDetailList.push({
-    //            CostAmount: item.value,
-    //            CostBudgetID: costBudgetID,
-    //            BudgetID: budgetID // Add this if you want to include it
-    //        });
-    //    }
-    //});
-
     const costDetailList = [];
     const usedBudgetIDs = new Set();
 
@@ -408,16 +378,22 @@ $('#submitTravelBtn').click(function () {
                 const costBudgetID = +selectedOption.value;
                 const budgetID = +selectedOption.getAttribute('budgetid');
                 const budgetRemain = +selectedOption.getAttribute('budgetremain');
-                const budgetName = +selectedOption.getAttribute('budgetname');
+                const budgetName = selectedOption.getAttribute('budgetname');
                 const currentAmount = +item.value;
 
                 if (!usedBudgetIDs.has(budgetID)) {
                     usedBudgetIDs.add(budgetID);
-                    costDetailList.push({
-                        CostAmount: currentAmount,
-                        CostBudgetID: costBudgetID,
-                        BudgetID: budgetID
-                    });
+                    if (currentAmount > budgetRemain) {
+                        budgetError = true;
+                        throw new Error(`Total cost for Budget ${budgetName} exceeds the remaining budget.`);
+                    } else {
+                        costDetailList.push({
+                            CostAmount: currentAmount,
+                            CostBudgetID: costBudgetID,
+                            BudgetID: budgetID
+                        });
+                    }
+                    
                 } else {
                     // 1. Check sum CostAmount of budgetID
                     const existingTotal = costDetailList
@@ -429,7 +405,7 @@ $('#submitTravelBtn').click(function () {
                     // 2. If greater than budgetRemain, show error; else add to costDetailList
                     if (newTotal > budgetRemain) {
                         budgetError = true;
-                        throw new Error(`Total cost for BudgetID ${budgetName} exceeds the remaining budget.`);
+                        throw new Error(`Total cost for Budget ${budgetName} exceeds the remaining budget.`);
                     } else {
                         costDetailList.push({
                             CostAmount: currentAmount,
@@ -550,7 +526,7 @@ function loadCostBudget() {
             let options = '';
 
             costDetailList.forEach(detail => {
-                options += `<option value="${detail.ID}" budgetID="${detail.BudgetID}" bugetRemain="${detail.BudgetRemaining}" bugetName="${detail.BudgetName}">${detail.BudgetName}</option>`;
+                options += `<option value="${detail.ID}" budgetID="${detail.BudgetID}" budgetRemain="${detail.BudgetRemaining}" budgetName="${detail.BudgetName}">${detail.BudgetName}</option>`;
             });
 
             card.append(`

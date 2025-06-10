@@ -30,7 +30,6 @@ namespace FinancePortal.Models
         public virtual DbSet<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
         public virtual DbSet<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
         public virtual DbSet<TravelExpenseBudget> TravelExpenseBudgets { get; set; }
-        public virtual DbSet<TravelExpenseCashInAdvance> TravelExpenseCashInAdvances { get; set; }
         public virtual DbSet<TravelExpenseCost> TravelExpenseCosts { get; set; }
         public virtual DbSet<TravelExpenseCostBudget> TravelExpenseCostBudgets { get; set; }
         public virtual DbSet<TravelExpenseCostDetail> TravelExpenseCostDetails { get; set; }
@@ -38,5 +37,7 @@ namespace FinancePortal.Models
         public virtual DbSet<TravelExpenseStatu> TravelExpenseStatus { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<CashInAdvance> CashInAdvances { get; set; }
+        public virtual DbSet<CashInAdvanceApproval> CashInAdvanceApprovals { get; set; }
     }
 }

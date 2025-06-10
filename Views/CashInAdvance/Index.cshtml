@@ -1,5 +1,5 @@
 ﻿@{
-    var isEdit = Model != null;
+    var isEdit = Model != null && Model.ID > 0;
     ViewBag.Title = "Cash In Advance Form";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -33,13 +33,15 @@
 
                 <!-- 🔹 Header with TAR No -->
                 @*<div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0 font-weight-bold">CASH IN ADVANCE FORM</h3>
-                    <h5 class="mb-0 text-muted font-weight-bold">
-                        TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
-                    </h5>
-                    <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)" />
-                </div>*@
+            <h3 class="mb-0 font-weight-bold">CASH IN ADVANCE FORM</h3>
+            <h5 class="mb-0 text-muted font-weight-bold">
+                TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
+            </h5>
+            <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)" />
+        </div>*@
 
+                <input type="hidden" id="ciaID" value="@(Model?.ID ?? 0)" />
+                <input type="hidden" id="travelID" value="@(Model != null ? Model.TravelExpenseID : 0)"/>
                 <!-- 🔸 Travel Info -->
                 <div class="card mb-4">
                     <h4 class="card-header text-center" style="background: #ffca2c;">
@@ -60,7 +62,7 @@
                                                 Employee Number <br /><span class="font-italic text-secondary">(Mã số nhân viên)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <label class="form-control" id="lblEmployeeNumber"></label>
+                                                <input type="text" class="form-control" id="lblEmployeeID" value="@(Model != null ? Model.EmployeeID : "")" readonly />
                                             </div>
                                         </div>
 
@@ -69,7 +71,7 @@
                                                 Employee Name<br /><span class="font-italic text-secondary">(Tên nhân viên)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <label class="form-control" id="lblEmployeeName"></label>
+                                                <input type="text" class="form-control" id="lblEmployeeName" value="@(Model != null ? Model.EmployeeName : "")" readonly />
                                             </div>
                                         </div>
 
@@ -78,19 +80,9 @@
                                                 Department <br /><span class="font-italic text-secondary"> (Bộ phận)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <label class="form-control" id="lblDepartment"></label>
+                                                <input type="text" class="form-control" id="lblDept" value="@(Model != null ? Model.Department : "")" readonly />
                                             </div>
                                         </div>
-
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 font-weight-bold">
-                                                Reason for Advance<br /><span class="font-italic text-secondary">(Lý do tạm ứng)</span>
-                                            </label>
-                                            <div class="col-md-8">
-                                                <textarea id="TripPurpose" class="form-control" rows="3">@(Model != null ? Model.TripPurpose : "")</textarea>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -102,90 +94,112 @@
                                         Requirement Information <span class="font-italic text-secondary"> (Thông tin yêu cầu)</span>
                                     </h5>
                                     <div class="card-body">
-
                                         <div class="form-group row">
                                             <label class="control-label col-md-4 font-weight-bold">
-                                                Cash Advance Required<br /><span class="font-italic text-secondary">(Số tiền tạm ứng)</span>
+                                                Reason for Advance <span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Lý do tạm ứng)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <label class="form-control" id="lblCashAdvance"></label>
+                                                <textarea id="reason" class="form-control" rows="3">@(Model != null ? Model.Reason : "")</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Cash Advance Required <span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Số tiền tạm ứng)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="number" class="form-control" id="requiredCash" value="@(Model != null ? Model.RequiredCash : 0)" />
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label class="control-label col-md-4 font-weight-bold">
-                                                Date Required By<br /><span class="font-italic text-secondary">(Ngày yêu cầu)</span>
+                                                Date Required By<span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Ngày yêu cầu)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <label class="form-control" id="lblDateRequired"></label>
+                                                <input type="date" class="form-control" id="requiredDate" value="@(Model != null && Model.ID > 0? Model.RequiredDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                                             </div>
                                         </div>
 
                                         <div class="form-group row">
                                             <label class="control-label col-md-4 font-weight-bold">
-                                                Date/Month Returned By <br /><span class="font-italic text-secondary"> (Ngày hoàn ứng)</span>
+                                                Date/Month Returned By <span class="text-danger">*</span><br /><span class="font-italic text-secondary"> (Ngày hoàn ứng)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <label class="form-control" id="lblReturnDate"></label>
+                                                <input type="date" class="form-control" id="returnedDate" value="@(Model != null && Model.ID > 0 ? Model.ReturnedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                                             </div>
                                         </div>
 
-                                        <div class="form-group row">
-                                            <label class="control-label col-md-4 font-weight-bold">
-                                                Balance Advance<br /><span class="font-italic text-secondary">(Số dư tạm ứng)</span>
-                                            </label>
-                                            <div class="col-md-8">
-                                                <label class="form-control" id="lblBalanceAdvance"></label>
-                                            </div>
-                                        </div>
+                                        @*<div class="form-group row">
+                            <label class="control-label col-md-4 font-weight-bold">
+                                Balance Advance<br /><span class="font-italic text-secondary">(Số dư tạm ứng)</span>
+                            </label>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" id="lblEmployeeNumber" />
+                            </div>
+                        </div>*@
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <p class="mt-4">
-                            <strong class="danger">If cash advance amount is more than 5,000,000 VND, Bank account information:</strong>
-                        </p>
-                       
+
+
 
                         <!-- 🔸 Employees Section -->
-                        <div class="card shadow border-0 mb-4 mt-4">
+                        <div class="card shadow border-0 mb-4 mt-4" id="bankContainer" style="display:none">
+
+
                             <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
                                 <h5 class="m-0">Bank Information<span class="text-danger">*</span></h5>
                             </div>
                             <div class="card-body" style="overflow-x: auto;">
-                                <div class="form-group row">
+
+                                <label class="control-label text-secondary font-italic">
+                                    If cash advance amount is more than 5,000,000 VND, Bank account information
+                                </label>
+                                <div class="form-group row mt-3">
                                     <label class="control-label col-md-4 font-weight-bold">
-                                        Beneficial name
+                                        Beneficial name<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" id="BName"/>
+                                        <input type="text" class="form-control" id="BName" value="@(Model != null ? Model.BeneficialName : "")" />
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="control-label col-md-4 font-weight-bold">
-                                        Beneficiary Bank-Branch
+                                        Beneficiary Bank-Branch<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" id="BBranch" />
+                                        <input type="text" class="form-control" id="BBranch" value="@(Model != null ? Model.BankBranch : "")" />
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="control-label col-md-4 font-weight-bold">
-                                        Account No.(VND)
+                                        Account No<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-md-8">
-                                        <input type="number" class="form-control" id="BAccountNo" />
+                                        <input type="number" class="form-control" id="BAccountNo" value="@(Model != null ? Model.AccountNo : "")" />
                                     </div>
                                 </div>
 
+
+                            </div>
+                        </div>
+
+
+                        <div class="card shadow border-0 mb-4 mt-4">
+                            <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                Note <span class="text-danger">*</span>
+                                <span class="font-italic text-secondary ml-2">(Ghi chú)</span>
+                            </h5>
+                            <div class="card-body">
                                 <div class="form-group row">
-                                    <label class="control-label col-md-4 font-weight-bold">
+                                    @*<label class="control-label col-md-2 font-weight-bold">
                                         Note <br /><span class="font-italic text-secondary"> (Ghi chú)</span>
-                                    </label>
-                                    <div class="col-md-8">
+                                    </label>*@
+                                    <div class="col-md-10">
                                         <label>
                                             Minimum 5 business days is needed to process cash advance. If Cash Advance for Business Travel, please attach
                                             Travel Request Approval. If Cash Advance for other purpose, please attach the supporting document.
@@ -200,102 +214,83 @@
                                         </span>
                                     </div>
                                 </div>
+
+
                             </div>
                         </div>
+                   
+                        <div class="row mt-4">
+                            <!-- Approver Info Card -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                        Approver Info <span class="text-danger">*</span>
+                                        <span class="font-italic text-secondary ml-2">(Thông tin người duyệt)</span>
+                                    </h5>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold">Approver Code</label>
+                                            <div class="input-group">
+                                                <input type="number" id="approverCode" class="form-control" value="@(Model != null ? Model.HODID : "")" />
+                                            </div>
+                                        </div>
 
+                                        <div id="approverInfoFields" style="">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" id="approverName" value="@(Model != null ? Model.HODName : "")" readonly />
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Position</label>
+                                                <input type="text" class="form-control" id="approverPosition" value="@(Model != null ? Model.HODPosition : "")" readonly />
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" id="approverEmail" value="@(Model != null ? Model.HODEmail : "")" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Requester Signature Card with fixed body height -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100" min-height: 280px>
+                                    <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                        Requester Signature <span class="text-danger">*</span>
+                                        <span class="font-italic text-secondary ml-2">(Chữ ký người yêu cầu)</span>
+                                    </h5>
+                                    <div class="card-body text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
+                                        <label class="font-weight-bold d-block">Your Signature</label>
+                                        <input type="text" id="requesterSign" class="form-control text-center mb-3"
+                                               style="font-family: 'Binetta Signature'; font-size: 3.0em; border: none;"
+                                               value="@(Model != null && Model.ID > 0 ? Model.RequesterSign : HttpContext.Current.Session["UserName"]?.ToString())" />
+
+                                        <div class="input-group mt-auto">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Date</span>
+                                            </div>
+                                            <input type="date" id="requesterSignDate" class="form-control"
+                                                   value="@(Model != null && Model.ID > 0? Model.CreatedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <!-- 🔘 Submit Button -->
                         <div class="tile-footer my-4 text-center">
-                            <button class="btn btn-primary btn-lg" id="submitTravelBtn" type="button" style="width:200px">
+                            <button class="btn btn-primary btn-lg" id="submitCIAButton" type="button" style="width:200px">
                                 <i class="fa fa-save" aria-hidden="true"></i> @(isEdit ? "Update" : "Submit")
                             </button>
                         </div>
 
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add Employee Modal -->
-<div class="modal" id="addEmployeeModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="addEmployeeLabel">Add Employee</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" id="closeEmployeeModalBtn">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-
-                <!-- Search Input -->
-                <div class="input-group mb-3">
-                    <input type="text" id="employeeCodeInput" class="form-control" placeholder="Enter Employee Code">
-                </div>
-
-                <!-- Preview Card -->
-                <div id="employeeCardContainer" style="display: none;" class="mb-3">
-                    <div class="card shadow-sm">
-                        <h5 class="card-header text-center" style="background: #cce5ff;">
-                            Employee Information <span class="font-italic text-secondary">(Thông tin nhân viên)</span>
-                        </h5>
-                        <div class="card-body">
-                            <div class="row">
-
-                                <!-- Employee Image -->
-                                @*<div class="col-md-4 text-center align-self-center mb-3">
-                                        <img id="empImage" src="" class="img-fluid rounded-circle" style="max-width: 100px;" alt="Employee Photo" />
-                                    </div>*@
-                                <div class="col-md-4 text-center d-flex align-items-center justify-content-center mb-3" style="height: 90%;">
-                                    <img id="empImage" src="" class="img-fluid rounded-circle h-100 w-auto object-fit-cover" alt="Employee Photo" />
-                                </div>
-
-                                <!-- Info Fields -->
-                                <div class="col-md-8">
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 font-weight-bold">Code:</label>
-                                        <div class="col-sm-8"><span id="empCode"></span></div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 font-weight-bold">Name:</label>
-                                        <div class="col-sm-8"><span id="empName"></span></div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 font-weight-bold">Position:</label>
-                                        <div class="col-sm-8"><span id="empPosition"></span></div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 font-weight-bold">Department:</label>
-                                        <div class="col-sm-8"><span id="empDepartment"></span></div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-4 font-weight-bold">Division:</label>
-                                        <div class="col-sm-8"><span id="empDivision"></span></div>
-                                    </div>
-
-                                    <!-- Confirm Button -->
-                                    <div class="text-right mt-3">
-                                        <button class="btn btn-success" id="confirmAddEmployeeBtn">
-                                            <i class="fa fa-check-circle"></i> Add to List
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
                     </div>
-                </div> <!-- End Preview -->
-
             </div>
-
         </div>
     </div>
 </div>
+
 
 <style>
     .equal-height {
@@ -313,20 +308,19 @@
         }
 </style>
 <!-- JS hook -->
-@section travelExpenseScript {
-    @*<script src="~/Assets/js/Common/bootstrap.min.js"></script>*@
-    <script src="~/Assets/js/TravelExpense/travelexpense.js"></script>
+@section cashInAdvanceScript {
+    <script src="~/Assets/js/TravelExpense/cashinadvance.js"></script>
 }
 
-@if (Model != null)
+@if (Model != null && Model.ID > 0)
 {
     <script>
         window.isEdit = true;
-        window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees));
+        @*window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees));
         window.preloadedApprover = @Html.Raw(Json.Encode(Model.Approver));
         window.preloadedBudgetID = @(Model.BudgetID);
         window.preloadedCostDetails = @Html.Raw(Json.Encode(Model.CostDetails));
-        window.preloadedExchangeRate = @(Model.ExchangeRate);
+        window.preloadedExchangeRate = @(Model.ExchangeRate);*@
     </script>
 }
 else

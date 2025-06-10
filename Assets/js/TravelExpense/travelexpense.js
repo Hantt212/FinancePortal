@@ -363,37 +363,7 @@ $('#submitTravelBtn').click(function () {
         attachmentFileList.push($(this).find('a').text());
     })
 
-    // Get CostDetail
-    //var costDetailList = [];
-    //document.querySelectorAll('#costCard .cost-input').forEach(item => {
-    //    if (+item.value > 0) {
-    //        var row = $(item).closest('.row');
-    //        var selectElement = row.find('select');
-    //        var costBudgetID = +selectElement.val();
-    //        costDetailList.push({
-    //            CostAmount: +item.value,
-    //            CostBudgetID: costBudgetID
-    //        })
-    //    }
-    //});
-    //document.querySelectorAll('#costCard .cost-input').forEach(item => {
-    //    if (+item.value > 0) {
-    //        var row = $(item).closest('.row');
-    //        var selectElement = row.find('select')[0]; // Get the DOM element from jQuery
-    //        var selectedOption = selectElement.options[selectElement.selectedIndex];
-    //        var costBudgetID = +selectedOption.value;
-    //        var budgetID = +selectedOption.getAttribute('budgetid');
-    //        var budgetRemain = +selectedOption.getAttribute('budgetremain');
-
    
-    //        costDetailList.push({
-    //            CostAmount: item.value,
-    //            CostBudgetID: costBudgetID,
-    //            BudgetID: budgetID // Add this if you want to include it
-    //        });
-    //    }
-    //});
-
     const costDetailList = [];
     const usedBudgetIDs = new Set();
 

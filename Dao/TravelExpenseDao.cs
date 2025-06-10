@@ -818,43 +818,63 @@ namespace FinancePortal.Dao
             using (var db = new FinancePortalEntities())
             {
 
-                var query = from t in db.TravelExpenses
-                            join s in db.TravelExpenseStatus on t.StatusID equals s.ID
-                            join u in db.Users on t.CreatedBy equals u.UserName
-                            where t.IsShown == true &&
-                                (
-                                    (role == RequesterRole && t.CreatedBy == username) ||
-                                    (role == HODRole && db.TravelExpenseApprovals.Any(a =>
-                                        a.TravelExpenseID == t.ID &&
-                                        a.ApprovalStep == 1 && // HOD Step
-                                        a.ApproverID == employeeCode)) ||
-                                    (role == FCRole && db.TravelExpenseApprovals.Any(a =>
-                                        a.TravelExpenseID == t.ID &&
-                                        a.ApprovalStep == 3 && // FC Step
-                                        a.ApproverID == employeeCode)) ||
-                                    (!new[] { RequesterRole, HODRole, FCRole }.Contains(role))
-                                )
-                            orderby t.RequestDate descending
-                            select new
-                            {
-                                ID = t.ID,
-                                Department = u.Department,
-                                TarNo = t.TarNo,
-                                TripPurpose = t.TripPurpose,
-                                RequestDate = t.RequestDate,
-                                EstimatedCost = t.EstimatedCost,
-                                CreatedBy = t.CreatedBy,
-                                DisplayName = s.DisplayName,
-                                ColorCode = s.ColorCode,
-                                EditMode =
-                                    (role == RequesterRole && (t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD 
-                                    || t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD 
-                                    || t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
-                                    (role == GLRole && t.StatusID < 7) ? 1 : 0 ,
-                                CashMode = t.StatusID == (int)TravelExpenseStatusEnum.TARApproved ? 1 : 0
-                            };
+                var query = (
+                     from t in db.TravelExpenses
+                     join s in db.TravelExpenseStatus on t.StatusID equals s.ID
+                     join u in db.Users on t.CreatedBy equals u.UserName
+                     where t.IsShown == true &&
+                         (
+                             (role == RequesterRole && t.CreatedBy == username) ||
+                             (role == HODRole && db.TravelExpenseApprovals.Any(a =>
+                                 a.TravelExpenseID == t.ID &&
+                                 a.ApprovalStep == 1 &&
+                                 a.ApproverID == employeeCode)) ||
+                             (role == FCRole && db.TravelExpenseApprovals.Any(a =>
+                                 a.TravelExpenseID == t.ID &&
+                                 a.ApprovalStep == 3 &&
+                                 a.ApproverID == employeeCode)) ||
+                             (!new[] { RequesterRole, HODRole, FCRole }.Contains(role))
+                         )
+                     orderby t.RequestDate descending
+                     select new
+                     {
+                         t.ID,
+                         u.Department,
+                         t.TarNo,
+                         t.TripPurpose,
+                         t.RequestDate,
+                         t.EstimatedCost,
+                         t.CreatedBy,
+                         s.DisplayName,
+                         s.ColorCode,
+                         EditMode =
+                             (role == RequesterRole && (
+                                 t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
+                                 t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
+                                 t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
+                             (role == GLRole && t.StatusID < 7) ? 1 : 0,
+                         CashMode = (role == RequesterRole && t.StatusID == (int)TravelExpenseStatusEnum.TARApproved) ? 1 : 0
+                     }
+                 ).ToList(); // Materialize here
 
-                return query.ToList<object>();
+                // Now project with encryption
+                var result = query.Select(x => new
+                {
+                    x.ID,
+                    Token = TokenHelper.Encrypt(x.ID.ToString()),
+                    x.Department,
+                    x.TarNo,
+                    x.TripPurpose,
+                    x.RequestDate,
+                    x.EstimatedCost,
+                    x.CreatedBy,
+                    x.DisplayName,
+                    x.ColorCode,
+                    x.EditMode,
+                    x.CashMode
+                });
+
+                return result.ToList<object>();
 
 
 

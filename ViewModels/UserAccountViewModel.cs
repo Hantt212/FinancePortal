@@ -11,6 +11,7 @@ namespace FinancePortal.ViewModels
         public int? UserId { get; set; }
         public string UserName { get; set; }
         public string EmployeeCode { get; set; }
+        public string Department { get; set; }
         public string UserEmailAddress { get; set; }
         public string Password { get; set; } // Only used if not a Windows account
         public bool IsWindowsAccount { get; set; }

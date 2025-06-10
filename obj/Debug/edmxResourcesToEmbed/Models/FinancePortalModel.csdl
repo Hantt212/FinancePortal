@@ -6,7 +6,6 @@
     <EntitySet Name="TravelExpenseApprovals" EntityType="FinancePortalModel.TravelExpenseApproval" />
     <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="FinancePortalModel.TravelExpenseAttachmentFile" />
     <EntitySet Name="TravelExpenseBudgets" EntityType="FinancePortalModel.TravelExpenseBudget" />
-    <EntitySet Name="TravelExpenseCashInAdvances" EntityType="FinancePortalModel.TravelExpenseCashInAdvance" />
     <EntitySet Name="TravelExpenseCosts" EntityType="FinancePortalModel.TravelExpenseCost" />
     <EntitySet Name="TravelExpenseCostBudgets" EntityType="FinancePortalModel.TravelExpenseCostBudget" />
     <EntitySet Name="TravelExpenseCostDetails" EntityType="FinancePortalModel.TravelExpenseCostDetail" />
@@ -49,6 +48,12 @@
     <AssociationSet Name="FK_UserRole_User" Association="FinancePortalModel.FK_UserRole_User">
       <End Role="User" EntitySet="Users" />
       <End Role="UserRole" EntitySet="UserRoles" />
+    </AssociationSet>
+    <EntitySet Name="CashInAdvances" EntityType="FinancePortalModel.CashInAdvance" />
+    <EntitySet Name="CashInAdvanceApprovals" EntityType="FinancePortalModel.CashInAdvanceApproval" />
+    <AssociationSet Name="FK_CashInAdvance_CashInAdvanceApproval" Association="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval">
+      <End Role="CashInAdvance" EntitySet="CashInAdvances" />
+      <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApprovals" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Role">
@@ -136,23 +141,6 @@
     <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="IsShown" Type="Boolean" Nullable="false" />
     <NavigationProperty Name="TravelExpenseCostBudgets" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget" FromRole="TravelExpenseBudget" ToRole="TravelExpenseCostBudget" />
-  </EntityType>
-  <EntityType Name="TravelExpenseCashInAdvance">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
-    <Property Name="EmployeeID" Type="Int32" Nullable="false" />
-    <Property Name="EmployeeName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="Department" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="Reason" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="RequiredCash" Type="Int32" Nullable="false" />
-    <Property Name="RequiredDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
-    <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-    <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="test" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
   </EntityType>
   <EntityType Name="TravelExpenseCost">
     <Key>
@@ -355,6 +343,59 @@
       </Principal>
       <Dependent Role="UserRole">
         <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="CashInAdvance">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+    <Property Name="Reason" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RequiredCash" Type="Int64" Nullable="false" />
+    <Property Name="RequiredDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <Property Name="RequesterSignature" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsShown" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="CashInAdvanceApprovals" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvance" ToRole="CashInAdvanceApproval" />
+  </EntityType>
+  <EntityType Name="CashInAdvanceApproval">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CIAID" Type="Int32" />
+    <Property Name="ApprovalStep" Type="Int32" />
+    <Property Name="ApproverID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ApproverName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="ApproverEmail" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="ApproverPosition" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="ApproverSignature" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ApproverSignDate" Type="DateTime" Precision="3" />
+    <Property Name="IsApproved" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="CashInAdvance" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvanceApproval" ToRole="CashInAdvance" />
+  </EntityType>
+  <Association Name="FK_CashInAdvance_CashInAdvanceApproval">
+    <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="0..1" />
+    <End Type="FinancePortalModel.CashInAdvanceApproval" Role="CashInAdvanceApproval" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CashInAdvance">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CashInAdvanceApproval">
+        <PropertyRef Name="CIAID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

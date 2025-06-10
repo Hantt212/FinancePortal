@@ -119,11 +119,15 @@ function loadUserRequests() {
                                 <i class="fa fa-edit"></i> Edit
                                </a>`
                             : "";
+                        //const cashBtn = data.CashMode
+                        //    ? `<a href="/CashInAdvance/Index/${data.ID}" class="btn btn-sm btn-outline-success ml-1">
+                        //        <i class="fa fa-money"></i> CA
+                        //       </a>`
+                        //    : "";
                         const cashBtn = data.CashMode
-                            ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-success ml-1">
-                                <i class="fa fa-money"></i> CA
-                               </a>`
-                            : "";
+                            ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
+                                <i class="fa fa-money"></i> CIA
+                               </a>` : "";
 
                         return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
