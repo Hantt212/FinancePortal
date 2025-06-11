@@ -1,5 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="FinancePortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="CashInAdvance">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="Reason" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="RequiredCash" Type="bigint" Nullable="false" />
+    <Property Name="RequiredDate" Type="datetime" Nullable="false" />
+    <Property Name="ReturnedDate" Type="datetime" Nullable="false" />
+    <Property Name="BeneficialName" Type="nvarchar" MaxLength="150" />
+    <Property Name="BankBranch" Type="nvarchar" MaxLength="250" />
+    <Property Name="AccountNo" Type="nchar" MaxLength="30" />
+    <Property Name="RequesterSignature" Type="nvarchar" MaxLength="100" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="IsShown" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CashInAdvanceApproval">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CIAID" Type="int" />
+    <Property Name="ApprovalStep" Type="int" />
+    <Property Name="ApproverID" Type="varchar" MaxLength="50" />
+    <Property Name="ApproverName" Type="nvarchar" MaxLength="150" />
+    <Property Name="ApproverEmail" Type="nvarchar" MaxLength="250" />
+    <Property Name="ApproverPosition" Type="nvarchar" MaxLength="250" />
+    <Property Name="ApproverSignature" Type="nvarchar" MaxLength="100" />
+    <Property Name="ApproverSignDate" Type="datetime" />
+    <Property Name="IsApproved" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="nvarchar" MaxLength="150" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
+  </EntityType>
   <EntityType Name="Role">
     <Key>
       <PropertyRef Name="RoleId" />
@@ -78,22 +117,6 @@
     <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
     <Property Name="IsShown" Type="bit" Nullable="false" />
   </EntityType>
-  <EntityType Name="TravelExpenseCashInAdvance">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="TravelExpenseID" Type="int" Nullable="false" />
-    <Property Name="EmployeeID" Type="int" Nullable="false" />
-    <Property Name="EmployeeName" Type="nvarchar" MaxLength="150" Nullable="false" />
-    <Property Name="Department" Type="nvarchar" MaxLength="50" Nullable="false" />
-    <Property Name="Reason" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="RequiredCash" Type="int" Nullable="false" />
-    <Property Name="RequiredDate" Type="datetime" Nullable="false" />
-    <Property Name="ReturnedDate" Type="datetime" Nullable="false" />
-    <Property Name="BeneficialName" Type="nvarchar" MaxLength="150" />
-    <Property Name="BankBranch" Type="nvarchar" MaxLength="250" />
-  </EntityType>
   <EntityType Name="TravelExpenseCost">
     <Key>
       <PropertyRef Name="ID" />
@@ -156,6 +179,7 @@
     <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="EmployeeCode" Type="varchar" MaxLength="50" />
     <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Department" Type="nvarchar" MaxLength="100" />
     <Property Name="CreatedTime" Type="datetime" Nullable="false" />
     <Property Name="IsActive" Type="bit" Nullable="false" />
     <Property Name="LastLogin" Type="datetime" />
@@ -173,6 +197,18 @@
     <Property Name="RoleId" Type="int" Nullable="false" />
     <Property Name="IsShown" Type="bit" />
   </EntityType>
+  <Association Name="FK_CashInAdvance_CashInAdvanceApproval">
+    <End Role="CashInAdvance" Type="Self.CashInAdvance" Multiplicity="0..1" />
+    <End Role="CashInAdvanceApproval" Type="Self.CashInAdvanceApproval" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CashInAdvance">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CashInAdvanceApproval">
+        <PropertyRef Name="CIAID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_TravelExpense_TravelExpenseStatus">
     <End Role="TravelExpenseStatus" Type="Self.TravelExpenseStatus" Multiplicity="1" />
     <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
@@ -288,12 +324,13 @@
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="FinancePortalModelStoreContainer">
+    <EntitySet Name="CashInAdvance" EntityType="Self.CashInAdvance" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CashInAdvanceApproval" EntityType="Self.CashInAdvanceApproval" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpense" EntityType="Self.TravelExpense" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseApproval" EntityType="Self.TravelExpenseApproval" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="Self.TravelExpenseAttachmentFiles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseBudget" EntityType="Self.TravelExpenseBudget" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="TravelExpenseCashInAdvance" EntityType="Self.TravelExpenseCashInAdvance" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseCost" EntityType="Self.TravelExpenseCost" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseCostBudget" EntityType="Self.TravelExpenseCostBudget" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TravelExpenseCostDetail" EntityType="Self.TravelExpenseCostDetail" Schema="dbo" store:Type="Tables" />
@@ -301,6 +338,10 @@
     <EntitySet Name="TravelExpenseStatus" EntityType="Self.TravelExpenseStatus" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_CashInAdvance_CashInAdvanceApproval" Association="Self.FK_CashInAdvance_CashInAdvanceApproval">
+      <End Role="CashInAdvance" EntitySet="CashInAdvance" />
+      <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApproval" />
+    </AssociationSet>
     <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="Self.FK_TravelExpense_TravelExpenseStatus">
       <End Role="TravelExpenseStatus" EntitySet="TravelExpenseStatus" />
       <End Role="TravelExpense" EntitySet="TravelExpense" />

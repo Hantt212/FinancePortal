@@ -176,8 +176,42 @@ function fillViewModal(data) {
     $('#viewCostHotel').text(data.CostDetails?.CostHotel ?? 0);
     $('#viewCostMeal').text(data.CostDetails?.CostMeal ?? 0);
     $('#viewCostOther').text(data.CostDetails?.CostOther ?? 0);
-    $('#viewExchangeRate').text(data.ExchangeRate ?? "");
-    $('#viewEstimatedCost').text(formatNumber(data.EstimatedCost || 0));
+
+
+
+
+    var costDetails = data.CostDetails;
+    var costViewHtml = '';
+    var itemsPerRow = 4;
+    var index = 0;
+
+    costDetails.forEach(function (item, i) {
+        // Start a new row every 4 items
+        if (i % itemsPerRow === 0) {
+            costViewHtml += '<div class="row">';
+        }
+
+        costViewHtml += `<div class="col-md-3">
+                            <strong>${item.CostName}:</strong> 
+                            <span>${item.Value}</span>
+                         </div>`;
+
+        // End the row
+        if ((i + 1) % itemsPerRow === 0 || i === costDetails.length - 1) {
+            costViewHtml += '</div>'; // close the row
+        }
+    });
+
+    // Inject the generated HTML into the container
+    $('#costViewContainer').html(costViewHtml);
+
+    //(data.CostDetails || []).forEach(emp => {
+       
+    //    $('#viewEmployeeList').append(item);
+    //});
+
+    //$('#viewExchangeRate').text(data.ExchangeRate ?? "");
+    //$('#viewEstimatedCost').text(formatNumber(data.EstimatedCost || 0));
 
     // 🔹 Employees
     $('#viewEmployeeList').empty();

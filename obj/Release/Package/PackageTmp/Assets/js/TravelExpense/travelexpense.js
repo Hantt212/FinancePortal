@@ -8,7 +8,6 @@ $(document).ready(function () {
         });
     }
 
-
     // 🖱️ Double click Exchange Rate to edit
     $('#ExchangeRate').on('dblclick', function () {
         $(this).prop('readonly', false);
@@ -25,9 +24,6 @@ $(document).ready(function () {
     formatExchangeRate();
 
     // 🔄 Load Budgets
-   // loadBudgets();
-
-    //
     loadCostBudget();
 
     // ⚡ Preload data for Edit mode
@@ -37,14 +33,6 @@ $(document).ready(function () {
             window.preloadedEmployees.forEach(emp => {
                 addEmployeeToTable(emp);
             });
-        }
-
-        // 🔹 Preload Cost Details
-        if (window.preloadedCostDetails) {
-            $('#CostAir').val(window.preloadedCostDetails.CostAir || 0);
-            $('#CostHotel').val(window.preloadedCostDetails.CostHotel || 0);
-            $('#CostMeal').val(window.preloadedCostDetails.CostMeal || 0);
-            $('#CostOther').val(window.preloadedCostDetails.CostOther || 0);
         }
 
         if (window.preloadedExchangeRate) {
@@ -60,9 +48,7 @@ $(document).ready(function () {
 
             $('#approverInfoFields').slideDown();
         }
-
-        // 🔹 Update Estimated Cost after preloading Cost Details
-        updateEstimatedCost();
+        
     }
     else {
         // 🆕 Only if it's a new TravelExpense, reset costs to 0
@@ -99,12 +85,52 @@ $(document).ready(function () {
             showToast("Server error while fetching preload info.", "danger");
         });
     }
+    
 });
+
+// Change budget type
+$(document).on('change', '.type-budget', function () {
+    var selectId = $(this).attr('id');             
+    var rowSelected = $(this).attr('positionrow');
+    var costBudgetID = $(this).val();  
+    
+    var costBudgetIDList = [];
+    costBudgetIDList.push(costBudgetID);
+    // Optional: AJAX request
+    $.ajax({
+        url: '/TravelExpense/GetBudgetDetailByCostBudget',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({ costBudgetIDList: costBudgetIDList }),
+        success: function (res) {
+            if (res.success) {
+                $('#amount' + rowSelected).val(res.data[0].BudgetAmount || 0);
+                $('#used' + rowSelected).val(res.data[0].BudgetUsed || 0);
+                $('#remain' + rowSelected).val(res.data[0].BudgetRemaining || 0);
+            } else {
+                showToast(res.message || "Get budget information failed.", "danger");
+            }
+        },
+        error: function () {
+            showToast("Error retrieving budget info.", "danger");
+        }
+    });
+});
+
 
 $('#confirmAddEmployeeBtn').click(function () {
     if (!selectedEmployee) return;
+    //Check code duplicate, don't insert
+    var currEmpList = [];
+    $('#employeeListTable tbody tr').each(function () {
+        var firstTd = $(this).find('td:first');
+        currEmpList.push(firstTd.text());
+    });
 
-    var rowHtml = `
+    if (currEmpList.includes(selectedEmployee.Code) > 0) {
+        showToast("Employee is duplicated in list !", "danger");
+    } else {
+        var rowHtml = `
         <tr>
             <td>${selectedEmployee.Code}</td>
             <td>${selectedEmployee.Name}</td>
@@ -119,14 +145,16 @@ $('#confirmAddEmployeeBtn').click(function () {
         </tr>
     `;
 
-    $('#employeeListTable tbody').append(rowHtml);
-    $('#addEmployeeModal').modal('hide');
-    $('#employeeCodeInput').val('');
-    $('#employeeCardContainer').hide();
-    selectedEmployee = null;
+        $('#employeeListTable tbody').append(rowHtml);
+        $('#addEmployeeModal').modal('hide');
+        $('#employeeCodeInput').val('');
+        $('#employeeCardContainer').hide();
+        selectedEmployee = null;
 
-    // ✅ Show toast
-    showToast("Employee added to the list successfully!", "success");
+        // ✅ Show toast
+        showToast("Employee added to the list successfully!", "success");
+    }
+    
 });
 
 $(document).on('click', '.remove-employee', function () {
@@ -167,7 +195,7 @@ var selectedEmployee = null;
 
 $('#employeeCodeInput').on('input', function () {
     const code = $(this).val().trim();
-
+    
     if (!code || code.length < 5) {
         $('#employeeCardContainer').hide();       
         selectedEmployee = null;       
@@ -181,13 +209,12 @@ $('#employeeCodeInput').on('input', function () {
             if (res.success) {
                 selectedEmployee = res.data;
 
-                $('#empImage').attr('src', res.data.ImageUrl);
+                $('#empImage').attr('src', res.data.EmployeeImage);
                 $('#empName').text(res.data.Name);
                 $('#empCode').text(res.data.Code);
                 $('#empPosition').text(res.data.Position);
                 $('#empDivision').text(res.data.Division);
                 $('#empDepartment').text(res.data.Department);
-
                 $('#employeeCardContainer').show();
                 showToast("Employee found: " + res.data.Name, "success");                
             } else {
@@ -300,10 +327,6 @@ $('#submitTravelBtn').click(function () {
         showToast("Estimated Cost must be greater than 0.", "warning");
         return;
     }
-    //if (!budgetID) {
-    //    showToast("Please select a Budget.", "warning");
-    //    return;
-    //}
     if (isNaN(exchangeRate) || exchangeRate <= 0) {
         showToast("Exchange Rate must be greater than 0.", "warning");
         return;
@@ -340,18 +363,64 @@ $('#submitTravelBtn').click(function () {
         attachmentFileList.push($(this).find('a').text());
     })
 
-    // Get CostDetail
-    var costDetailList = [];
-    document.querySelectorAll('#costCard .cost-input').forEach(item => {
-        if (+item.value > 0) {
-            var row = $(item).closest('.row');
-            var costBudgetID = +row.find('select').val();
-            costDetailList.push({
-                CostAmount: +item.value,
-                CostBudgetID: costBudgetID
-            })
-        }
-    });
+   
+    const costDetailList = [];
+    const usedBudgetIDs = new Set();
+
+    let budgetError = false;
+    try {
+
+        document.querySelectorAll('#costCard .cost-input').forEach(item => {
+            if (+item.value > 0) {
+                const row = $(item).closest('.row');
+                const selectElement = row.find('select')[0]; // Get the DOM element from jQuery
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const costBudgetID = +selectedOption.value;
+                const budgetID = +selectedOption.getAttribute('budgetid');
+                const budgetRemain = +selectedOption.getAttribute('budgetremain');
+                const budgetName = selectedOption.getAttribute('budgetname');
+                const currentAmount = +item.value;
+
+                if (!usedBudgetIDs.has(budgetID)) {
+                    usedBudgetIDs.add(budgetID);
+                    if (currentAmount > budgetRemain) {
+                        budgetError = true;
+                        throw new Error(`Total cost for Budget ${budgetName} exceeds the remaining budget.`);
+                    } else {
+                        costDetailList.push({
+                            CostAmount: currentAmount,
+                            CostBudgetID: costBudgetID,
+                            BudgetID: budgetID
+                        });
+                    }
+                    
+                } else {
+                    // 1. Check sum CostAmount of budgetID
+                    const existingTotal = costDetailList
+                        .filter(detail => detail.BudgetID === budgetID)
+                        .reduce((sum, detail) => sum + (+detail.CostAmount), 0);
+
+                    const newTotal = existingTotal + currentAmount;
+
+                    // 2. If greater than budgetRemain, show error; else add to costDetailList
+                    if (newTotal > budgetRemain) {
+                        budgetError = true;
+                        throw new Error(`Total cost for Budget ${budgetName} exceeds the remaining budget.`);
+                    } else {
+                        costDetailList.push({
+                            CostAmount: currentAmount,
+                            CostBudgetID: costBudgetID,
+                            BudgetID: budgetID
+                        });
+                    }
+                }
+            }
+        });
+    }catch(e) {
+        showToast(e.message, "warning");
+        return;
+    }
+
 
     // 📦 Prepare final payload
     const payload = {
@@ -435,30 +504,6 @@ function updateEstimatedCost() {
     // Display with dot separator
     $('#EstimatedCost').val(formatNumber(estimatedVND));
 }
-
-//function loadBudgets() {
-//    $.get('/TravelExpense/GetBudgets', function (budgets) {
-//        const dropdown = $('#BudgetName');
-//        dropdown.empty().append(`<option value="">-- Select Budget --</option>`);
-
-//        budgets.forEach(b => {
-//            dropdown.append(`
-//                <option 
-//                    value="${b.ID}" 
-//                    data-amount="${b.BudgetAmount}" 
-//                    data-used="${b.BudgetUsed}" 
-//                    data-remaining="${b.BudgetRemaining}">
-//                    ${b.BudgetName}
-//                </option>`);
-//        });
-
-//        if (window.isEdit && window.preloadedBudgetID) {
-//            $('#BudgetName').val(window.preloadedBudgetID);
-//            $('#BudgetName').trigger('change');
-//        }
-//    });
-//}
-
 function loadCostBudget() {
     $.get('/TravelExpense/GetCostBudgetList', function (list) {
         const costGroup = new Map();
@@ -473,31 +518,128 @@ function loadCostBudget() {
         });
 
         const card = $('#costCard');
-        card.empty(); // Clear previous content if needed
+        card.empty();
 
         let index = 0;
+
         costGroup.forEach((costDetailList, key) => {
-            const options = costDetailList.map(detail => `
-                <option value="${detail.ID}">${detail.BudgetName}</option>
-            `).join("");
+            let options = '';
+
+            costDetailList.forEach(detail => {
+                options += `<option value="${detail.ID}" budgetID="${detail.BudgetID}" budgetRemain="${detail.BudgetRemaining}" budgetName="${detail.BudgetName}">${detail.BudgetName}</option>`;
+            });
 
             card.append(`
                 <div class="form-group">
                     <div class="row">
-                     <label class="d-block">${key}($)</label>
-                        <div class="col-md-6">
-                            <input type="number" class="form-control cost-input" id="CostType_${index}" placeholder="Amount ($)" value="0" />
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <button class="input-group-prepend btn" style="width: 50%; text-align: left; background:#9ddef2" type="button">${key}</button>
+                                <input type="number" class="form-control cost-input w-30" id="CostType_${index}" positionRow="${index}" placeholder="Amount ($)" value="0" />
+                                <span class="input-group-text">($)</span>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <select class="form-control" id="BudgetType_${index}">
+                        <div class="col-md-4">
+                            <select class="form-control type-budget" positionRow="${index}" id="BudgetType_${index}">
                                 ${options}
                             </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div class="input-group" style="width: 32%;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-secondary" type="button">Amount</button>
+                                    </div>
+                                    <input type="text" class="form-control" value="0" id="amount${index}" readonly>
+                                    <span class="input-group-text">($)</span>
+                                </div>
+
+                                <div class="input-group" style="width: 32%;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-warning" type="button">Used</button>
+                                    </div>
+                                    <input type="text" class="form-control" value="0" id="used${index}" readonly>
+                                    <span class="input-group-text">($)</span>
+                                </div>
+
+                                <div class="input-group" style="width: 32%;">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-success" type="button">Remain</button>
+                                    </div>
+                                    <input type="text" class="form-control" value="0" id="remain${index}" readonly>
+                                    <span class="input-group-text">($)</span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             `);
+
             index++;
         });
+
+        // Load preloaded values
+        const costDetails = window.preloadedCostDetails || [];
+        costDetails.forEach(detail => {
+            $('.type-budget').each(function () {
+                const $select = $(this);
+                $select.find('option').each(function () {
+                    if (this.value == detail.CostBudgetID) {
+                        $(this).prop('selected', true);
+                        const $input = $select.closest('.row').find('input[type="number"]');
+                        $input.val(detail.CostAmount);
+                    }
+                });
+            });
+        });
+
+        //row selected
+        var costBudgetIDList = [];
+        var rowList = [];
+
+        $('select option:selected').each(function () {
+            const selectElement = $(this).parent('select');
+            const rowSelected = selectElement.attr('positionRow');
+            const costBudgetID = $(this).val();
+
+            costBudgetIDList.push(+costBudgetID);
+
+            rowList.push({
+                costBudgetID: +costBudgetID,
+                rowSelected: rowSelected
+            });
+        });
+
+        // Update corresponding amount, used, remain fields
+        $.ajax({
+            url: '/TravelExpense/GetBudgetDetailByCostBudget',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ costBudgetIDList: costBudgetIDList }),
+            success: function (res) {
+                if (res.success) {
+                    var result = res.data;
+                    result.forEach(item => {
+                        // Find the matching row by costBudgetID
+                        var row = rowList.find(r => r.costBudgetID === item.ID);
+
+                        if (row) {
+                            $('#amount' + row.rowSelected).val(item.BudgetAmount || 0);
+                            $('#used' + row.rowSelected).val(item.BudgetUsed || 0);
+                            $('#remain' + row.rowSelected).val(item.BudgetRemaining || 0);
+                        }
+                    });
+                } else {
+                    showToast(res.message || "Get budget information failed.", "danger");
+                }
+            },
+            error: function () {
+                showToast("Error retrieving budget info.", "danger");
+            }
+        });
+
+        
     });
 }
 
@@ -569,32 +711,32 @@ function addEmployeeToTable(emp) {
 
 $('#BusinessDateFrom, #BusinessDateTo').on('change', updateTripDays);
 
-$('#saveBudgetBtn').click(function () {
-    const name = $('#newBudgetName').val().trim();
-    const amountRaw = $('#newBudgetAmount').val().replace(/\./g, '').replace(/,/g, '');
-    const amount = parseFloat(amountRaw) || 0;
+//$('#saveBudgetBtn').click(function () {
+//    const name = $('#newBudgetName').val().trim();
+//    const amountRaw = $('#newBudgetAmount').val().replace(/\./g, '').replace(/,/g, '');
+//    const amount = parseFloat(amountRaw) || 0;
 
-    if (!name || amount <= 0) {
-        showToast("Please enter valid budget name and amount.", "warning");
-        return;
-    }
+//    if (!name || amount <= 0) {
+//        showToast("Please enter valid budget name and amount.", "warning");
+//        return;
+//    }
 
-    $.ajax({
-        url: '/TravelExpense/AddBudget',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ BudgetName: name, BudgetAmount: amount }),
-        success: function (res) {
-            if (res.success) {
-                $('#addBudgetModal').modal('hide');
-                showToast("Budget added successfully", "success");
-               // loadBudgets();
-            } else {
-                showToast(res.message || "Add budget failed", "danger");
-            }
-        }
-    });
-});
+//    $.ajax({
+//        url: '/TravelExpense/AddBudget',
+//        type: 'POST',
+//        contentType: 'application/json',
+//        data: JSON.stringify({ BudgetName: name, BudgetAmount: amount }),
+//        success: function (res) {
+//            if (res.success) {
+//                $('#addBudgetModal').modal('hide');
+//                showToast("Budget added successfully", "success");
+//               // loadBudgets();
+//            } else {
+//                showToast(res.message || "Add budget failed", "danger");
+//            }
+//        }
+//    });
+//});
 
 $('#newBudgetAmount').on('input', function () {
     let raw = $(this).val().replace(/\./g, '').replace(/,/g, '');
@@ -602,10 +744,10 @@ $('#newBudgetAmount').on('input', function () {
     $(this).val(num.toLocaleString('de-DE')); // Use dot for thousands
 });
 
-$('#addBudgetModal').on('hidden.bs.modal', function () {
-    $('#newBudgetName').val('');
-    $('#newBudgetAmount').val('');
-});
+//$('#addBudgetModal').on('hidden.bs.modal', function () {
+//    $('#newBudgetName').val('');
+//    $('#newBudgetAmount').val('');
+//});
 
 $('#BudgetName').on('change', function () {
     const selected = $(this).find('option:selected');
@@ -615,24 +757,24 @@ $('#BudgetName').on('change', function () {
     $('#BudgetRemaining').val(formatNumber(selected.data('remaining') || 0));
 });
 
-function resetTravelExpenseForm() {
-    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
-    $('#TripPurpose').val('');
-    $('#TripDays').val('');
-    $('#EstimatedCost').val('');
-    $('#ExchangeRate').val('25000');
-    $('#BudgetName').val('');
-    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
-    $('.cost-input').val(0);
+//function resetTravelExpenseForm() {
+//    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
+//    $('#TripPurpose').val('');
+//    $('#TripDays').val('');
+//    $('#EstimatedCost').val('');
+//    $('#ExchangeRate').val('25000');
+//    $('#BudgetName').val('');
+//    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
+//    $('.cost-input').val(0);
 
-    // Clear employee table
-    $('#employeeListTable tbody').empty();
+//    // Clear employee table
+//    $('#employeeListTable tbody').empty();
 
-    // Clear approver
-    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
-    $('#approverSign').val('');
-    $('#approverInfoFields').hide();
-}
+//    // Clear approver
+//    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
+//    $('#approverSign').val('');
+//    $('#approverInfoFields').hide();
+//}
 
 function showToast(message, type = "success") {
     var toastEl = $("#toastMessage");

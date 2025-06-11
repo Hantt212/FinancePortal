@@ -656,6 +656,7 @@ namespace FinancePortal.Dao
             }
         }
 
+        //Get all cost budget to show drop down
         public static List<CostBudgetInfoViewModel> GetCostBudgetList()
         {
             using (var db = new FinancePortalEntities())
@@ -739,29 +740,7 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static bool CheckSameBudget(int costBudgetIDFirst, int costBudgetIDSecond)
-        {
-            using (var db = new FinancePortalEntities())
-            {
-                var budgetIdFirst = db.TravelExpenseCostBudgets
-                                      .Where(cd => cd.ID == costBudgetIDFirst)
-                                      .Select(cd => cd.BudgetID)
-                                      .FirstOrDefault();
-
-                var budgetIdSecond = db.TravelExpenseCostBudgets
-                                       .Where(cd => cd.ID == costBudgetIDSecond)
-                                       .Select(cd => cd.BudgetID)
-                                       .FirstOrDefault();
-
-                // Optional: return false if either doesn't exist
-                if (budgetIdFirst == 0 || budgetIdSecond == 0)
-                    return false;
-
-                return budgetIdFirst == budgetIdSecond;
-            }
-        }
-
-
+     
         #endregion
 
         #region Dashboard
@@ -938,7 +917,6 @@ namespace FinancePortal.Dao
                 if (t == null) return null;
 
                 var s = db.TravelExpenseStatus.FirstOrDefault(x => x.ID == t.StatusID);
-                // var budget = db.TravelExpenseBudgets.FirstOrDefault(b => b.ID == t.BudgetID);
 
                 var approvals = db.TravelExpenseApprovals
                                   .Where(a => a.TravelExpenseID == t.ID)
@@ -977,6 +955,22 @@ namespace FinancePortal.Dao
                         approvals.Add(fcUser);
                 }
 
+                var costDetails = (from cd in db.TravelExpenseCostDetails
+                                   join cb in db.TravelExpenseCostBudgets on cd.CostBudgetID equals cb.ID
+                                   join c in db.TravelExpenseCosts on cb.CostID equals c.ID
+                                   join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                                   where
+                                    cd.TravelExpenseID == t.ID && cd.IsShown == true
+                                   select new TravelExpenseCostDetailViewModel
+                                   {
+                                       CostName = c.CostName,
+                                       CostAmount = cd.CostAmount,
+                                       BudgetName = b.BudgetName,
+                                       BudgetAmountAtSubmit = cd.BudgetAmountAtSubmit,
+                                       BudgetRemainAtSubmit = cd.BudgetRemainingAtSubmit,
+                                       BudgetUsedAtSubmit = cd.BudgetUsedAtSubmit,
+                                   }).ToList();
+
                 var model = new TravelExpenseViewModel
                 {
                     ID = t.ID,
@@ -995,6 +989,7 @@ namespace FinancePortal.Dao
                     StatusName = s?.DisplayName,
                     StatusColor = s?.ColorCode,
 
+                    CostDetails= costDetails,
                     Employees = db.TravelExpenseEmployees
                                  .Where(e => e.TravelExpenseID == t.ID && e.IsShown)
                                  .Select(e => new EmployeeViewModel
@@ -1079,82 +1074,6 @@ namespace FinancePortal.Dao
                 };
             }
         }
-
-        //public static void UpdateStatusWhenViewingRequests(string role, string employeeCode, string username)
-        //{
-        //    using (var db = new FinancePortalEntities())
-        //    {
-        //        var now = DateTime.Now;
-
-        //        if (role == HODRole)
-        //        {
-        //            // 🔄 Update all requests where approval step = 1 and current status = RequesterPending
-        //            var pendingRequests = (from t in db.TravelExpenses
-        //                                   join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
-        //                                   where a.ApproverID == employeeCode &&
-        //                                         a.ApprovalStep == (int)ApprovalStep.HOD && t.IsShown == true &&
-        //                                         t.StatusID == (int)TravelExpenseStatusEnum.RequesterPending
-        //                                   select t).ToList();
-
-        //            foreach (var req in pendingRequests)
-        //            {
-        //                req.StatusID = (int)TravelExpenseStatusEnum.HODPending;
-        //                //req.UpdatedDate = now;
-        //            }
-        //        }
-        //        else if (role == GLRole)
-        //        {
-        //            // 🔄 Update all requests where approval step = 2 and current status = HODApproved
-        //            var pendingRequests = (from t in db.TravelExpenses
-        //                                   join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
-        //                                   where a.ApproverID == employeeCode &&
-        //                                         a.ApprovalStep == (int)ApprovalStep.GL && t.IsShown == true &&
-        //                                         t.StatusID == (int)TravelExpenseStatusEnum.HODApproved
-        //                                   select t).ToList();
-
-        //            foreach (var req in pendingRequests)
-        //            {
-        //                req.StatusID = (int)TravelExpenseStatusEnum.GLPending;
-        //            }
-        //        }
-        //        else if (role == FCRole)
-        //        {
-        //            // 🔄 Update all requests where approval step = 2 and current status = GLApproved
-        //            var pendingRequests = (from t in db.TravelExpenses
-        //                                   join a in db.TravelExpenseApprovals on t.ID equals a.TravelExpenseID
-        //                                   where a.ApproverID == employeeCode &&
-        //                                         a.ApprovalStep == (int)ApprovalStep.FC && t.IsShown == true &&
-        //                                         t.StatusID == (int)TravelExpenseStatusEnum.GLApproved
-        //                                   select t).ToList();
-
-        //            foreach (var req in pendingRequests)
-        //            {
-        //                req.StatusID = (int)TravelExpenseStatusEnum.FCPending;
-        //                //req.UpdatedDate = now;
-        //            }
-        //        }
-        //        else if (role == RequesterRole)
-        //        {
-        //            // ✅ Update all of the requester’s own requests that are FCApproved to DONE
-        //            var approvedRequests = db.TravelExpenses
-        //                .Where(t => t.CreatedBy == username &&
-        //                            t.IsShown &&
-        //                            t.StatusID == (int)TravelExpenseStatusEnum.FCApproved)
-        //                .ToList();
-
-        //            foreach (var req in approvedRequests)
-        //            {
-        //                req.StatusID = (int)TravelExpenseStatusEnum.Done;
-        //                //req.UpdatedDate = now;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return;
-        //        }
-        //        db.SaveChanges();
-        //    }
-        //}
 
         public static OperationResult HandleHODApproval(int requestId, string approverUsername, bool isApprove)
         {

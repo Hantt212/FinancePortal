@@ -10,6 +10,7 @@ namespace FinancePortal.ViewModels
         public int ID { get; set; }
         public int CostID { get; set; }
         public string CostName { get; set; }
+        public int CostAmount { get; set; }
         public int BudgetID { get; set; }
         public string BudgetName { get; set; }
         public decimal BudgetAmount { get; set; }

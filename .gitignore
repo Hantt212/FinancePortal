@@ -15,3 +15,4 @@ obj/Debug/TempPE/Models.FinancePortalModel.cs.dll
 obj/Debug/TempPE/Models.FinancePortalModel.cs.dll
 *.cache
 /Upload
+/obj

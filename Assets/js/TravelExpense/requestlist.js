@@ -172,12 +172,33 @@ function fillViewModal(data) {
     $('#viewBudgetRemaining').text(formatNumber(data.BudgetRemainingAtSubmit || 0));
 
     // 🔹 Cost Details
-    $('#viewCostAir').text(data.CostDetails?.CostAir ?? 0);
-    $('#viewCostHotel').text(data.CostDetails?.CostHotel ?? 0);
-    $('#viewCostMeal').text(data.CostDetails?.CostMeal ?? 0);
-    $('#viewCostOther').text(data.CostDetails?.CostOther ?? 0);
-    $('#viewExchangeRate').text(data.ExchangeRate ?? "");
-    $('#viewEstimatedCost').text(formatNumber(data.EstimatedCost || 0));
+    var costDetails = data.CostDetails;
+    var costViewHtml = '';
+    var itemsPerRow = 2;
+    var index = 0;
+    costDetails.forEach(function (item, i) {
+        // Start a new row every 4 items
+        if (i % itemsPerRow === 0) {
+            costViewHtml += '<div class="row mt-1">';
+        }
+
+        costViewHtml += `<div class="col-md-6">
+                            <strong>${item.CostName}:</strong> 
+                            <span>${item.CostAmount}</span>
+                         </div>`;
+
+        // End the row
+        if ((i + 1) % itemsPerRow === 0 || i === costDetails.length - 1) {
+            costViewHtml += '</div>'; // close the row
+        }
+    });
+
+    costViewHtml += `<div class="row">
+                        <div class="col-md-6 mt-3"><strong class="mr-2">Exchange Rate:</strong>${data.ExchangeRate ?? 0}</div>
+                        <div class="col-md-6 mt-3"><strong class="mr-2">Estimated VND:</strong>${data.EstimatedCost || 0}</div>
+                    </div>`;
+    $('#costViewContainer').html(costViewHtml);
+    
 
     // 🔹 Employees
     $('#viewEmployeeList').empty();

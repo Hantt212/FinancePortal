@@ -84,23 +84,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="TravelExpenseCashInAdvances">
-      <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCashInAdvance">
-        <MappingFragment StoreEntitySet="TravelExpenseCashInAdvance">
-          <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
-          <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
-          <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
-          <ScalarProperty Name="RequiredDate" ColumnName="RequiredDate" />
-          <ScalarProperty Name="RequiredCash" ColumnName="RequiredCash" />
-          <ScalarProperty Name="Reason" ColumnName="Reason" />
-          <ScalarProperty Name="Department" ColumnName="Department" />
-          <ScalarProperty Name="EmployeeName" ColumnName="EmployeeName" />
-          <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
-          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="TravelExpenseCosts">
       <EntityTypeMapping TypeName="FinancePortalModel.TravelExpenseCost">
         <MappingFragment StoreEntitySet="TravelExpenseCost">
@@ -164,6 +147,7 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="FinancePortalModel.User">
         <MappingFragment StoreEntitySet="User">
+          <ScalarProperty Name="Department" ColumnName="Department" />
           <ScalarProperty Name="IsShown" ColumnName="IsShown" />
           <ScalarProperty Name="IsWindowsAccount" ColumnName="IsWindowsAccount" />
           <ScalarProperty Name="UserEmailAddress" ColumnName="UserEmailAddress" />
@@ -184,6 +168,47 @@
           <ScalarProperty Name="RoleId" ColumnName="RoleId" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CashInAdvances">
+      <EntityTypeMapping TypeName="FinancePortalModel.CashInAdvance">
+        <MappingFragment StoreEntitySet="CashInAdvance">
+          <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="RequesterSignature" ColumnName="RequesterSignature" />
+          <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+          <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+          <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
+          <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
+          <ScalarProperty Name="RequiredDate" ColumnName="RequiredDate" />
+          <ScalarProperty Name="RequiredCash" ColumnName="RequiredCash" />
+          <ScalarProperty Name="Reason" ColumnName="Reason" />
+          <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CashInAdvanceApprovals">
+      <EntityTypeMapping TypeName="FinancePortalModel.CashInAdvanceApproval">
+        <MappingFragment StoreEntitySet="CashInAdvanceApproval">
+          <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+          <ScalarProperty Name="ApproverSignDate" ColumnName="ApproverSignDate" />
+          <ScalarProperty Name="ApproverSignature" ColumnName="ApproverSignature" />
+          <ScalarProperty Name="ApproverPosition" ColumnName="ApproverPosition" />
+          <ScalarProperty Name="ApproverEmail" ColumnName="ApproverEmail" />
+          <ScalarProperty Name="ApproverName" ColumnName="ApproverName" />
+          <ScalarProperty Name="ApproverID" ColumnName="ApproverID" />
+          <ScalarProperty Name="ApprovalStep" ColumnName="ApprovalStep" />
+          <ScalarProperty Name="CIAID" ColumnName="CIAID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

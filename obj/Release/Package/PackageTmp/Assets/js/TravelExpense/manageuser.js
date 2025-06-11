@@ -83,9 +83,9 @@ function loadUserTable() {
                     orderable: false,
                     render: function (data, type, row) {
                         return `
-                            <button class="btn btn-sm btn-outline-primary edit-user" data-id="${row.UserId}">
+                            <a class="btn btn-sm btn-outline-primary edit-user" data-id="${row.UserId}">
                                 <i class="fa fa-edit"></i> Edit
-                            </button>
+                            </a>
                         `;
                     }
                 }
