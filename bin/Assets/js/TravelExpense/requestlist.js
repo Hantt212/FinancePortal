@@ -164,38 +164,33 @@ function fillViewModal(data) {
     $('#viewTripDays').text(data.TripDays ?? "");
     $('#viewRequestDate').text(formatJSONDate(data.RequestDate));
     $('#viewTripPurpose').text(data.TripPurpose || "");
-
-    // 🔹 Budget
-    $('#viewBudgetName').text(data.Budget?.BudgetName || "");
-    $('#viewBudgetAmount').text(formatNumber(data.BudgetAmountAtSubmit || 0));
-    $('#viewBudgetUsed').text(formatNumber(formatNumber(data.BudgetUsedAtSubmit) || 0));
-    $('#viewBudgetRemaining').text(formatNumber(data.BudgetRemainingAtSubmit || 0));
+    
 
     // 🔹 Cost Details
     var costDetails = data.CostDetails;
     var costViewHtml = '';
     var itemsPerRow = 2;
     var index = 0;
-    costDetails.forEach(function (item, i) {
+    costDetails.forEach(function (cost, i) {
         // Start a new row every 4 items
-        if (i % itemsPerRow === 0) {
-            costViewHtml += '<div class="row mt-1">';
-        }
-
-        costViewHtml += `<div class="col-md-6">
-                            <strong>${item.CostName}:</strong> 
-                            <span>${item.CostAmount}</span>
-                         </div>`;
-
-        // End the row
-        if ((i + 1) % itemsPerRow === 0 || i === costDetails.length - 1) {
-            costViewHtml += '</div>'; // close the row
-        }
+        costViewHtml +=`<div class="row mt-4">
+                            <div class="col-md-3"><strong>Cost:</strong> <span>${cost.CostName}</span></div>
+                            <div class="col-md-2"><span>${cost.CostAmount}$</span></div>
+                            <div class="col-md-7">
+                                <strong>Budget:</strong> <span>${cost.BudgetName}</span>
+                                <div class="row mt-1">
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Amount:</strong><span class="font-italic text-secondary">${cost.BudgetAmountAtSubmit}$</span></div>
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Used:</strong><span class="font-italic text-secondary">${cost.BudgetUsedAtSubmit}$</span></div>
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Remain:</strong> <span class="font-italic text-secondary">${cost.BudgetRemainAtSubmit}$</span></div>
+                                </div>
+                            </div>
+                            
+                        </div>`
     });
 
-    costViewHtml += `<div class="row">
-                        <div class="col-md-6 mt-3"><strong class="mr-2">Exchange Rate:</strong>${data.ExchangeRate ?? 0}</div>
-                        <div class="col-md-6 mt-3"><strong class="mr-2">Estimated VND:</strong>${data.EstimatedCost || 0}</div>
+    costViewHtml += `<div class="row mt-3">
+                        <div class="col-md-5 mt-3"><strong class="mr-2">Exchange Rate:</strong>${data.ExchangeRate ?? 0}</div>
+                        <div class="col-md-7 mt-3"><strong class="mr-2">Estimated VND:</strong>${data.EstimatedCost || 0}</div>
                     </div>`;
     $('#costViewContainer').html(costViewHtml);
     

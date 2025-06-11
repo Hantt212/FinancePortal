@@ -31,15 +31,6 @@
         <div class="col-lg-12">
             <div class="col-md-12">
 
-                <!-- 🔹 Header with TAR No -->
-                @*<div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-0 font-weight-bold">CASH IN ADVANCE FORM</h3>
-            <h5 class="mb-0 text-muted font-weight-bold">
-                TAR No: <span id="tarNumber">@(Model?.TarNo)</span>
-            </h5>
-            <input type="hidden" id="travelStatusID" value="@(Model?.StatusID)" />
-        </div>*@
-
                 <input type="hidden" id="ciaID" value="@(Model?.ID ?? 0)" />
                 <input type="hidden" id="travelID" value="@(Model != null ? Model.TravelExpenseID : 0)"/>
                 <!-- 🔸 Travel Info -->
@@ -128,22 +119,10 @@
                                                 <input type="date" class="form-control" id="returnedDate" value="@(Model != null && Model.ID > 0 ? Model.ReturnedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                                             </div>
                                         </div>
-
-                                        @*<div class="form-group row">
-                            <label class="control-label col-md-4 font-weight-bold">
-                                Balance Advance<br /><span class="font-italic text-secondary">(Số dư tạm ứng)</span>
-                            </label>
-                            <div class="col-md-8">
-                                <input type="number" class="form-control" id="lblEmployeeNumber" />
-                            </div>
-                        </div>*@
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
-
 
                         <!-- 🔸 Employees Section -->
                         <div class="card shadow border-0 mb-4 mt-4" id="bankContainer" style="display:none">
@@ -180,7 +159,7 @@
                                         Account No<span class="text-danger">*</span>
                                     </label>
                                     <div class="col-md-8">
-                                        <input type="number" class="form-control" id="BAccountNo" value="@(Model != null ? Model.AccountNo : "")" />
+                                        <input type="text" class="form-control" id="BAccountNo" value="@(Model != null ? Model.AccountNo : "")" />
                                     </div>
                                 </div>
 
@@ -262,8 +241,8 @@
                                     </h5>
                                     <div class="card-body text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
                                         <label class="font-weight-bold d-block">Your Signature</label>
-                                        <input type="text" id="requesterSign" class="form-control text-center mb-3"
-                                               style="font-family: 'Binetta Signature'; font-size: 3.0em; border: none;"
+                                        <input type="text" id="requesterSign" class="form-control text-center mb-3" 
+                                               style="font-family: 'Binetta Signature'; font-size: 3.0em; border: none; background-color:#e9ecef"
                                                value="@(Model != null && Model.ID > 0 ? Model.RequesterSign : HttpContext.Current.Session["UserName"]?.ToString())" />
 
                                         <div class="input-group mt-auto">

@@ -63,12 +63,11 @@ namespace FinancePortal.Controllers
 
             try
             {
-
                 bool result = false;
                 if (model.ID > 0)
                 {
                     // Update existing request
-                  //  result = TravelExpenseDao.UpdateTravelExpense(model, newAttachFiles);
+                    result = CashInAdvanceDao.UpdateCashInAdvance(model);
                 }
                 else
                 {

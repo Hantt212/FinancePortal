@@ -1,4 +1,9 @@
-﻿$('#approverCode').on('input', function () {
+﻿
+$(document).ready(function () {
+    // Trigger handler manually after DOM is ready
+    $('#requiredCash').trigger('input'); // or 'change' depending on your handler
+});
+$('#approverCode').on('input', function () {
     const code = $(this).val().trim();
     if (!code || code.length < 5) {
         $('#approverInfoFields').hide();
@@ -35,6 +40,12 @@ $('#requiredCash').on('input', function () {
         $("#bankContainer").hide();
     }
 });
+
+//prevent enter text
+$('#BAccountNo').on('input', function () {
+    this.value = this.value.replace(/\D/g, ''); // removes non-digits
+});
+
 $("#submitCIAButton").click(function () {
     //Cash In Advance
     const ID = parseInt($('#ciaID').val()) || 0;
@@ -56,7 +67,7 @@ $("#submitCIAButton").click(function () {
 
     let beneficialName = "";
     let bankBranch = "";
-    let bankAccNo = "";
+    let accountNo = "";
 
     if (!reason) {
         showToast("Reason cannot be empty.", "warning");
@@ -87,7 +98,7 @@ $("#submitCIAButton").click(function () {
     if (requiredCash > 5000000) {
         beneficialName = $('#BName').val().trim();
         bankBranch = $('#BBranch').val().trim();
-        bankAccNo = $('#BAccountNo').val().trim();
+        accountNo = $('#BAccountNo').val().trim();
         if (!beneficialName) {
             showToast("Beneficial Name cannot be empty.", "warning");
             return;
@@ -96,7 +107,7 @@ $("#submitCIAButton").click(function () {
             showToast("Bank Branch cannot be empty.", "warning");
             return;
         }
-        if (!bankAccNo) {
+        if (!accountNo) {
             showToast("Account No cannot be empty.", "warning");
             return;
         }
@@ -112,11 +123,12 @@ $("#submitCIAButton").click(function () {
         returnedDate,
         beneficialName,
         bankBranch,
-        bankAccNo,
+        accountNo,
         hodId,
         hodName,
         hodEmail,
-        hodPosition
+        hodPosition,
+        requesterSign
     };
 
 
