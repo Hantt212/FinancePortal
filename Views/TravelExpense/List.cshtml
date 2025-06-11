@@ -68,20 +68,23 @@
         <div class="modal-content">
 
             <!-- 🔘 Modal Header -->
-            <div class="modal-header d-flex justify-content-between align-items-center">
-                <div>
+            <div class="modal-header position-relative">
+                <div class="d-flex gap-2">
                     <button id="exportPDFBtn" class="btn btn-sm btn-outline-dark">
                         <i class="fa fa-file-pdf-o"></i> Export PDF
                     </button>
+                    <button class="btn btn-sm btn-outline-dark">
+                        <i class="fa fa-history"></i> History
+                    </button>
                 </div>
-                <h5 class="modal-title font-weight-bold">TAR No: <span id="viewTarNo"></span></h5>
-                <div id="approvalActions" class="d-flex gap-2">
-                    <button class="btn btn-success btn-sm mr-1" id="approveBtn"><i class="fa fa-check"></i> Approve</button>
-                    <button class="btn btn-danger btn-sm" id="rejectBtn"><i class="fa fa-times"></i> Reject</button>
-                </div>
-                <div id="cancelActions" class="d-flex gap-2">
-                    <button class="btn btn-dark btn-sm mr-1" id="cancelBtn"><i class="fa fa-ban"></i> Cancel</button>
-                </div>
+
+                <h5 class="modal-title font-weight-bold position-absolute start-50 translate-middle-x">
+                    TAR No: <span id="viewTarNo"></span>
+                </h5>
+
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" id="closeViewModalBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
 
             <!-- 🧾 Modal Body -->
@@ -97,7 +100,7 @@
                                  data-bs-toggle="dropdown"
                                  aria-expanded="false" />
 
-                            <ul class="dropdown-menu" id="ddAttachment" >
+                            <ul class="dropdown-menu" id="ddAttachment">
                             </ul>
                         </div>
                     </div>
@@ -114,18 +117,7 @@
 
                 <!-- Budget -->
                 <div class="card mb-3">
-                    <div class="card-header bg-primary text-white font-weight-bold">Budget</div>
-                    <div class="card-body row">
-                        <div class="col-md-6"><strong>Budget Name:</strong> <span id="viewBudgetName"></span></div>
-                        <div class="col-md-6"><strong>Amount:</strong> <span id="viewBudgetAmount"></span></div>
-                        <div class="col-md-6"><strong>Used:</strong> <span id="viewBudgetUsed"></span></div>
-                        <div class="col-md-6"><strong>Remaining:</strong> <span id="viewBudgetRemaining"></span></div>
-                    </div>
-                </div>
-
-                <!-- Cost Details -->
-                <div class="card mb-3">
-                    <div class="card-header bg-primary text-white font-weight-bold">Cost Breakdown</div>
+                    <div class="card-header bg-primary text-white font-weight-bold">Cost details</div>
                     <div class="card-body" id="costViewContainer">
                     </div>
                 </div>
@@ -179,8 +171,22 @@
             </div>
 
             <!-- 🔚 Footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeViewModalBtn">Close</button>
+         
+
+            <div class="modal-footer justify-content-center w-100">
+                <div id="approvalActions" class="d-flex gap-2">
+                    <button class="btn btn-success btn-sm" id="approveBtn">
+                        <i class="fa fa-check"></i> Approve
+                    </button>
+                    <button class="btn btn-danger btn-sm ml-5" id="rejectBtn">
+                        <i class="fa fa-times"></i> Reject
+                    </button>
+                </div>
+                <div id="cancelActions" class="d-flex gap-2 ms-3">
+                    <button class="btn btn-dark btn-sm" id="cancelBtn">
+                        <i class="fa fa-ban"></i> Cancel
+                    </button>
+                </div>
             </div>
 
         </div>

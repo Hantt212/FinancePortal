@@ -48,7 +48,7 @@ $(document).ready(function () {
 
             $('#approverInfoFields').slideDown();
         }
-        
+
     }
     else {
         // 🆕 Only if it's a new TravelExpense, reset costs to 0
@@ -85,15 +85,15 @@ $(document).ready(function () {
             showToast("Server error while fetching preload info.", "danger");
         });
     }
-    
+
 });
 
 // Change budget type
 $(document).on('change', '.type-budget', function () {
-    var selectId = $(this).attr('id');             
+    var selectId = $(this).attr('id');
     var rowSelected = $(this).attr('positionrow');
-    var costBudgetID = $(this).val();  
-    
+    var costBudgetID = $(this).val();
+
     var costBudgetIDList = [];
     costBudgetIDList.push(costBudgetID);
     // Optional: AJAX request
@@ -154,7 +154,7 @@ $('#confirmAddEmployeeBtn').click(function () {
         // ✅ Show toast
         showToast("Employee added to the list successfully!", "success");
     }
-    
+
 });
 
 $(document).on('click', '.remove-employee', function () {
@@ -195,10 +195,10 @@ var selectedEmployee = null;
 
 $('#employeeCodeInput').on('input', function () {
     const code = $(this).val().trim();
-    
+
     if (!code || code.length < 5) {
-        $('#employeeCardContainer').hide();       
-        selectedEmployee = null;       
+        $('#employeeCardContainer').hide();
+        selectedEmployee = null;
         return;
     }
 
@@ -216,7 +216,7 @@ $('#employeeCodeInput').on('input', function () {
                 $('#empDivision').text(res.data.Division);
                 $('#empDepartment').text(res.data.Department);
                 $('#employeeCardContainer').show();
-                showToast("Employee found: " + res.data.Name, "success");                
+                showToast("Employee found: " + res.data.Name, "success");
             } else {
                 $('#employeeCardContainer').hide();
                 showToast("Employee not found.", "danger");
@@ -363,7 +363,7 @@ $('#submitTravelBtn').click(function () {
         attachmentFileList.push($(this).find('a').text());
     })
 
-   
+
     const costDetailList = [];
     const usedBudgetIDs = new Set();
 
@@ -393,7 +393,7 @@ $('#submitTravelBtn').click(function () {
                             BudgetID: budgetID
                         });
                     }
-                    
+
                 } else {
                     // 1. Check sum CostAmount of budgetID
                     const existingTotal = costDetailList
@@ -416,7 +416,7 @@ $('#submitTravelBtn').click(function () {
                 }
             }
         });
-    }catch(e) {
+    } catch (e) {
         showToast(e.message, "warning");
         return;
     }
@@ -532,43 +532,60 @@ function loadCostBudget() {
             card.append(`
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-2">
+                       
+                    <div class="col-md-3">
                             <div class="input-group">
                                 <button class="input-group-prepend btn" style="width: 50%; text-align: left; background:#9ddef2" type="button">${key}</button>
                                 <input type="number" class="form-control cost-input w-30" id="CostType_${index}" positionRow="${index}" placeholder="Amount ($)" value="0" />
                                 <span class="input-group-text">($)</span>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <select class="form-control type-budget" positionRow="${index}" id="BudgetType_${index}">
+
+                        <div class="col-md-3">
+                            <div class="d-flex justify-content-between mb-3">
+                                    <div class="input-group" >
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-success" type="button">Budget</button>
+                                        </div>
+                                         <select class="form-control type-budget" positionRow="${index}" id="BudgetType_${index}">
                                 ${options}
                             </select>
+                                    </div>
+                            </div>
+                           
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-between mb-3">
-                                <div class="input-group" style="width: 32%;">
+                                <div class="input-group" style="width:32%" >
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-secondary" type="button">Amount</button>
+                                        <button class="btn" style="background-color:#82b59d" type="button">Amount</button>
                                     </div>
                                     <input type="text" class="form-control" value="0" id="amount${index}" readonly>
                                     <span class="input-group-text">($)</span>
                                 </div>
 
-                                <div class="input-group" style="width: 32%;">
-                                    <div class="input-group-prepend">
-                                        <button class="btn btn-warning" type="button">Used</button>
+                                <div class="input-group" style="width:32%" >
+                                     <div class="input-group-prepend">
+                                        <button class="btn " style="background-color:#82b59d" type="button">Used</button>
                                     </div>
                                     <input type="text" class="form-control" value="0" id="used${index}" readonly>
                                     <span class="input-group-text">($)</span>
                                 </div>
 
-                                <div class="input-group" style="width: 32%;">
+                                 <div class="input-group" style="width:32%" >
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-success" type="button">Remain</button>
+                                        <button class="btn" style="background-color:#82b59d" type="button">Remain</button>
                                     </div>
                                     <input type="text" class="form-control" value="0" id="remain${index}" readonly>
                                     <span class="input-group-text">($)</span>
+                                 </div>
+                                   
+
+                                    
+
                                 </div>
+
+                                
                             </div>
 
                         </div>
@@ -639,7 +656,7 @@ function loadCostBudget() {
             }
         });
 
-        
+
     });
 }
 
