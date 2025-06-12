@@ -366,6 +366,7 @@
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="IsShown" Type="Boolean" Nullable="false" />
     <NavigationProperty Name="CashInAdvanceApprovals" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvance" ToRole="CashInAdvanceApproval" />
+    <Property Name="StatusID" Type="Int32" Nullable="false" />
   </EntityType>
   <EntityType Name="CashInAdvanceApproval">
     <Key>

@@ -1452,6 +1452,154 @@ namespace FinancePortal.Dao
             }
         }
 
+
+        public static List<object> GetAllRequest(string username, string employeeCode, string role)
+        {
+            int maxItems = int.TryParse(ConfigurationManager.AppSettings["MaxRequestListItems"], out int limit)
+                            ? limit
+                            : 100; // Fallback default
+
+            using (var db = new FinancePortalEntities())
+            {
+                // Step 1: Prepare allowed travel expense IDs based on role logic (one-time shared condition)
+                var travelExpensesQuery = db.TravelExpenses.Where(t => t.IsShown);
+
+                if (role == RequesterRole)
+                {
+                    travelExpensesQuery = travelExpensesQuery.Where(t => t.CreatedBy == username);
+                }
+                else if (role == HODRole)
+                {
+                    travelExpensesQuery = travelExpensesQuery.Where(t =>
+                        db.TravelExpenseApprovals.Any(a =>
+                            a.TravelExpenseID == t.ID &&
+                            a.ApprovalStep == 1 &&
+                            a.ApproverID == employeeCode));
+                }
+                else if (role == FCRole)
+                {
+                    travelExpensesQuery = travelExpensesQuery.Where(t =>
+                        db.TravelExpenseApprovals.Any(a =>
+                            a.TravelExpenseID == t.ID &&
+                            a.ApprovalStep == 3 &&
+                            a.ApproverID == employeeCode));
+                }
+
+                // TravelExpense IDs that match permission logic
+                var travelIDs = travelExpensesQuery.Select(t => t.ID);
+
+                // Step 2: Identify which of these are in CashInAdvance
+                var travelIDInCIA = db.CashInAdvances
+                    .Where(c => c.IsShown && travelIDs.Contains(c.TravelExpenseID))
+                    .Select(c => c.TravelExpenseID)
+                    .Distinct();
+
+                // Step 3: Get Travel IDs not in CIA (those still only in TravelExpenses)
+                var travelIDOnlyInTravel = travelIDs.Except(travelIDInCIA);
+
+                // Step 4: Fetch detailed records for each group (with joins)
+                var travelOnlyList = (from t in db.TravelExpenses
+                                      join s in db.TravelExpenseStatus on t.StatusID equals s.ID
+                                      join u in db.Users on t.CreatedBy equals u.UserName
+                                      where travelIDOnlyInTravel.Contains(t.ID)
+                                      select new
+                                      {
+                                          u.Department,
+                                          t.ID,
+                                          t.TarNo,
+                                          s.DisplayName,
+                                          s.ColorCode
+                                      }).OrderByDescending(i => i.ID).ToList<object>();
+
+                var travelWithCIAList = (from c in db.CashInAdvances
+                                         join t in db.TravelExpenses on c.TravelExpenseID equals t.ID
+                                         join s in db.TravelExpenseStatus on t.StatusID equals s.ID
+                                         join u in db.Users on t.CreatedBy equals u.UserName
+                                         where travelIDInCIA.Contains(t.ID)
+                                         select new
+                                         {
+                                             u.Department,
+                                             t.ID,
+                                             t.TarNo,
+                                             s.DisplayName,
+                                             s.ColorCode
+                                         }).OrderByDescending(i => i.ID).ToList<object>();
+
+                // Step 5: Combine and return
+                return travelOnlyList.Concat(travelWithCIAList).ToList();
+            }
+        }
+
+        public static List<TravelInfoViewModel> GetCurrentList(string role, int travelID)
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var travelQuery = (from t in db.TravelExpenses
+                                   where t.ID == travelID
+                                   select new
+                                   {
+                                       t.ID,
+                                       t.StatusID,
+                                       t.CreatedDate
+                                   }).FirstOrDefault();
+
+                var cashQuery = (from c in db.CashInAdvances
+                                 where c.TravelExpenseID == travelID
+                                 select new
+                                 {
+                                     c.ID,
+                                     c.StatusID,
+                                     c.CreatedDate
+                                 }).FirstOrDefault();
+
+                var travelList = new List<TravelInfoViewModel>();
+
+                if (travelQuery != null)
+                {
+                    var travelInfo = new TravelInfoViewModel
+                    {
+                        FormName = "Travel Expense",
+                        CreatedDate = travelQuery.CreatedDate.ToString("dd-MM-yyyy"),
+                        ID = travelQuery.ID,
+                        EditMode = ((role == RequesterRole && (
+                                        travelQuery.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
+                                        travelQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
+                                        travelQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedFC))
+                                    || (role == GLRole && travelQuery.StatusID < 7)) ? 1 : 0,
+                        CashMode = (role == RequesterRole && travelQuery.StatusID == (int)TravelExpenseStatusEnum.TARApproved) ? 1 : 0
+                    };
+
+                    if (cashQuery != null)
+                    {
+                        travelInfo.EditMode = 0;
+                        travelInfo.CashMode = 0;
+
+                        var cashInfo = new TravelInfoViewModel
+                        {
+                            FormName = "Cash In Advance",
+                            CreatedDate = cashQuery.CreatedDate.ToString("dd-MM-yyyy"),
+                            ID = cashQuery.ID,
+                            EditMode = ((role == RequesterRole && (
+                                            cashQuery.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
+                                            cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
+                                            cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedFC))
+                                        || (role == GLRole && cashQuery.StatusID < 7)) ? 1 : 0,
+                            CashMode = (role == RequesterRole && cashQuery.StatusID == (int)TravelExpenseStatusEnum.TARApproved) ? 1 : 0
+                        };
+
+                        travelList.Add(travelInfo);
+                        travelList.Add(cashInfo);
+                    }
+                    else
+                    {
+                        travelList.Add(travelInfo);
+                    }
+                }
+
+                return travelList;
+            }
+        }
+
         #endregion
     }
 }

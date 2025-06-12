@@ -6,6 +6,7 @@
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="TravelExpenseID" Type="int" Nullable="false" />
+    <Property Name="StatusID" Type="int" Nullable="false" />
     <Property Name="Reason" Type="nvarchar(max)" Nullable="false" />
     <Property Name="RequiredCash" Type="bigint" Nullable="false" />
     <Property Name="RequiredDate" Type="datetime" Nullable="false" />

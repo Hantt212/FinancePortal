@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "My All List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var roleDisplay = HttpContext.Current.Session["UserRole"] as string ?? "";
+}
+
+
+
+<div class="container pt-5" style="margin-top: 120px;">
+    <h2 class="mb-4 font-weight-bold">My All Requests</h2>
+    <table class="table table-bordered" id="allListTbl">
+        <thead class="thead-light">
+            <tr>
+                <th></th> <!-- Collapse/Expand button -->
+                <th>Department</th>
+                <th>TAR No</th>
+                <th class="d-flex flex-row">
+                    <div class="p-2">Status</div>
+                    <div class="p-2">
+                        <select class="form-select" id="statusFilter">
+                        </select>
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+
+
+@section allListScripts {
+
+    <script src="~/Assets/js/TravelExpense/alllist.js"></script>
+}
+

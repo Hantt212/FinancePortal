@@ -436,3 +436,4 @@ C:\Users\hatt.nguyen.HTPVTG\OneDrive\Ha's Handover\FinancePortal\obj\Debug\Finan
 C:\Users\hatt.nguyen.HTPVTG\OneDrive\Ha's Handover\FinancePortal\obj\Debug\FinanceP.DE22A81D.Up2Date
 C:\Users\hatt.nguyen.HTPVTG\OneDrive\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.dll
 C:\Users\hatt.nguyen.HTPVTG\OneDrive\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.pdb
+C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\alllist.js

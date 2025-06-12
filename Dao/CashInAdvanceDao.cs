@@ -96,6 +96,7 @@ namespace FinancePortal.Dao
                     ciaForm.IsShown = true;
                     ciaForm.CreatedBy = username;
                     ciaForm.CreatedDate = DateTime.Now;
+                    ciaForm.StatusID = (int)TravelExpenseStatusEnum.WaitingHOD;
                     db.CashInAdvances.Add(ciaForm);
                     db.SaveChanges();
 

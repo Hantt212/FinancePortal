@@ -345,9 +345,29 @@ namespace FinancePortal.Controllers
         }
 
 
-        
+        public ActionResult AllList()
+        {
+            return View();
+        }
 
+        [HttpGet]
+        public JsonResult GetAllList()
+        {
+            string username = System.Web.HttpContext.Current.Session["Username"]?.ToString();
+            string employeeCode = System.Web.HttpContext.Current.Session["EmployeeID"]?.ToString();
+            string role = System.Web.HttpContext.Current.Session["UserRole"]?.ToString();
 
+            var list = TravelExpenseDao.GetAllRequest(username, employeeCode, role);
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetCurrentList(int travelID)
+        {
+            string role = System.Web.HttpContext.Current.Session["UserRole"]?.ToString();
+            var currentList = TravelExpenseDao.GetCurrentList(role, travelID);
+            return Json(new { success = true, data = currentList }, JsonRequestBehavior.AllowGet);
+        }
         #endregion
     }
 }

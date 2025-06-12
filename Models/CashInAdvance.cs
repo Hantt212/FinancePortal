@@ -35,6 +35,7 @@ namespace FinancePortal.Models
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public bool IsShown { get; set; }
+        public int StatusID { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CashInAdvanceApproval> CashInAdvanceApprovals { get; set; }
