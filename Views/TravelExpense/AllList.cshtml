@@ -30,6 +30,135 @@
     </table>
 </div>
 
+<div class="modal fade " id="viewRequestModal" tabindex="-1" role="dialog" aria-labelledby="viewRequestModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+
+            <!-- 🔘 Modal Header -->
+            <div class="modal-header position-relative">
+                <div class="d-flex gap-2">
+                    <button id="exportPDFBtn" class="btn btn-sm btn-outline-dark">
+                        <i class="fa fa-file-pdf-o"></i> Export PDF
+                    </button>
+                    <button class="btn btn-sm btn-outline-dark">
+                        <i class="fa fa-history"></i> History
+                    </button>
+                </div>
+
+                <h5 class="modal-title font-weight-bold position-absolute start-50 translate-middle-x">
+                    TAR No: <span id="viewTarNo"></span>
+                </h5>
+
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" id="closeViewModalBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- 🧾 Modal Body -->
+            <div class="modal-body">
+                <!-- Trip Info -->
+                <div class="card mb-3">
+                    <div class="d-flex flex-row card-header bg-primary align-items-center">
+                        <div class="text-white fw-bold">Trip Info</div>
+                        <div class="dropdown">
+                            <img src="~/Assets/images/attach.png"
+                                 class="dropdown-toggle"
+                                 style="width: 20px; height: 20px; margin-left: 20px; cursor: pointer;"
+                                 data-bs-toggle="dropdown"
+                                 aria-expanded="false" />
+
+                            <ul class="dropdown-menu" id="ddAttachment">
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body row">
+                        <div class="col-md-6"><strong>From:</strong> <span id="viewFromDate"></span></div>
+                        <div class="col-md-6"><strong>To:</strong> <span id="viewToDate"></span></div>
+                        <div class="col-md-6"><strong>Days:</strong> <span id="viewTripDays"></span></div>
+                        <div class="col-md-6"><strong>Request Date:</strong> <span id="viewRequestDate"></span></div>
+                        <div class="col-md-12 mt-2"><strong>Purpose:</strong> <span id="viewTripPurpose"></span></div>
+                    </div>
+                </div>
+
+                <!-- Budget -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white font-weight-bold">Cost details</div>
+                    <div class="card-body" id="costViewContainer">
+                    </div>
+                </div>
+
+                <!-- Employees -->
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white font-weight-bold">Employees</div>
+                    <div class="card-body">
+                        <ul id="viewEmployeeList" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <!-- Requester Signature -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light font-weight-bold">Requester Signature</div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewRequesterSign"></span></div>
+                        <div><strong>Sign Date:</strong> <span id="viewRequesterDate"></span></div>
+                    </div>
+                </div>
+
+                <!-- HOD Approver Info -->
+                <div class="card mb-3 d-none" id="hodSection">
+                    <div class="card-header font-weight-bold bg-light d-flex justify-content-between align-items-center">
+                        <span>HOD Approver</span>
+                        <span id="hodApprovalStatus" class="badge badge-secondary">Waiting</span>
+                    </div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewHODName"></span></div>
+                        <div><strong>Email:</strong> <span id="viewHODEmail"></span></div>
+                        <div><strong>Position:</strong> <span id="viewHODPosition"></span></div>
+                        <div><strong>Sign:</strong> <span id="viewHODSignature"></span></div>
+                        <div><strong>Date:</strong> <span id="viewHODSignDate"></span></div>
+                    </div>
+                </div>
+
+                <!-- FC Approver Info -->
+                <div class="card mb-3 d-none" id="fcSection">
+                    <div class="card-header font-weight-bold bg-light d-flex justify-content-between align-items-center">
+                        <span>FC Approver</span>
+                        <span id="fcApprovalStatus" class="badge badge-secondary">Waiting</span>
+                    </div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewFCName"></span></div>
+                        <div><strong>Email:</strong> <span id="viewFCEmail"></span></div>
+                        <div><strong>Position:</strong> <span id="viewFCPosition"></span></div>
+                        <div><strong>Sign:</strong> <span id="viewFCSignature"></span></div>
+                        <div><strong>Date:</strong> <span id="viewFCSignDate"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔚 Footer -->
+
+
+            <div class="modal-footer justify-content-center w-100">
+                <div id="approvalActions" class="d-flex gap-2">
+                    <button class="btn btn-success btn-sm" id="approveBtn">
+                        <i class="fa fa-check"></i> Approve
+                    </button>
+                    <button class="btn btn-danger btn-sm ml-5" id="rejectBtn">
+                        <i class="fa fa-times"></i> Reject
+                    </button>
+                </div>
+                <div id="cancelActions" class="d-flex gap-2 ms-3">
+                    <button class="btn btn-dark btn-sm" id="cancelBtn">
+                        <i class="fa fa-ban"></i> Cancel
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 

@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.Services.Description;
 using System.Runtime.Remoting.Lifetime;
 using System.Security.Policy;
+using Antlr.Runtime;
 
 namespace FinancePortal.Dao
 {
@@ -1547,7 +1548,7 @@ namespace FinancePortal.Dao
                                  where c.TravelExpenseID == travelID
                                  select new
                                  {
-                                     c.ID,
+                                     ID = c.TravelExpenseID ,
                                      c.StatusID,
                                      c.CreatedDate
                                  }).FirstOrDefault();
@@ -1561,6 +1562,7 @@ namespace FinancePortal.Dao
                         FormName = "Travel Expense",
                         CreatedDate = travelQuery.CreatedDate.ToString("dd-MM-yyyy"),
                         ID = travelQuery.ID,
+                        TokenID = "",
                         EditMode = ((role == RequesterRole && (
                                         travelQuery.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
                                         travelQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
@@ -1577,6 +1579,7 @@ namespace FinancePortal.Dao
                         var cashInfo = new TravelInfoViewModel
                         {
                             FormName = "Cash In Advance",
+                            TokenID = TokenHelper.Encrypt(cashQuery.ID.ToString()),
                             CreatedDate = cashQuery.CreatedDate.ToString("dd-MM-yyyy"),
                             ID = cashQuery.ID,
                             EditMode = ((role == RequesterRole && (

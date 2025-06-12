@@ -60,8 +60,7 @@ function loadUserRequests() {
                 $(this).text('➕');
             } else {
                 const travelID = +row.data().ID;
-
-                // Show loading indicator (optional)
+                
                 $(this).text('⏳');
 
                 $.ajax({
@@ -92,11 +91,19 @@ function loadUserRequests() {
 
                                 // Conditionally include CIA button
                                 if (item.EditMode == 1) {
-                                    childHtml += `
-                                <a href="/CashInAdvance/Index?t=${btoa(item.ID)}" 
-                                   class="btn btn-sm btn-outline-success ml-1">
-                                    <i class="fa fa-edit"></i> Edit
-                                </a>`;
+                                    if (item.FormName == "Cash In Advance") {
+                                        childHtml += `
+                                                        <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
+                                                           class="btn btn-sm btn-outline-success ml-1">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>`;
+                                    } else {
+                                        childHtml += `
+                                                        <a href="/TravelExpense/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>`;
+                                    }
+                                    
                                 }
 
                                 childHtml += `</td></tr>`;
@@ -120,4 +127,145 @@ function loadUserRequests() {
         });
     });
 
+}
+
+$(document).on('click', '.btn-view-request', function () {
+    const requestId = $(this).data('id');
+    if (!requestId) return;
+
+    // Load request data and fill the modal
+    loadRequestDetails(requestId);
+});
+
+function loadRequestDetails(requestId) {
+    $.get(`/TravelExpense/GetRequestViewDetails?id=${requestId}`, function (data) {
+        if (!data) {
+            showToast("Failed to load request details", "danger");
+            return;
+        }
+
+        // Fill modal with all info (including budget)
+        fillViewModal(data);
+
+        // ✅ Show the modal
+        $('#viewRequestModal').modal('show');
+    }).fail(function () {
+        showToast("Server error while loading request details", "danger");
+    });
+}
+
+
+function fillViewModal(data) {
+    const role = sessionStorage.getItem("currentUserRole") || "";
+    $('#viewRequestID').val(data.ID);
+    // 🔹 Travel Info
+    $('#viewTarNo').text(data.TarNo || "");
+    $('#viewFromDate').text(formatJSONDate(data.FromDate));
+    $('#viewToDate').text(formatJSONDate(data.ToDate));
+    $('#viewTripDays').text(data.TripDays ?? "");
+    $('#viewRequestDate').text(formatJSONDate(data.RequestDate));
+    $('#viewTripPurpose').text(data.TripPurpose || "");
+
+
+    // 🔹 Cost Details
+    var costDetails = data.CostDetails;
+    var costViewHtml = '';
+    var itemsPerRow = 2;
+    var index = 0;
+    costDetails.forEach(function (cost, i) {
+        // Start a new row every 4 items
+        costViewHtml += `<div class="row mt-4">
+                            <div class="col-md-3"><strong>Cost:</strong> <span>${cost.CostName}</span></div>
+                            <div class="col-md-2"><span>${cost.CostAmount}$</span></div>
+                            <div class="col-md-7">
+                                <strong>Budget:</strong> <span>${cost.BudgetName}</span>
+                                <div class="row mt-1">
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Amount:</strong><span class="font-italic text-secondary">${cost.BudgetAmountAtSubmit}$</span></div>
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Used:</strong><span class="font-italic text-secondary">${cost.BudgetUsedAtSubmit}$</span></div>
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Remain:</strong> <span class="font-italic text-secondary">${cost.BudgetRemainAtSubmit}$</span></div>
+                                </div>
+                            </div>
+                            
+                        </div>`
+    });
+
+    costViewHtml += `<div class="row mt-3">
+                        <div class="col-md-5 mt-3"><strong class="mr-2">Exchange Rate:</strong>${data.ExchangeRate ?? 0}</div>
+                        <div class="col-md-7 mt-3"><strong class="mr-2">Estimated VND:</strong>${data.EstimatedCost || 0}</div>
+                    </div>`;
+    $('#costViewContainer').html(costViewHtml);
+
+
+    // 🔹 Employees
+    $('#viewEmployeeList').empty();
+    (data.Employees || []).forEach(emp => {
+        const item = `<li class="list-group-item">${emp.Name} - ${emp.Position}</li>`;
+        $('#viewEmployeeList').append(item);
+    });
+
+    // Attachment File
+    $('#ddAttachment').empty();
+    (data.AttachmentFiles || []).forEach(name => {
+        const file = `<li><a  style="color: #007bff" class="dropdown-item" href="/Upload/${name}" target="_blank">${name}</a></li>`
+        $('#ddAttachment').append(file);
+    });
+
+    // 🔹 Requester Signature
+    $('#viewRequesterSign').text(data.RequesterSign || "");
+    $('#viewRequesterDate').text(formatJSONDate(data.CreatedDate));
+
+    // 🔹 Approval Sections
+    resetApprovalSections();
+
+    const approvals = data.Approvals || [];
+    showApprovalSections(role, approvals, data.StatusID);
+}
+function formatJSONDate(jsonDate) {
+    if (!jsonDate) return "N/A";
+
+    let timestamp = parseInt(jsonDate.replace(/[^0-9]/g, ""), 10);
+    let date = new Date(timestamp);
+
+    let day = String(date.getDate()).padStart(2, "0");
+    let month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    let year = date.getFullYear();
+    let hours = String(date.getHours()).padStart(2, "0");
+    let minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+function showToast(message, type = "success") {
+    var toastEl = $("#toastMessage");
+
+    let iconColor;
+    let toastTitle;
+
+    switch (type) {
+        case "success":
+            iconColor = "green";
+            toastTitle = "Success";
+            break;
+        case "danger":
+            iconColor = "red";
+            toastTitle = "Error";
+            break;
+        case "info":
+            iconColor = "blue";
+            toastTitle = "Info";
+            break;
+        case "warning":
+            iconColor = "orange";
+            toastTitle = "Warning";
+            break;
+        default:
+            iconColor = "gray";
+            toastTitle = "Notification";
+    }
+
+    $("#toastIcon").css("background-color", iconColor);
+    $("#toastTitle").text(toastTitle);
+    $("#toastTime").text("Just now");
+    $("#toastBody").text(message);
+
+    toastEl.toast('show');
 }
