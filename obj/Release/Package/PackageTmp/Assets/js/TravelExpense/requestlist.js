@@ -34,7 +34,7 @@ $(document).ready(function () {
     loadUserRequests();
 });
 
-// 🔍 View Button Event
+// 🔍 View Button travel Expense
 $(document).on('click', '.btn-view-request', function () {
     const requestId = $(this).data('id');
     if (!requestId) return;
@@ -66,6 +66,7 @@ function loadUserRequests() {
     });
 
     $.get('/TravelExpense/GetUserRequests', function (data) {
+
         const table = $('#requestListTbl').DataTable({
             data: data,
             bDestroy: true,
@@ -73,17 +74,28 @@ function loadUserRequests() {
             dom: 'Bfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             columns: [
+                {
+                    className: 'child-toggle text-center',
+                    orderable: false,
+                    data: null,
+                    width: '30px',
+                    render: function (data, type, row) {
+                        return row.EditCash ? '➕' : '';
+                    },
+                    createdCell: function (td, cellData, rowData) {
+                        $(td).attr('id', `${rowData.ID}`);
+                        $(td).attr('data-expanded', 'false');
+                    }
+                },
                 { data: 'Department' },
                 { data: 'TarNo' },
-              /*  { data: 'TripPurpose' },*/
                 {
                     data: 'RequestDate',
                     render: function (data) {
                         const match = /\/Date\((\d+)\)\//.exec(data);
                         if (match) {
                             const timestamp = parseInt(match[1]);
-                            const date = new Date(timestamp);
-                            return date.toLocaleDateString('en-GB');
+                            return new Date(timestamp).toLocaleDateString('en-GB');
                         }
                         return 'Invalid Date';
                     }
@@ -95,46 +107,174 @@ function loadUserRequests() {
                     }
                 },
                 {
-                    data: 'DisplayName', // use DisplayName directly for filtering
+                    data: 'DisplayName',
                     render: function (data, type, row) {
                         if (type === 'display') {
                             const bgColor = row.ColorCode || '#6c757d';
                             return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
                         }
-                        return data; // raw text used for filtering/sorting
+                        return data;
                     }
                 },
-
                 {
                     data: null,
                     title: "Actions",
                     orderable: false,
-                    render: function (data, type, row) {
+                    render: function (data) {
                         const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
-                            <i class="fa fa-eye"></i> View
-                        </a>`;
-                        
+                        <i class="fa fa-eye"></i> View
+                    </a>`;
                         const editBtn = data.EditMode
                             ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
-                                <i class="fa fa-edit"></i> Edit
-                               </a>`
-                            : "";
-                        //const cashBtn = data.CashMode
-                        //    ? `<a href="/CashInAdvance/Index/${data.ID}" class="btn btn-sm btn-outline-success ml-1">
-                        //        <i class="fa fa-money"></i> CA
-                        //       </a>`
-                        //    : "";
-                        const cashBtn = data.CashMode
+                            <i class="fa fa-edit"></i> Edit
+                           </a>` : "";
+                        const cashBtn = data.NewCash
                             ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
-                                <i class="fa fa-money"></i> CIA
-                               </a>` : "";
-
+                            ➕ CIA
+                           </a>` : "";
                         return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
                 }
             ]
         });
+
+        // Rebind child toggle event AFTER reinitializing
+        $('#requestListTbl tbody').off('click', 'td.child-toggle').on('click', 'td.child-toggle', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+            const $cell = $(this);
+
+            if ($cell.attr('data-expanded') === 'true') {
+                row.child.hide();
+                tr.removeClass('dt-hasChild');
+                $cell.text('➕').attr('data-expanded', 'false');
+            } else {
+                const travelID = +$cell.attr('id');
+                $cell.text('⏳');
+
+                $.ajax({
+                    url: '/TravelExpense/GetCurrentList',
+                    data: { travelID },
+                    success: function (res) {
+                        if (res.success && res.data.length > 0) {
+                            let childHtml = `<table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th>Form</th>
+                                <th>Request Date</th>
+                                <th>Actions</th>
+                                </tr>
+                            </thead><tbody>`;
+
+                            res.data.forEach(item => {
+                                childHtml += `
+                                <tr>
+                                  <td>${item.FormName}</td>
+                                  <td>${item.CreatedDate}</td>
+                                  <td>
+                                   `;
+
+                                if (item.EditMode == 1) {
+                                    childHtml += (item.FormName === "Cash In Advance")
+                                        ? `
+                                        <a class="btn btn-sm btn-outline-info btn-view-cia" data-id="${item.ID}">
+                                          <i class="fa fa-eye"></i> View
+                                        </a>
+                                        <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
+                                         class="btn btn-sm btn-outline-success ml-1">
+                                         <i class="fa fa-edit"></i> Edit
+                                       </a>`
+                                        : `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                         <i class="fa fa-edit"></i> Edit
+                                       </a>`;
+                                }
+
+                                childHtml += `</td></tr>`;
+                            });
+
+                            childHtml += `</tbody></table>`;
+                            row.child(childHtml).show();
+                            $cell.text('➖').attr('data-expanded', 'true');
+                        } else {
+                            showToast(res.message || "No data available.", "warning");
+                            $cell.text('➕').attr('data-expanded', 'false');
+                        }
+                    },
+                    error: function () {
+                        showToast("Failed to load child rows.", "danger");
+                        $cell.text('➕').attr('data-expanded', 'false');
+                    }
+                });
+            }
+        });
     });
+
+    //$.get('/TravelExpense/GetUserRequests', function (data) {
+    //    const table = $('#requestListTbl').DataTable({
+    //        data: data,
+    //        bDestroy: true,
+    //        order: [[2, "desc"]],
+    //        dom: 'Bfrtip',
+    //        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    //        columns: [
+    //            { data: 'Department' },
+    //            { data: 'TarNo' },
+    //          /*  { data: 'TripPurpose' },*/
+    //            {
+    //                data: 'RequestDate',
+    //                render: function (data) {
+    //                    const match = /\/Date\((\d+)\)\//.exec(data);
+    //                    if (match) {
+    //                        const timestamp = parseInt(match[1]);
+    //                        const date = new Date(timestamp);
+    //                        return date.toLocaleDateString('en-GB');
+    //                    }
+    //                    return 'Invalid Date';
+    //                }
+    //            },
+    //            {
+    //                data: 'EstimatedCost',
+    //                render: function (d) {
+    //                    return parseFloat(d).toLocaleString('vi-VN');
+    //                }
+    //            },
+    //            {
+    //                data: 'DisplayName', // use DisplayName directly for filtering
+    //                render: function (data, type, row) {
+    //                    if (type === 'display') {
+    //                        const bgColor = row.ColorCode || '#6c757d';
+    //                        return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
+    //                    }
+    //                    return data; // raw text used for filtering/sorting
+    //                }
+    //            },
+
+    //            {
+    //                data: null,
+    //                title: "Actions",
+    //                orderable: false,
+    //                render: function (data, type, row) {
+    //                    const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
+    //                        <i class="fa fa-eye"></i> View
+    //                    </a>`;
+
+    //                    const editBtn = data.EditMode
+    //                        ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
+    //                            <i class="fa fa-edit"></i> Edit
+    //                           </a>`
+    //                        : "";
+    //                    const cashBtn = data.CashMode
+    //                        ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
+    //                            <i class="fa fa-money"></i> CIA
+    //                           </a>` : "";
+
+    //                    return `${viewBtn} ${editBtn} ${cashBtn}`;
+    //                }
+    //            }
+    //        ]
+    //    });
+    //});
+
 }
 
 function loadRequestDetails(requestId) {
@@ -165,19 +305,35 @@ function fillViewModal(data) {
     $('#viewRequestDate').text(formatJSONDate(data.RequestDate));
     $('#viewTripPurpose').text(data.TripPurpose || "");
 
-    // 🔹 Budget
-    $('#viewBudgetName').text(data.Budget?.BudgetName || "");
-    $('#viewBudgetAmount').text(formatNumber(data.BudgetAmountAtSubmit || 0));
-    $('#viewBudgetUsed').text(formatNumber(formatNumber(data.BudgetUsedAtSubmit) || 0));
-    $('#viewBudgetRemaining').text(formatNumber(data.BudgetRemainingAtSubmit || 0));
 
     // 🔹 Cost Details
-    $('#viewCostAir').text(data.CostDetails?.CostAir ?? 0);
-    $('#viewCostHotel').text(data.CostDetails?.CostHotel ?? 0);
-    $('#viewCostMeal').text(data.CostDetails?.CostMeal ?? 0);
-    $('#viewCostOther').text(data.CostDetails?.CostOther ?? 0);
-    $('#viewExchangeRate').text(data.ExchangeRate ?? "");
-    $('#viewEstimatedCost').text(formatNumber(data.EstimatedCost || 0));
+    var costDetails = data.CostDetails;
+    var costViewHtml = '';
+    var itemsPerRow = 2;
+    var index = 0;
+    costDetails.forEach(function (cost, i) {
+        // Start a new row every 4 items
+        costViewHtml += `<div class="row mt-4">
+                            <div class="col-md-3"><strong>Cost:</strong> <span>${cost.CostName}</span></div>
+                            <div class="col-md-2"><span>${cost.CostAmount}$</span></div>
+                            <div class="col-md-7">
+                                <strong>Budget:</strong> <span>${cost.BudgetName}</span>
+                                <div class="row mt-1">
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Amount:</strong><span class="font-italic text-secondary">${cost.BudgetAmountAtSubmit}$</span></div>
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Used:</strong><span class="font-italic text-secondary">${cost.BudgetUsedAtSubmit}$</span></div>
+                                    <div class="col-md-4"><strong class="font-italic text-secondary">Remain:</strong> <span class="font-italic text-secondary">${cost.BudgetRemainAtSubmit}$</span></div>
+                                </div>
+                            </div>
+                            
+                        </div>`
+    });
+
+    costViewHtml += `<div class="row mt-3">
+                        <div class="col-md-5 mt-3"><strong class="mr-2">Exchange Rate:</strong>${data.ExchangeRate ?? 0}</div>
+                        <div class="col-md-7 mt-3"><strong class="mr-2">Estimated VND:</strong>${data.EstimatedCost || 0}</div>
+                    </div>`;
+    $('#costViewContainer').html(costViewHtml);
+
 
     // 🔹 Employees
     $('#viewEmployeeList').empty();
@@ -358,7 +514,7 @@ $('#rejectBtn').click(() => {
 });
 
 $('#cancelBtn').click(() => {
-    userAction = -1 ;
+    userAction = -1;
     $('#confirmApprovalMessage').text("Are you sure you want to CANCEL this request?");
     $('#confirmApprovalModal').modal('show');
 });
@@ -387,7 +543,7 @@ function submitApproval(userAction) {
             contentType: 'application/json',
             data: JSON.stringify({
                 requestID: +requestId
-            }) ,
+            }),
             success: function (res) {
                 if (res.success) {
                     showToast("Request cancelled successfully!", "success");
@@ -404,7 +560,7 @@ function submitApproval(userAction) {
         });
 
     } else { //Approve or Reject TravelExpense Request
-       
+
 
         const payload = {
             requestId: parseInt(requestId),
@@ -452,7 +608,7 @@ function submitApproval(userAction) {
             }
         });
     }
-    
+
 }
 
 $('#closeViewModalBtn').click(function () {
@@ -460,6 +616,70 @@ $('#closeViewModalBtn').click(function () {
     loadUserRequests(); // Refresh the request list
 });
 
+/*==========START CASH IN ADVANCE==========*/
+$(document).on('click', '.btn-view-cia', function () {
+    const ciaId = $(this).data('id');
+    if (!ciaId) return;
+
+    // Load request data and fill the modal
+    loadCIADetails(ciaId);
+});
+
+
+function loadCIADetails(ciaId) {
+    $.get(`/TravelExpense/GetCIAViewDetails?id=${ciaId}`, function (data) {
+        if (!data) {
+            showToast("Failed to load request details", "danger");
+            return;
+        }
+
+        // Fill modal with all info (including budget)
+        fillCIAViewModal(data);
+
+        // ✅ Show the modal
+        $('#viewCIAModal').modal('show');
+    }).fail(function () {
+        showToast("Server error while loading request details", "danger");
+    });
+}
+
+
+function fillCIAViewModal(data) {
+    const role = sessionStorage.getItem("currentUserRole") || "";
+    $('#vCIAID').text(data.ID);
+    // 🔹 Travel Info
+   /* $('#viewTarNo').text(data.TarNo || "");*/
+    $('#vRequiredDate').text(formatJSONDate(data.RequiredDate));
+    $('#vReturnDate').text(formatJSONDate(data.ReturnedDate));
+    $('#vRequiredCash').text(data.RequiredCash ?? "");
+    $('#vReason').text(data.Reason || "");
+
+    if (data.RequiredCash > 5000000) {
+        $('#containerBank')
+        const html = `
+            <div class="card-header bg-primary text-white font-weight-bold">Bank Info</div>
+            <div class="card-body row">
+                        <div class="col-md-12"><strong>Account No:</strong> <span>${data.AccountNo}</span></div>
+                        <div class="col-md-12"><strong>Beneficial Name:</strong> <span>${data.BeneficialName}</span></div>
+                        <div class="col-md-12"><strong>Bank Branch:</strong> <span>${data.BankBranch}</span></div>
+            </div>
+        `
+        $('#containerBank').html(html);
+    } else {
+        $('#containerBank').html('');
+    }
+    
+    // 🔹 Requester Signature
+    $('#vRequesterSign').text(data.RequesterSign || "");
+    $('#vRequesterDate').text(formatJSONDate(data.CreatedDate));
+
+    // 🔹 Approval Sections
+    resetApprovalSections();
+
+    const approvals = data.Approvals || [];
+    showApprovalSections(role, approvals, data.StatusID);
+}
+/*==========END CASH IN ADVANCE============*/
 $('#exportPDFBtn').click(function () {
     // 🔹 Clone the modal content
     const modal = document.querySelector('#viewRequestModal .modal-content');

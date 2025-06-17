@@ -27,5 +27,10 @@ namespace FinancePortal.ViewModels
         public DateTime CreatedDate { get; set; }
         public string RequesterSign { get; set; }
 
+        public int StatusID { get; set; }
+        public string StatusName { get; set; } = string.Empty;  
+        public string StatusColor { get; set; }
+
+        public List<ApprovalInfoViewModel> Approvals { get; set; }
     }
 }

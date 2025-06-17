@@ -217,3 +217,4 @@ C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePor
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Release\FinancePortal.dll
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Release\FinancePortal.pdb
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\cashinadvance.js
+C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\alllist.js

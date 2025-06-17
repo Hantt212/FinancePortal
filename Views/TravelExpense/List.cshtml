@@ -58,27 +58,6 @@
         </thead>
         <tbody></tbody>
     </table>
-    @*<table class="table table-bordered" id="requestListTbl">
-            <thead class="thead-light">
-                <tr>
-                    <th>Department</th>
-                    <th>TAR No</th>
-                    <th>Request Date</th>
-                    <th>Estimated Cost (VND)</th>
-                    <th class="d-flex flex-row">
-                        <div class="p-2">Status</div>
-                        <div class="p-2">
-                            <select class="form-select" id="statusFilter">
-                            </select>
-                        </div>
-                    </th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>*@
-
-
 </div>
 
 <!-- Global var -->
@@ -238,6 +217,125 @@
     </div>
 </div>
 
+
+<!--CASH IN ADVANCE-->
+<div class="modal fade " id="viewCIAModal" tabindex="-1" role="dialog" aria-labelledby="viewCIAModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+
+            <!-- 🔘 Modal Header -->
+            <div class="modal-header position-relative">
+                @*<div class="d-flex gap-2">
+                    <button id="exportPDFBtn" class="btn btn-sm btn-outline-dark">
+                        <i class="fa fa-file-pdf-o"></i> Export PDF
+                    </button>
+                    <button class="btn btn-sm btn-outline-dark">
+                        <i class="fa fa-history"></i> History
+                    </button>
+                </div>*@
+
+                <h5 class="modal-title font-weight-bold position-absolute start-50 translate-middle-x">
+                    CIA No: <span id="vCIAID"></span>
+                </h5>
+
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" id="closeViewModalBtn">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- 🧾 Modal Body -->
+            <div class="modal-body">
+                <!-- Trip Info -->
+                <div class="card mb-3">
+                    <div class="d-flex flex-row card-header bg-primary align-items-center">
+                        <div class="text-white fw-bold">Requirement Info</div>
+                        @*<div class="dropdown">
+                            <img src="~/Assets/images/attach.png"
+                                 class="dropdown-toggle"
+                                 style="width: 20px; height: 20px; margin-left: 20px; cursor: pointer;"
+                                 data-bs-toggle="dropdown"
+                                 aria-expanded="false" />
+
+                            <ul class="dropdown-menu" id="ddAttachment">
+                            </ul>
+                        </div>*@
+                    </div>
+
+
+                    <div class="card-body row">
+                        <div class="col-md-6"><strong>Required Date:</strong> <span id="vRequiredDate"></span></div>
+                        <div class="col-md-6"><strong>Required Cash:</strong> <span id="vRequiredCash"></span></div>
+                        <div class="col-md-6"><strong>Returned Date:</strong> <span id="vReturnDate"></span></div>
+                        <div class="col-md-12 mt-2"><strong>Reason:</strong> <span id="vReason"></span></div>
+                    </div>
+                </div>
+
+                <!-- Budget -->
+                <div class="card mb-3" id="containerBank">
+                </div>
+
+                <!-- Requester Signature -->
+                <div class="card mb-3">
+                    <div class="card-header bg-light font-weight-bold">Requester Signature</div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="vRequesterSign"></span></div>
+                        <div><strong>Sign Date:</strong> <span id="vRequesterDate"></span></div>
+                    </div>
+                </div>
+
+                <!-- HOD Approver Info -->
+                <div class="card mb-3 d-none" id="hodSection">
+                    <div class="card-header font-weight-bold bg-light d-flex justify-content-between align-items-center">
+                        <span>HOD Approver</span>
+                        <span id="hodApprovalStatus" class="badge badge-secondary">Waiting</span>
+                    </div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewHODName"></span></div>
+                        <div><strong>Email:</strong> <span id="viewHODEmail"></span></div>
+                        <div><strong>Position:</strong> <span id="viewHODPosition"></span></div>
+                        <div><strong>Sign:</strong> <span id="viewHODSignature"></span></div>
+                        <div><strong>Date:</strong> <span id="viewHODSignDate"></span></div>
+                    </div>
+                </div>
+
+                <!-- FC Approver Info -->
+                <div class="card mb-3 d-none" id="fcSection">
+                    <div class="card-header font-weight-bold bg-light d-flex justify-content-between align-items-center">
+                        <span>FC Approver</span>
+                        <span id="fcApprovalStatus" class="badge badge-secondary">Waiting</span>
+                    </div>
+                    <div class="card-body">
+                        <div><strong>Name:</strong> <span id="viewFCName"></span></div>
+                        <div><strong>Email:</strong> <span id="viewFCEmail"></span></div>
+                        <div><strong>Position:</strong> <span id="viewFCPosition"></span></div>
+                        <div><strong>Sign:</strong> <span id="viewFCSignature"></span></div>
+                        <div><strong>Date:</strong> <span id="viewFCSignDate"></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🔚 Footer -->
+
+
+            <div class="modal-footer justify-content-center w-100">
+                <div id="approvalActions" class="d-flex gap-2">
+                    <button class="btn btn-success btn-sm" id="approveBtn">
+                        <i class="fa fa-check"></i> Approve
+                    </button>
+                    <button class="btn btn-danger btn-sm ml-5" id="rejectBtn">
+                        <i class="fa fa-times"></i> Reject
+                    </button>
+                </div>
+                <div id="cancelActions" class="d-flex gap-2 ms-3">
+                    <button class="btn btn-dark btn-sm" id="cancelBtn">
+                        <i class="fa fa-ban"></i> Cancel
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 <script>
 
 </script>

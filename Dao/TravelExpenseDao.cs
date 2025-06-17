@@ -1469,31 +1469,31 @@ namespace FinancePortal.Dao
         //    using (var db = new FinancePortalEntities())
         //    {
         //        // Step 1: Prepare allowed travel expense IDs based on role logic (one-time shared condition)
-        //        var travelExpensesQuery = db.TravelExpenses.Where(t => t.IsShown);
+        //        var travelExpensesQuery = db.TravelExpenses.Where(c => c.IsShown);
 
         //        if (role == RequesterRole)
         //        {
-        //            travelExpensesQuery = travelExpensesQuery.Where(t => t.CreatedBy == username);
+        //            travelExpensesQuery = travelExpensesQuery.Where(c => c.CreatedBy == username);
         //        }
         //        else if (role == HODRole)
         //        {
-        //            travelExpensesQuery = travelExpensesQuery.Where(t =>
+        //            travelExpensesQuery = travelExpensesQuery.Where(c =>
         //                db.TravelExpenseApprovals.Any(a =>
-        //                    a.TravelExpenseID == t.ID &&
+        //                    a.TravelExpenseID == c.ID &&
         //                    a.ApprovalStep == 1 &&
         //                    a.ApproverID == employeeCode));
         //        }
         //        else if (role == FCRole)
         //        {
-        //            travelExpensesQuery = travelExpensesQuery.Where(t =>
+        //            travelExpensesQuery = travelExpensesQuery.Where(c =>
         //                db.TravelExpenseApprovals.Any(a =>
-        //                    a.TravelExpenseID == t.ID &&
+        //                    a.TravelExpenseID == c.ID &&
         //                    a.ApprovalStep == 3 &&
         //                    a.ApproverID == employeeCode));
         //        }
 
         //        // TravelExpense IDs that match permission logic
-        //        var travelIDs = travelExpensesQuery.Select(t => t.ID);
+        //        var travelIDs = travelExpensesQuery.Select(c => c.ID);
 
         //        // Step 2: Identify which of these are in CashInAdvance
         //        var travelIDInCIA = db.CashInAdvances
@@ -1505,29 +1505,29 @@ namespace FinancePortal.Dao
         //        var travelIDOnlyInTravel = travelIDs.Except(travelIDInCIA);
 
         //        // Step 4: Fetch detailed records for each group (with joins)
-        //        var travelOnlyList = (from t in db.TravelExpenses
-        //                              join s in db.TravelExpenseStatus on t.StatusID equals s.ID
-        //                              join u in db.Users on t.CreatedBy equals u.UserName
-        //                              where travelIDOnlyInTravel.Contains(t.ID)
+        //        var travelOnlyList = (from c in db.TravelExpenses
+        //                              join s in db.TravelExpenseStatus on c.StatusID equals s.ID
+        //                              join u in db.Users on c.CreatedBy equals u.UserName
+        //                              where travelIDOnlyInTravel.Contains(c.ID)
         //                              select new
         //                              {
         //                                  u.Department,
-        //                                  t.ID,
-        //                                  t.TarNo,
+        //                                  c.ID,
+        //                                  c.TarNo,
         //                                  s.DisplayName,
         //                                  s.ColorCode
         //                              }).OrderByDescending(i => i.ID).ToList<object>();
 
         //        var travelWithCIAList = (from c in db.CashInAdvances
-        //                                 join t in db.TravelExpenses on c.TravelExpenseID equals t.ID
-        //                                 join s in db.TravelExpenseStatus on t.StatusID equals s.ID
-        //                                 join u in db.Users on t.CreatedBy equals u.UserName
-        //                                 where travelIDInCIA.Contains(t.ID)
+        //                                 join c in db.TravelExpenses on c.TravelExpenseID equals c.ID
+        //                                 join s in db.TravelExpenseStatus on c.StatusID equals s.ID
+        //                                 join u in db.Users on c.CreatedBy equals u.UserName
+        //                                 where travelIDInCIA.Contains(c.ID)
         //                                 select new
         //                                 {
         //                                     u.Department,
-        //                                     t.ID,
-        //                                     t.TarNo,
+        //                                     c.ID,
+        //                                     c.TarNo,
         //                                     s.DisplayName,
         //                                     s.ColorCode
         //                                 }).OrderByDescending(i => i.ID).ToList<object>();
@@ -1546,7 +1546,9 @@ namespace FinancePortal.Dao
                                  where c.TravelExpenseID == travelID
                                  select new
                                  {
-                                     ID = c.TravelExpenseID ,
+                                     //ID = c.TravelExpenseID ,
+                                     ID = c.ID,
+                                     TravelExpenseID = c.TravelExpenseID,
                                      c.StatusID,
                                      c.CreatedDate
                                  }).FirstOrDefault();
@@ -1558,9 +1560,10 @@ namespace FinancePortal.Dao
                     var cashInfo = new TravelInfoViewModel
                     {
                         FormName = "Cash In Advance",
-                        TokenID = TokenHelper.Encrypt(cashQuery.ID.ToString()),
+                        TokenID = TokenHelper.Encrypt(cashQuery.TravelExpenseID.ToString()),
                         CreatedDate = cashQuery.CreatedDate.ToString("dd-MM-yyyy"),
                         ID = cashQuery.ID,
+                        TravelExpenseID = (int)cashQuery.TravelExpenseID,
                         EditMode = ((role == RequesterRole && (
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
@@ -1575,6 +1578,80 @@ namespace FinancePortal.Dao
             }
         }
 
+        public static CashInAdvanceViewModel GetCIAViewDetails(int id)
+        {
+            using (var db = new FinancePortalEntities())
+            {
+                var c = db.CashInAdvances.FirstOrDefault(x => x.ID == id);
+                if (c == null) return null;
+
+                var s = db.TravelExpenseStatus.FirstOrDefault(x => x.ID == c.StatusID);
+
+                var approvals = db.CashInAdvanceApprovals
+                                  .Where(a => a.CIAID == c.ID)
+                                  .OrderBy(a => a.ApprovalStep)
+                                  .Select(a => new ApprovalInfoViewModel
+                                  {
+                                      ApprovalStep = (int)a.ApprovalStep,
+                                      ApproverID = a.ApproverID,
+                                      ApproverName = a.ApproverName,
+                                      ApproverEmail = a.ApproverEmail,
+                                      ApproverPosition = a.ApproverPosition,
+                                      ApproverSignature = a.ApproverSignature,
+                                      ApproverSignDate = a.ApproverSignDate,
+                                      IsApproved = a.IsApproved
+                                  }).ToList();
+
+                // Check if FC approval step exists, if not, preload from User table
+                bool hasFCApproval = approvals.Any(a => a.ApprovalStep == (int)ApprovalStep.FC);
+                if (!hasFCApproval)
+                {
+                    var fcUser = (from u in db.Users
+                                  join ur in db.UserRoles on u.UserId equals ur.UserId
+                                  join r in db.Roles on ur.RoleId equals r.RoleId
+                                  where r.RoleName == FCRole && u.IsShown && u.IsActive && ur.IsShown == true
+                                  select new ApprovalInfoViewModel
+                                  {
+                                      ApprovalStep = (int)ApprovalStep.FC,
+                                      ApproverID = u.EmployeeCode,
+                                      ApproverName = u.UserName,
+                                      ApproverEmail = u.UserEmailAddress,
+                                      ApproverPosition = "Finance Controller", // or u.Position if available
+                                      IsApproved = false
+                                  }).FirstOrDefault();
+
+                    if (fcUser != null)
+                        approvals.Add(fcUser);
+                }
+
+                 var model = new CashInAdvanceViewModel
+                {
+                    ID = c.ID,
+                    TravelExpenseID = c.TravelExpenseID,
+                    Reason = c.Reason,
+                    RequiredCash = c.RequiredCash,
+                    RequiredDate = c.RequiredDate,
+                    ReturnedDate = c.ReturnedDate,
+                    BeneficialName = c.BeneficialName,
+                    BankBranch = c.BankBranch,
+                    AccountNo = c.AccountNo,
+
+                    RequesterSign = c.RequesterSignature,
+                    CreatedDate = c.CreatedDate,
+
+                    StatusID = c.StatusID,
+                    StatusName = s?.DisplayName,
+                    StatusColor = s?.ColorCode,
+
+                     Approvals = approvals.OrderBy(a => a.ApprovalStep).ToList(),
+                    //AttachmentFiles = db.TravelExpenseAttachmentFiles
+                    //                .Where(a => a.TravelExpenseID == c.ID && a.IsShown == true)
+                    //                .Select(a => a.FileName).ToList(),
+                };
+
+                    return model;
+                }
+        }
         #endregion
     }
 }

@@ -34,7 +34,7 @@ $(document).ready(function () {
     loadUserRequests();
 });
 
-// 🔍 View Button Event
+// 🔍 View Button travel Expense
 $(document).on('click', '.btn-view-request', function () {
     const requestId = $(this).data('id');
     if (!requestId) return;
@@ -172,17 +172,19 @@ function loadUserRequests() {
                                   <td>${item.FormName}</td>
                                   <td>${item.CreatedDate}</td>
                                   <td>
-                                    <a class="btn btn-sm btn-outline-info btn-view-request" data-id="${item.ID}">
-                                      <i class="fa fa-eye"></i> View
-                                    </a>`;
+                                   `;
 
                                 if (item.EditMode == 1) {
                                     childHtml += (item.FormName === "Cash In Advance")
-                                        ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
+                                        ? `
+                                        <a class="btn btn-sm btn-outline-info btn-view-cia" data-id="${item.ID}">
+                                          <i class="fa fa-eye"></i> View
+                                        </a>
+                                        <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
                                          class="btn btn-sm btn-outline-success ml-1">
                                          <i class="fa fa-edit"></i> Edit
                                        </a>`
-                                        : `<a href="/TravelExpense/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                        : `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
                                          <i class="fa fa-edit"></i> Edit
                                        </a>`;
                                 }
@@ -614,6 +616,70 @@ $('#closeViewModalBtn').click(function () {
     loadUserRequests(); // Refresh the request list
 });
 
+/*==========START CASH IN ADVANCE==========*/
+$(document).on('click', '.btn-view-cia', function () {
+    const ciaId = $(this).data('id');
+    if (!ciaId) return;
+
+    // Load request data and fill the modal
+    loadCIADetails(ciaId);
+});
+
+
+function loadCIADetails(ciaId) {
+    $.get(`/TravelExpense/GetCIAViewDetails?id=${ciaId}`, function (data) {
+        if (!data) {
+            showToast("Failed to load request details", "danger");
+            return;
+        }
+
+        // Fill modal with all info (including budget)
+        fillCIAViewModal(data);
+
+        // ✅ Show the modal
+        $('#viewCIAModal').modal('show');
+    }).fail(function () {
+        showToast("Server error while loading request details", "danger");
+    });
+}
+
+
+function fillCIAViewModal(data) {
+    const role = sessionStorage.getItem("currentUserRole") || "";
+    $('#vCIAID').text(data.ID);
+    // 🔹 Travel Info
+   /* $('#viewTarNo').text(data.TarNo || "");*/
+    $('#vRequiredDate').text(formatJSONDate(data.RequiredDate));
+    $('#vReturnDate').text(formatJSONDate(data.ReturnedDate));
+    $('#vRequiredCash').text(data.RequiredCash ?? "");
+    $('#vReason').text(data.Reason || "");
+
+    if (data.RequiredCash > 5000000) {
+        $('#containerBank')
+        const html = `
+            <div class="card-header bg-primary text-white font-weight-bold">Bank Info</div>
+            <div class="card-body row">
+                        <div class="col-md-12"><strong>Account No:</strong> <span>${data.AccountNo}</span></div>
+                        <div class="col-md-12"><strong>Beneficial Name:</strong> <span>${data.BeneficialName}</span></div>
+                        <div class="col-md-12"><strong>Bank Branch:</strong> <span>${data.BankBranch}</span></div>
+            </div>
+        `
+        $('#containerBank').html(html);
+    } else {
+        $('#containerBank').html('');
+    }
+    
+    // 🔹 Requester Signature
+    $('#vRequesterSign').text(data.RequesterSign || "");
+    $('#vRequesterDate').text(formatJSONDate(data.CreatedDate));
+
+    // 🔹 Approval Sections
+    resetApprovalSections();
+
+    const approvals = data.Approvals || [];
+    showApprovalSections(role, approvals, data.StatusID);
+}
+/*==========END CASH IN ADVANCE============*/
 $('#exportPDFBtn').click(function () {
     // 🔹 Clone the modal content
     const modal = document.querySelector('#viewRequestModal .modal-content');
