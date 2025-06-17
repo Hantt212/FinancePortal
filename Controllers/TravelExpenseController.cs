@@ -350,16 +350,16 @@ namespace FinancePortal.Controllers
             return View();
         }
 
-        [HttpGet]
-        public JsonResult GetAllList()
-        {
-            string username = System.Web.HttpContext.Current.Session["Username"]?.ToString();
-            string employeeCode = System.Web.HttpContext.Current.Session["EmployeeID"]?.ToString();
-            string role = System.Web.HttpContext.Current.Session["UserRole"]?.ToString();
+        //[HttpGet]
+        //public JsonResult GetAllList()
+        //{
+        //    string username = System.Web.HttpContext.Current.Session["Username"]?.ToString();
+        //    string employeeCode = System.Web.HttpContext.Current.Session["EmployeeID"]?.ToString();
+        //    string role = System.Web.HttpContext.Current.Session["UserRole"]?.ToString();
 
-            var list = TravelExpenseDao.GetAllRequest(username, employeeCode, role);
-            return Json(list, JsonRequestBehavior.AllowGet);
-        }
+        //    var list = TravelExpenseDao.GetAllRequest(username, employeeCode, role);
+        //    return Json(list, JsonRequestBehavior.AllowGet);
+        //}
 
         [HttpGet]
         public JsonResult GetCurrentList(int travelID)

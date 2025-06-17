@@ -15,7 +15,7 @@ function loadUserRequests() {
         }
     });
 
-    $.get('/TravelExpense/GetAllList', function (data) {
+    $.get('/TravelExpense/GetUserRequests', function (data) {
         const table = $('#allListTbl').DataTable({
             data: data,
             bDestroy: true,
@@ -27,23 +27,64 @@ function loadUserRequests() {
                     className: 'child-toggle text-center',
                     orderable: false,
                     data: null,
-                    defaultContent: '➕',
                     width: '30px',
+                    render: function (data, type, row) {
+                        return row.EditCash ? '➕' : '';
+                    },
                     createdCell: function (td, cellData, rowData, rowIndex, colIndex) {
-                        // For example, use the row ID or TarNo to make a unique ID
                         $(td).attr('id', `${rowData.ID}`);
                     }
                 },
                 { data: 'Department' },
                 { data: 'TarNo' },
                 {
-                    data: 'DisplayName',
+                    data: 'RequestDate',
+                    render: function (data) {
+                        const match = /\/Date\((\d+)\)\//.exec(data);
+                        if (match) {
+                            const timestamp = parseInt(match[1]);
+                            const date = new Date(timestamp);
+                            return date.toLocaleDateString('en-GB');
+                        }
+                        return 'Invalid Date';
+                    }
+                },
+                {
+                    data: 'EstimatedCost',
+                    render: function (d) {
+                        return parseFloat(d).toLocaleString('vi-VN');
+                    }
+                },
+                {
+                    data: 'DisplayName', // use DisplayName directly for filtering
                     render: function (data, type, row) {
                         if (type === 'display') {
                             const bgColor = row.ColorCode || '#6c757d';
                             return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
                         }
-                        return data;
+                        return data; // raw text used for filtering/sorting
+                    }
+                },
+                {
+                    data: null,
+                    title: "Actions",
+                    orderable: false,
+                    render: function (data, type, row) {
+                        const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
+                            <i class="fa fa-eye"></i> View
+                        </a>`;
+
+                        const editBtn = data.EditMode
+                            ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                <i class="fa fa-edit"></i> Edit
+                               </a>`
+                            : "";
+                        const cashBtn = data.NewCash
+                            ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
+                                ➕ CIA
+                               </a>` : "";
+
+                        return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
                 }
             ]
@@ -60,59 +101,61 @@ function loadUserRequests() {
                 $(this).text('➕');
             } else {
                 const travelID = +row.data().ID;
-                
-                $(this).text('⏳');
 
+                $(this).text('⏳');
                 $.ajax({
                     url: '/TravelExpense/GetCurrentList',
                     data: { travelID },
                     success: function (res) {
                         if (res.success) {
-                            let childHtml = `
-                        <table class="table table-bordered">
-                          <thead class="thead-dark">
-                            <tr>
-                              <th scope="col">Name</th>
-                              <th scope="col">Request Date</th>
-                              <th scope="col">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>`;
+                            if (res.data.length > 0) {
+                                let childHtml = `
+								<table class="table table-bordered">
+								  <thead class="thead-dark">
+									<tr>
+									  <th scope="col">Form</th>
+									  <th scope="col">Request Date</th>
+									  <th scope="col">Actions</th>
+									</tr>
+								  </thead>
+								  <tbody>`;
 
-                            res.data.forEach(item => {
-                                childHtml += `
-                            <tr>
-                              <th scope="row">${item.FormName}</th>
-                              <td>${item.CreatedDate}</td>
-                              <td>
-                                <a class="btn btn-sm btn-outline-info btn-view-request" data-id="${item.ID}">
-                                    <i class="fa fa-eye"></i> View
-                                </a>`;
+                                res.data.forEach(item => {
+                                    childHtml += `
+									<tr>
+									  <th scope="row">${item.FormName}</th>
+									  <td>${item.CreatedDate}</td>
+									  <td>
+										<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${item.ID}">
+											<i class="fa fa-eye"></i> View
+										</a>`;
 
-                                // Conditionally include CIA button
-                                if (item.EditMode == 1) {
-                                    if (item.FormName == "Cash In Advance") {
-                                        childHtml += `
-                                                        <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
-                                                           class="btn btn-sm btn-outline-success ml-1">
-                                                            <i class="fa fa-edit"></i> Edit
-                                                        </a>`;
-                                    } else {
-                                        childHtml += `
-                                                        <a href="/TravelExpense/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
-                                                            <i class="fa fa-edit"></i> Edit
-                                                        </a>`;
+                                    // Conditionally include CIA button
+                                    if (item.EditMode == 1) {
+                                        if (item.FormName == "Cash In Advance") {
+                                            childHtml += `
+																<a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
+																   class="btn btn-sm btn-outline-success ml-1">
+																	<i class="fa fa-edit"></i> Edit
+																</a>`;
+                                        } else {
+                                            childHtml += `
+																<a href="/TravelExpense/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+																	<i class="fa fa-edit"></i> Edit
+																</a>`;
+                                        }
+
                                     }
-                                    
-                                }
 
-                                childHtml += `</td></tr>`;
-                            });
+                                    childHtml += `</td></tr>`;
+                                });
 
-                            childHtml += `</tbody></table>`;
+                                childHtml += `</tbody></table>`;
 
-                            row.child(childHtml).show();
-                            tr.find('td.child-toggle').text('➖');
+                                row.child(childHtml).show();
+                                tr.find('td.child-toggle').text('➖');
+                            }
+
                         } else {
                             showToast(res.message || "Invalid approver code.", "danger");
                             tr.find('td.child-toggle').text('➕');

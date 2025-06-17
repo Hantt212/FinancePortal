@@ -66,6 +66,7 @@ function loadUserRequests() {
     });
 
     $.get('/TravelExpense/GetUserRequests', function (data) {
+
         const table = $('#requestListTbl').DataTable({
             data: data,
             bDestroy: true,
@@ -73,17 +74,28 @@ function loadUserRequests() {
             dom: 'Bfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             columns: [
+                {
+                    className: 'child-toggle text-center',
+                    orderable: false,
+                    data: null,
+                    width: '30px',
+                    render: function (data, type, row) {
+                        return row.EditCash ? '➕' : '';
+                    },
+                    createdCell: function (td, cellData, rowData) {
+                        $(td).attr('id', `${rowData.ID}`);
+                        $(td).attr('data-expanded', 'false');
+                    }
+                },
                 { data: 'Department' },
                 { data: 'TarNo' },
-              /*  { data: 'TripPurpose' },*/
                 {
                     data: 'RequestDate',
                     render: function (data) {
                         const match = /\/Date\((\d+)\)\//.exec(data);
                         if (match) {
                             const timestamp = parseInt(match[1]);
-                            const date = new Date(timestamp);
-                            return date.toLocaleDateString('en-GB');
+                            return new Date(timestamp).toLocaleDateString('en-GB');
                         }
                         return 'Invalid Date';
                     }
@@ -95,41 +107,172 @@ function loadUserRequests() {
                     }
                 },
                 {
-                    data: 'DisplayName', // use DisplayName directly for filtering
+                    data: 'DisplayName',
                     render: function (data, type, row) {
                         if (type === 'display') {
                             const bgColor = row.ColorCode || '#6c757d';
                             return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
                         }
-                        return data; // raw text used for filtering/sorting
+                        return data;
                     }
                 },
-
                 {
                     data: null,
                     title: "Actions",
                     orderable: false,
-                    render: function (data, type, row) {
+                    render: function (data) {
                         const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
-                            <i class="fa fa-eye"></i> View
-                        </a>`;
-                        
+                        <i class="fa fa-eye"></i> View
+                    </a>`;
                         const editBtn = data.EditMode
                             ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
-                                <i class="fa fa-edit"></i> Edit
-                               </a>`
-                            : "";
-                        const cashBtn = data.CashMode
+                            <i class="fa fa-edit"></i> Edit
+                           </a>` : "";
+                        const cashBtn = data.NewCash
                             ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
-                                <i class="fa fa-money"></i> CIA
-                               </a>` : "";
-
+                            ➕ CIA
+                           </a>` : "";
                         return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
                 }
             ]
         });
+
+        // Rebind child toggle event AFTER reinitializing
+        $('#requestListTbl tbody').off('click', 'td.child-toggle').on('click', 'td.child-toggle', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+            const $cell = $(this);
+
+            if ($cell.attr('data-expanded') === 'true') {
+                row.child.hide();
+                tr.removeClass('dt-hasChild');
+                $cell.text('➕').attr('data-expanded', 'false');
+            } else {
+                const travelID = +$cell.attr('id');
+                $cell.text('⏳');
+
+                $.ajax({
+                    url: '/TravelExpense/GetCurrentList',
+                    data: { travelID },
+                    success: function (res) {
+                        if (res.success && res.data.length > 0) {
+                            let childHtml = `<table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                <th>Form</th>
+                                <th>Request Date</th>
+                                <th>Actions</th>
+                                </tr>
+                            </thead><tbody>`;
+
+                            res.data.forEach(item => {
+                                childHtml += `
+                                <tr>
+                                  <td>${item.FormName}</td>
+                                  <td>${item.CreatedDate}</td>
+                                  <td>
+                                    <a class="btn btn-sm btn-outline-info btn-view-request" data-id="${item.ID}">
+                                      <i class="fa fa-eye"></i> View
+                                    </a>`;
+
+                                if (item.EditMode == 1) {
+                                    childHtml += (item.FormName === "Cash In Advance")
+                                        ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
+                                         class="btn btn-sm btn-outline-success ml-1">
+                                         <i class="fa fa-edit"></i> Edit
+                                       </a>`
+                                        : `<a href="/TravelExpense/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                         <i class="fa fa-edit"></i> Edit
+                                       </a>`;
+                                }
+
+                                childHtml += `</td></tr>`;
+                            });
+
+                            childHtml += `</tbody></table>`;
+                            row.child(childHtml).show();
+                            $cell.text('➖').attr('data-expanded', 'true');
+                        } else {
+                            showToast(res.message || "No data available.", "warning");
+                            $cell.text('➕').attr('data-expanded', 'false');
+                        }
+                    },
+                    error: function () {
+                        showToast("Failed to load child rows.", "danger");
+                        $cell.text('➕').attr('data-expanded', 'false');
+                    }
+                });
+            }
+        });
     });
+
+    //$.get('/TravelExpense/GetUserRequests', function (data) {
+    //    const table = $('#requestListTbl').DataTable({
+    //        data: data,
+    //        bDestroy: true,
+    //        order: [[2, "desc"]],
+    //        dom: 'Bfrtip',
+    //        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    //        columns: [
+    //            { data: 'Department' },
+    //            { data: 'TarNo' },
+    //          /*  { data: 'TripPurpose' },*/
+    //            {
+    //                data: 'RequestDate',
+    //                render: function (data) {
+    //                    const match = /\/Date\((\d+)\)\//.exec(data);
+    //                    if (match) {
+    //                        const timestamp = parseInt(match[1]);
+    //                        const date = new Date(timestamp);
+    //                        return date.toLocaleDateString('en-GB');
+    //                    }
+    //                    return 'Invalid Date';
+    //                }
+    //            },
+    //            {
+    //                data: 'EstimatedCost',
+    //                render: function (d) {
+    //                    return parseFloat(d).toLocaleString('vi-VN');
+    //                }
+    //            },
+    //            {
+    //                data: 'DisplayName', // use DisplayName directly for filtering
+    //                render: function (data, type, row) {
+    //                    if (type === 'display') {
+    //                        const bgColor = row.ColorCode || '#6c757d';
+    //                        return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
+    //                    }
+    //                    return data; // raw text used for filtering/sorting
+    //                }
+    //            },
+
+    //            {
+    //                data: null,
+    //                title: "Actions",
+    //                orderable: false,
+    //                render: function (data, type, row) {
+    //                    const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
+    //                        <i class="fa fa-eye"></i> View
+    //                    </a>`;
+
+    //                    const editBtn = data.EditMode
+    //                        ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
+    //                            <i class="fa fa-edit"></i> Edit
+    //                           </a>`
+    //                        : "";
+    //                    const cashBtn = data.CashMode
+    //                        ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
+    //                            <i class="fa fa-money"></i> CIA
+    //                           </a>` : "";
+
+    //                    return `${viewBtn} ${editBtn} ${cashBtn}`;
+    //                }
+    //            }
+    //        ]
+    //    });
+    //});
+
 }
 
 function loadRequestDetails(requestId) {
@@ -159,7 +302,7 @@ function fillViewModal(data) {
     $('#viewTripDays').text(data.TripDays ?? "");
     $('#viewRequestDate').text(formatJSONDate(data.RequestDate));
     $('#viewTripPurpose').text(data.TripPurpose || "");
-    
+
 
     // 🔹 Cost Details
     var costDetails = data.CostDetails;
@@ -168,7 +311,7 @@ function fillViewModal(data) {
     var index = 0;
     costDetails.forEach(function (cost, i) {
         // Start a new row every 4 items
-        costViewHtml +=`<div class="row mt-4">
+        costViewHtml += `<div class="row mt-4">
                             <div class="col-md-3"><strong>Cost:</strong> <span>${cost.CostName}</span></div>
                             <div class="col-md-2"><span>${cost.CostAmount}$</span></div>
                             <div class="col-md-7">
@@ -188,7 +331,7 @@ function fillViewModal(data) {
                         <div class="col-md-7 mt-3"><strong class="mr-2">Estimated VND:</strong>${data.EstimatedCost || 0}</div>
                     </div>`;
     $('#costViewContainer').html(costViewHtml);
-    
+
 
     // 🔹 Employees
     $('#viewEmployeeList').empty();
@@ -369,7 +512,7 @@ $('#rejectBtn').click(() => {
 });
 
 $('#cancelBtn').click(() => {
-    userAction = -1 ;
+    userAction = -1;
     $('#confirmApprovalMessage').text("Are you sure you want to CANCEL this request?");
     $('#confirmApprovalModal').modal('show');
 });
@@ -398,7 +541,7 @@ function submitApproval(userAction) {
             contentType: 'application/json',
             data: JSON.stringify({
                 requestID: +requestId
-            }) ,
+            }),
             success: function (res) {
                 if (res.success) {
                     showToast("Request cancelled successfully!", "success");
@@ -415,7 +558,7 @@ function submitApproval(userAction) {
         });
 
     } else { //Approve or Reject TravelExpense Request
-       
+
 
         const payload = {
             requestId: parseInt(requestId),
@@ -463,7 +606,7 @@ function submitApproval(userAction) {
             }
         });
     }
-    
+
 }
 
 $('#closeViewModalBtn').click(function () {

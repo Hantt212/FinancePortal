@@ -143,11 +143,11 @@ $("#submitCIAButton").click(function () {
                 const msg = ID > 0 ? "Travel Expense updated successfully!" : "Travel Expense created successfully!";
                 showToast(msg, "success");
 
-                //setTimeout(() => {
-                //    window.location.href = '/TravelExpense/List';
-                //}, 100);
+                setTimeout(() => {
+                    window.location.href = '/TravelExpense/List';
+                }, 100);
             } else {
-                //showToast(res.message || "Submission failed.", "danger");
+                showToast(res.message || "Submission failed.", "danger");
                 //btn.prop('disabled', false).html('<i class="fa fa-save"></i> Submit');
             }
 
