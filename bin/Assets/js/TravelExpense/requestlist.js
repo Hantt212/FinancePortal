@@ -92,12 +92,9 @@ function loadUserRequests() {
                 {
                     data: 'RequestDate',
                     render: function (data) {
-                        const match = /\/Date\((\d+)\)\//.exec(data);
-                        if (match) {
-                            const timestamp = parseInt(match[1]);
-                            return new Date(timestamp).toLocaleDateString('en-GB');
-                        }
-                        return 'Invalid Date';
+                        //const match = /\/Date\((\d+)\)\//.exec(data);
+                        return convertDate(data)
+                        
                     }
                 },
                 {
@@ -122,15 +119,15 @@ function loadUserRequests() {
                     orderable: false,
                     render: function (data) {
                         const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
-                        <i class="fa fa-eye"></i> View
+                        <i class="fa fa-eye"></i>
                     </a>`;
                         const editBtn = data.EditMode
                             ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
-                            <i class="fa fa-edit"></i> Edit
+                            <i class="fa fa-edit"></i>
                            </a>` : "";
                         const cashBtn = data.NewCash
                             ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
-                            ➕ CIA
+                            ➕
                            </a>` : "";
                         return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
@@ -144,56 +141,66 @@ function loadUserRequests() {
             const row = table.row(tr);
             const $cell = $(this);
 
+            const travelID = +$cell.attr('id');
+
+            // Check if already expanded
             if ($cell.attr('data-expanded') === 'true') {
-                row.child.hide();
-                tr.removeClass('dt-hasChild');
+                // Remove custom row
+                tr.next('tr.child-row').remove();
                 $cell.text('➕').attr('data-expanded', 'false');
             } else {
-                const travelID = +$cell.attr('id');
-                $cell.text('⏳');
-
                 $.ajax({
                     url: '/TravelExpense/GetCurrentList',
                     data: { travelID },
                     success: function (res) {
                         if (res.success && res.data.length > 0) {
-                            let childHtml = `<table class="table table-bordered">
-                            <thead class="thead-dark">
-                                <tr>
+                            let childHtml = `<table class="table table-sm table-bordered m-0">
+                        <thead class="thead-light">
+                            <tr>
                                 <th>Form</th>
                                 <th>Request Date</th>
+                                <th>Status</th>
                                 <th>Actions</th>
-                                </tr>
-                            </thead><tbody>`;
+                            </tr>
+                        </thead><tbody>`;
 
                             res.data.forEach(item => {
                                 childHtml += `
-                                <tr>
-                                  <td>${item.FormName}</td>
-                                  <td>${item.CreatedDate}</td>
-                                  <td>
-                                   `;
+                            <tr>
+                                <td>${item.FormName}</td>
+                                <td>${item.CreatedDate}</td>
+                                <td>
+                                    <span class="badge" style = "background-color: ${item.StatusColor}; color: #fff; font-weight: 500;" > ${item.StatusName }</span>
+                                </td>
+                                <td>`;
 
                                 if (item.EditMode == 1) {
-                                    childHtml += (item.FormName === "Cash In Advance")
-                                        ? `
-                                        <a class="btn btn-sm btn-outline-info btn-view-cia" data-id="${item.ID}">
-                                          <i class="fa fa-eye"></i> View
-                                        </a>
-                                        <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}"
-                                         class="btn btn-sm btn-outline-success ml-1">
-                                         <i class="fa fa-edit"></i> Edit
-                                       </a>`
-                                        : `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
-                                         <i class="fa fa-edit"></i> Edit
-                                       </a>`;
+                                    if (item.FormName === "Cash In Advance") {
+                                        childHtml += `
+                                    <a class="btn btn-sm btn-outline-info" data-id="${item.ID}"><i class="fa fa-eye"></i></a>
+                                    <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}" class="btn btn-sm btn-outline-primary ml-1">
+                                        <i class="fa fa-edit"></i>
+                                    </a>`;
+                                    } else {
+                                        childHtml += `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                    <i class="fa fa-edit"></i>
+                                </a>`;
+                                    }
                                 }
 
                                 childHtml += `</td></tr>`;
                             });
 
                             childHtml += `</tbody></table>`;
-                            row.child(childHtml).show();
+
+                            // Insert a full new row with second td spanning full table width minus 1
+                            const colCount = tr.find('td').length;
+                            const newRow = `<tr class="child-row">
+                        <td></td>
+                        <td colspan="${colCount - 1}">${childHtml}</td>
+                    </tr>`;
+
+                            $(newRow).insertAfter(tr);
                             $cell.text('➖').attr('data-expanded', 'true');
                         } else {
                             showToast(res.message || "No data available.", "warning");
@@ -207,73 +214,10 @@ function loadUserRequests() {
                 });
             }
         });
+
     });
 
-    //$.get('/TravelExpense/GetUserRequests', function (data) {
-    //    const table = $('#requestListTbl').DataTable({
-    //        data: data,
-    //        bDestroy: true,
-    //        order: [[2, "desc"]],
-    //        dom: 'Bfrtip',
-    //        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-    //        columns: [
-    //            { data: 'Department' },
-    //            { data: 'TarNo' },
-    //          /*  { data: 'TripPurpose' },*/
-    //            {
-    //                data: 'RequestDate',
-    //                render: function (data) {
-    //                    const match = /\/Date\((\d+)\)\//.exec(data);
-    //                    if (match) {
-    //                        const timestamp = parseInt(match[1]);
-    //                        const date = new Date(timestamp);
-    //                        return date.toLocaleDateString('en-GB');
-    //                    }
-    //                    return 'Invalid Date';
-    //                }
-    //            },
-    //            {
-    //                data: 'EstimatedCost',
-    //                render: function (d) {
-    //                    return parseFloat(d).toLocaleString('vi-VN');
-    //                }
-    //            },
-    //            {
-    //                data: 'DisplayName', // use DisplayName directly for filtering
-    //                render: function (data, type, row) {
-    //                    if (type === 'display') {
-    //                        const bgColor = row.ColorCode || '#6c757d';
-    //                        return `<span class="badge" style="background-color: ${bgColor}; color: #fff; font-weight: 500;">${data}</span>`;
-    //                    }
-    //                    return data; // raw text used for filtering/sorting
-    //                }
-    //            },
-
-    //            {
-    //                data: null,
-    //                title: "Actions",
-    //                orderable: false,
-    //                render: function (data, type, row) {
-    //                    const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
-    //                        <i class="fa fa-eye"></i> View
-    //                    </a>`;
-
-    //                    const editBtn = data.EditMode
-    //                        ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
-    //                            <i class="fa fa-edit"></i> Edit
-    //                           </a>`
-    //                        : "";
-    //                    const cashBtn = data.CashMode
-    //                        ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
-    //                            <i class="fa fa-money"></i> CIA
-    //                           </a>` : "";
-
-    //                    return `${viewBtn} ${editBtn} ${cashBtn}`;
-    //                }
-    //            }
-    //        ]
-    //    });
-    //});
+ 
 
 }
 
@@ -801,4 +745,13 @@ function showToast(message, type = "success") {
     $("#toastBody").text(message);
 
     toastEl.toast('show');
+}
+
+function convertDate(data) {
+    const match = /\/Date\((\d+)\)\//.exec(data);
+    if (match) {
+        const timestamp = parseInt(match[1]);
+        return new Date(timestamp).toLocaleDateString('en-GB');
+    }
+    return 'Invalid Date';
 }

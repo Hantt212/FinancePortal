@@ -1543,6 +1543,7 @@ namespace FinancePortal.Dao
             {
 
                 var cashQuery = (from c in db.CashInAdvances
+                                 join s in db.TravelExpenseStatus on c.StatusID equals s.ID
                                  where c.TravelExpenseID == travelID
                                  select new
                                  {
@@ -1550,7 +1551,9 @@ namespace FinancePortal.Dao
                                      ID = c.ID,
                                      TravelExpenseID = c.TravelExpenseID,
                                      c.StatusID,
-                                     c.CreatedDate
+                                     c.CreatedDate,
+                                     s.DisplayName,
+                                     s.ColorCode
                                  }).FirstOrDefault();
 
                 var travelList = new List<TravelInfoViewModel>();
@@ -1561,8 +1564,10 @@ namespace FinancePortal.Dao
                     {
                         FormName = "Cash In Advance",
                         TokenID = TokenHelper.Encrypt(cashQuery.TravelExpenseID.ToString()),
-                        CreatedDate = cashQuery.CreatedDate.ToString("dd-MM-yyyy"),
+                        CreatedDate = cashQuery.CreatedDate.ToString("dd/MM/yyyy"),
                         ID = cashQuery.ID,
+                        StatusName = cashQuery.DisplayName,
+                        StatusColor = cashQuery.ColorCode,
                         TravelExpenseID = (int)cashQuery.TravelExpenseID,
                         EditMode = ((role == RequesterRole && (
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||

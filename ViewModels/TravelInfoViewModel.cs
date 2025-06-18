@@ -14,5 +14,8 @@ namespace FinancePortal.ViewModels
         public string TokenID { get; set; }
         public int EditMode { get; set; }
         public int CashMode { get; set; }
+
+        public string StatusName { get; set; }
+        public string StatusColor { get; set; }
     }
 }
