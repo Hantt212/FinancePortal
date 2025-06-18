@@ -797,52 +797,57 @@ namespace FinancePortal.Dao
 
             using (var db = new FinancePortalEntities())
             {
-
                 var query = (
-                     from t in db.TravelExpenses
-                     join s in db.TravelExpenseStatus on t.StatusID equals s.ID
-                     join u in db.Users on t.CreatedBy equals u.UserName
-                     where t.IsShown == true &&
-                         (
-                             (role == RequesterRole && t.CreatedBy == username) ||
-                             (role == HODRole && db.TravelExpenseApprovals.Any(a =>
-                                 a.TravelExpenseID == t.ID &&
-                                 a.ApprovalStep == 1 &&
-                                 a.ApproverID == employeeCode)) ||
-                             (role == FCRole && db.TravelExpenseApprovals.Any(a =>
-                                 a.TravelExpenseID == t.ID &&
-                                 a.ApprovalStep == 3 &&
-                                 a.ApproverID == employeeCode)) ||
-                             (!new[] { RequesterRole, HODRole, FCRole }.Contains(role))
-                         )
-                     orderby t.RequestDate descending
-                     select new
-                                 {
-                                     t.ID,
-                                     u.Department,
-                                     t.TarNo,
-                                     t.TripPurpose,
-                                     t.RequestDate,
-                                     t.EstimatedCost,
-                                     t.CreatedBy,
-                                     s.DisplayName,
-                                     s.ColorCode,
-                                     EditMode =
-                                            (role == RequesterRole && (
-                                                t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
-                                                t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
-                                                t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
-                                            (role == GLRole && t.StatusID < 7) ? 1 : 0,
-                                     NewCash =
-                                            (role == RequesterRole &&
-                                                 t.StatusID == (int)TravelExpenseStatusEnum.TARApproved &&
-                                                 !db.CashInAdvances.Any(c => c.TravelExpenseID == t.ID)) ? 1 : 0,
-                                     EditCash = db.CashInAdvances.Any(c => c.TravelExpenseID == t.ID) ? 1 : 0,
-                     }
+                    from t in db.TravelExpenses
+                    join s in db.TravelExpenseStatus on t.StatusID equals s.ID
+                    join u in db.Users on t.CreatedBy equals u.UserName
+                    where t.IsShown == true
+                    let isRequester = (role == RequesterRole && t.CreatedBy == username)
+                    let isHOD = (role == HODRole && db.TravelExpenseApprovals.Any(a =>
+                                        a.TravelExpenseID == t.ID &&
+                                        a.ApprovalStep == 1 &&
+                                        a.ApproverID == employeeCode))
+                    let isFC = (role == FCRole && db.TravelExpenseApprovals.Any(a =>
+                                        a.TravelExpenseID == t.ID &&
+                                        a.ApprovalStep == 3 &&
+                                        a.ApproverID == employeeCode))
+                    let cia = db.CashInAdvances
+                                .Where(c => c.TravelExpenseID == t.ID)
+                                .OrderByDescending(c => c.ID)
+                                .FirstOrDefault()
+                    let ciaInfo = (cia != null) ? db.TravelExpenseStatus.FirstOrDefault(cs => cs.ID == cia.StatusID) : null
+                    where isRequester || isHOD || isFC || (!new[] { RequesterRole, HODRole, FCRole }.Contains(role))
+                    orderby t.RequestDate descending
+                    select new
+                    {
+                        t.ID,
+                        u.Department,
+                        t.TarNo,
+                        t.TripPurpose,
+                        t.RequestDate,
+                        t.EstimatedCost,
+                        t.CreatedBy,
+                        s.DisplayName,
+                        s.ColorCode,
 
-                 ).ToList(); // Materialize here
+                        EditMode =
+                            (role == RequesterRole && (
+                                t.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
+                                t.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
+                                t.StatusID == (int)TravelExpenseStatusEnum.RejectedFC)) ? 1 :
+                            (role == GLRole && t.StatusID < 7) ? 1 : 0,
 
-                // Now project with encryption
+                        NewCash = (role == RequesterRole &&
+                                    t.StatusID == (int)TravelExpenseStatusEnum.TARApproved &&
+                                    cia == null) ? 1 : 0,
+
+                        EditCash = (cia != null) ? 1 : 0,
+
+                        CashStatusName = ciaInfo != null ? ciaInfo.DisplayName : null
+                    }
+                ).ToList();
+
+                // Post-processing: Encryption
                 var result = query.Select(x => new
                 {
                     x.ID,
@@ -857,23 +862,13 @@ namespace FinancePortal.Dao
                     x.ColorCode,
                     x.EditMode,
                     x.NewCash,
-                    x.EditCash
+                    x.EditCash,
+                    x.CashStatusName
                 });
 
                 return result.ToList<object>();
-
-
-
-                //List<object> result = db.Database.SqlQuery<RequestSummariesByUserResult>(
-                //    "EXEC GetRequestSummariesByUser @Role, @Username, @EmployeeCode",
-                //    new SqlParameter("@Role", role),
-                //    new SqlParameter("@Username", username),
-                //    new SqlParameter("@EmployeeCode", employeeCode)
-                //).Take(maxItems)
-                // .ToList<object>();
-                //return result;
-
             }
+
         }
 
         public static List<string> GetAllStatus()

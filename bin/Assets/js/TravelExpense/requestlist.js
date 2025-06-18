@@ -48,7 +48,7 @@ $(document).on('change', '#statusFilter', function () {
     var table = $('#requestListTbl').DataTable();
 
     var val = $.fn.dataTable.util.escapeRegex($(this).val());
-    table.column(4).search(val ? '^' + val + '$' : '', true, false).draw();
+    table.column(5).search(val ? '^' + val + '$' : '', true, false).draw();
 });
 
 
@@ -80,7 +80,7 @@ function loadUserRequests() {
                     data: null,
                     width: '30px',
                     render: function (data, type, row) {
-                        return row.EditCash ? '➕' : '';
+                        return row.EditCash ? '<i class="fa fa-caret-down"></i>' : '';
                     },
                     createdCell: function (td, cellData, rowData) {
                         $(td).attr('id', `${rowData.ID}`);
@@ -88,7 +88,12 @@ function loadUserRequests() {
                     }
                 },
                 { data: 'Department' },
-                { data: 'TarNo' },
+                {
+                    data: 'TarNo',
+                    render: function (data, type, row) {
+                        return row.EditCash ? `<i class="fa fa-money-bill-wave"></i>` : '';
+                    }, 
+                },
                 {
                     data: 'RequestDate',
                     render: function (data) {
@@ -119,8 +124,8 @@ function loadUserRequests() {
                     orderable: false,
                     render: function (data) {
                         const viewBtn = `<a class="btn btn-sm btn-outline-info btn-view-request" data-id="${data.ID}">
-                        <i class="fa fa-eye"></i>
-                    </a>`;
+                                             <i class="fa fa-eye"></i>
+                                         </a>`;
                         const editBtn = data.EditMode
                             ? `<a href="/TravelExpense/Index/${data.ID}" class="btn btn-sm btn-outline-primary ml-1">
                             <i class="fa fa-edit"></i>
@@ -147,7 +152,7 @@ function loadUserRequests() {
             if ($cell.attr('data-expanded') === 'true') {
                 // Remove custom row
                 tr.next('tr.child-row').remove();
-                $cell.text('➕').attr('data-expanded', 'false');
+                $cell.html('<i class="fa fa-caret-down"></i>').attr('data-expanded', 'false');
             } else {
                 $.ajax({
                     url: '/TravelExpense/GetCurrentList',
@@ -201,15 +206,15 @@ function loadUserRequests() {
                     </tr>`;
 
                             $(newRow).insertAfter(tr);
-                            $cell.text('➖').attr('data-expanded', 'true');
+                            $cell.html('<i class="fa fa-caret-up"></i>').attr('data-expanded', 'true');
                         } else {
                             showToast(res.message || "No data available.", "warning");
-                            $cell.text('➕').attr('data-expanded', 'false');
+                            $cell.html('<i class="fa fa-caret-down"></i>').attr('data-expanded', 'false');
                         }
                     },
                     error: function () {
                         showToast("Failed to load child rows.", "danger");
-                        $cell.text('➕').attr('data-expanded', 'false');
+                        $cell.html('<i class="fa fa-caret-down"></i>').attr('data-expanded', 'false');
                     }
                 });
             }

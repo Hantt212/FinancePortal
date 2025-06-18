@@ -350,9 +350,6 @@ namespace FinancePortal.Controllers
             return View();
         }
 
-
-     
-
         [HttpGet]
         public JsonResult GetCurrentList(int travelID)
         {

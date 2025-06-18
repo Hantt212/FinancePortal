@@ -48,7 +48,7 @@ $(document).on('change', '#statusFilter', function () {
     var table = $('#requestListTbl').DataTable();
 
     var val = $.fn.dataTable.util.escapeRegex($(this).val());
-    table.column(4).search(val ? '^' + val + '$' : '', true, false).draw();
+    table.column(5).search(val ? '^' + val + '$' : '', true, false).draw();
 });
 
 
@@ -88,7 +88,12 @@ function loadUserRequests() {
                     }
                 },
                 { data: 'Department' },
-                { data: 'TarNo' },
+                {
+                    data: 'TarNo',
+                    render: function (data, type, row) {
+                        return row.EditCash ? `${data}<i class="fa fa-money-bill-wave ml-3 text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="${row.CashStatusName}"></i>` : `${data}`;
+                    }, 
+                },
                 {
                     data: 'RequestDate',
                     render: function (data) {
@@ -135,7 +140,13 @@ function loadUserRequests() {
             ]
         });
 
-        // Rebind child toggle event AFTER reinitializing
+        // ✅ Re-initialize Bootstrap 5 tooltips after DataTable content is rendered
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Action open drop down
         $('#requestListTbl tbody').off('click', 'td.child-toggle').on('click', 'td.child-toggle', function () {
             const tr = $(this).closest('tr');
             const row = table.row(tr);
@@ -177,14 +188,14 @@ function loadUserRequests() {
                                 if (item.EditMode == 1) {
                                     if (item.FormName === "Cash In Advance") {
                                         childHtml += `
-                                    <a class="btn btn-sm btn-outline-info" data-id="${item.ID}"><i class="fa fa-eye"></i></a>
+                                    <a class="btn btn-sm btn-outline-info btn-view-cia" data-id="${item.ID}"><i class="fa fa-eye"></i></a>
                                     <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}" class="btn btn-sm btn-outline-primary ml-1">
                                         <i class="fa fa-edit"></i>
                                     </a>`;
                                     } else {
                                         childHtml += `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
-                                    <i class="fa fa-edit"></i>
-                                </a>`;
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>`;
                                     }
                                 }
 
@@ -302,6 +313,13 @@ function fillViewModal(data) {
 
     const approvals = data.Approvals || [];
     showApprovalSections(role, approvals, data.StatusID);
+
+    // SHow/Hide Container
+    $("#containerTripInfo").show();
+    $("#containerCostInfo").show();
+    $("#containerEmpInfo").show();
+    $("#containerRequireInfo").hide();
+    $("#containerBankInfo").hide();
 }
 
 function resetApprovalSections() {
@@ -581,7 +599,7 @@ function loadCIADetails(ciaId) {
         fillCIAViewModal(data);
 
         // ✅ Show the modal
-        $('#viewCIAModal').modal('show');
+        $('#viewRequestModal').modal('show');
     }).fail(function () {
         showToast("Server error while loading request details", "danger");
     });
@@ -599,7 +617,7 @@ function fillCIAViewModal(data) {
     $('#vReason').text(data.Reason || "");
 
     if (data.RequiredCash > 5000000) {
-        $('#containerBank')
+        $('#containerBankInfo')
         const html = `
             <div class="card-header bg-primary text-white font-weight-bold">Bank Info</div>
             <div class="card-body row">
@@ -608,14 +626,20 @@ function fillCIAViewModal(data) {
                         <div class="col-md-12"><strong>Bank Branch:</strong> <span>${data.BankBranch}</span></div>
             </div>
         `
-        $('#containerBank').html(html);
+        $('#containerBankInfo').html(html);
     } else {
-        $('#containerBank').html('');
+        $('#containerBankInfo').html('');
     }
-    
+    // SHow/Hide Container
+    $("#containerTripInfo").hide();
+    $("#containerCostInfo").hide();
+    $("#containerEmpInfo").hide();
+    $("#containerRequireInfo").show();
+    $("#containerBankInfo").show();
+
     // 🔹 Requester Signature
-    $('#vRequesterSign').text(data.RequesterSign || "");
-    $('#vRequesterDate').text(formatJSONDate(data.CreatedDate));
+    $('#viewRequesterSign').text(data.RequesterSign || "");
+    $('#viewRequesterDate').text(formatJSONDate(data.CreatedDate));
 
     // 🔹 Approval Sections
     resetApprovalSections();
