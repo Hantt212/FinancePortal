@@ -7,13 +7,13 @@
       <Diagram DiagramId="b51e75a1195f4ae997340b0c794b8a39" Name="Diagram1" ZoomLevel="84">
         <EntityTypeShape EntityType="FinancePortalModel.Role" Width="1.5" PointX="7.75" PointY="9" />
         <EntityTypeShape EntityType="FinancePortalModel.TravelExpense" Width="1.5" PointX="3" PointY="4.5" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseApproval" Width="1.5" PointX="5.25" PointY="8.625" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseAttachmentFile" Width="1.5" PointX="5.25" PointY="4.875" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseApproval" Width="2" PointX="5.25" PointY="8.625" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseAttachmentFile" Width="2" PointX="5.25" PointY="4.875" />
         <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseBudget" Width="1.5" PointX="7.75" PointY="1" />
         <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCost" Width="1.5" PointX="7.75" PointY="5.375" />
         <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCostBudget" Width="1.5" PointX="10" PointY="1.375" />
         <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseCostDetail" Width="1.5" PointX="12.25" PointY="1.125" />
-        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseEmployee" Width="1.5" PointX="5.25" PointY="1.375" />
+        <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseEmployee" Width="2" PointX="5.25" PointY="1.375" />
         <EntityTypeShape EntityType="FinancePortalModel.TravelExpenseStatu" Width="1.5" PointX="0.75" PointY="5.875" />
         <EntityTypeShape EntityType="FinancePortalModel.User" Width="1.5" PointX="7.75" PointY="12.5" />
         <EntityTypeShape EntityType="FinancePortalModel.UserRole" Width="1.5" PointX="10" PointY="8.875" />
@@ -27,8 +27,9 @@
         <AssociationConnector Association="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget" />
         <AssociationConnector Association="FinancePortalModel.FK_UserRole_User" />
         <EntityTypeShape EntityType="FinancePortalModel.CashInAdvance" Width="1.5" PointX="12.375" PointY="5" />
-        <EntityTypeShape EntityType="FinancePortalModel.CashInAdvanceApproval" Width="1.5" PointX="14.625" PointY="5.125" />
+        <EntityTypeShape EntityType="FinancePortalModel.CashInAdvanceApproval" Width="2.5" PointX="14.625" PointY="5.125" />
         <AssociationConnector Association="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" />
+        <AssociationConnector Association="FinancePortalModel.FK_CashInAdvance_TravelExpense" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

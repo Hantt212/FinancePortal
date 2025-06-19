@@ -170,7 +170,7 @@ namespace FinancePortal.Dao
                 mailContent.TarNumber = travel.TarNo;
                 mailContent.RecipientTo = model.Approver.Email;
                 mailContent.RecipientCc = mailRequester;
-                mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
+                mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
                 SendEmail(mailContent);
 
                 // 8. Final save with validation catch
@@ -204,7 +204,7 @@ namespace FinancePortal.Dao
                 // 1. Validate TravelExpense exists
                 var travel = db.TravelExpenses.FirstOrDefault(t => t.ID == model.ID && t.IsShown);
                 if (travel == null)
-                    throw new Exception("Travel Expense request not found.");
+                    throw new Exception("Travel Expense ciaInfo not found.");
 
 
                 // 2. Validate Budget
@@ -449,7 +449,7 @@ namespace FinancePortal.Dao
         {
             using (var db = new FinancePortalEntities())
             {
-                // Get latest request created by this user
+                // Get latest ciaInfo created by this user
                 var latestExpense = db.TravelExpenses
                     .Where(t => t.CreatedBy == username)
                     .OrderByDescending(t => t.CreatedDate)
@@ -504,7 +504,7 @@ namespace FinancePortal.Dao
                 var travel = db.TravelExpenses.FirstOrDefault(t => t.ID == travelExpenseId && t.IsShown);
                 if (travel == null)
                 {
-                    message = "Travel request not found.";
+                    message = "Travel ciaInfo not found.";
                     return false;
                 }
 
@@ -1107,7 +1107,7 @@ namespace FinancePortal.Dao
 
                 var request = db.TravelExpenses.FirstOrDefault(t => t.ID == requestId && t.IsShown);
                 if (request == null)
-                    return new OperationResult { Success = false, Message = "Travel request not found." };
+                    return new OperationResult { Success = false, Message = "Travel ciaInfo not found." };
 
                 request.StatusID = isApprove
                     ? (int)TravelExpenseStatusEnum.WaitingGL
@@ -1136,7 +1136,7 @@ namespace FinancePortal.Dao
                                 ApproverID = glUser.EmployeeCode,
                                 ApproverName = glUser.UserName,
                                 ApproverEmail = glUser.UserEmailAddress,
-                                ApproverPosition = "GL Dept",
+                                ApproverPosition = "GL Team",
                                 IsApproved = false,
                                 CreatedDate = now,
                                 CreatedBy = approverUsername
@@ -1145,7 +1145,7 @@ namespace FinancePortal.Dao
                             //Approve:Send mail to GL
                             mailContent.RecipientTo = glUser.UserEmailAddress;
                             mailContent.RecipientCc = mailRequester;
-                            mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
+                            mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
                             SendEmail(mailContent);
                         }
                     }
@@ -1153,7 +1153,7 @@ namespace FinancePortal.Dao
 
                 //Reject:Send mail to Requester
                 mailContent.RecipientTo = mailRequester;
-                mailContent.Content = "Please be informed that your travel expense request has been <strong>denied</strong> by HOD.";
+                mailContent.Content = "Please be informed that your travel expense ciaInfo has been <strong>denied</strong> by HOD.";
                 SendEmail(mailContent);
 
                 db.SaveChanges();
@@ -1165,7 +1165,7 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static OperationResult HandleGLApproval(int requestId, string approverUsername, bool isApprove)
+        public static OperationResult HandleGLApproval(int requestId, string approverUsername, bool isApprove)      
         {
             using (var db = new FinancePortalEntities())
             {
@@ -1235,7 +1235,7 @@ namespace FinancePortal.Dao
                     mailContent.TarNumber = request.TarNo;
                     mailContent.RecipientTo = fcUser.UserEmailAddress;
                     mailContent.RecipientCc = mailRequester;
-                    mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
+                    mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
                     SendEmail(mailContent);
                 }
 
@@ -1288,11 +1288,11 @@ namespace FinancePortal.Dao
                 mailContent.RecipientTo = mailRequester;
                 if (isApprove)
                 {
-                    mailContent.Content = "Please be informed that your travel expense request has been done.";
+                    mailContent.Content = "Please be informed that your travel expense ciaInfo has been done.";
                 }
                 else
                 {
-                    mailContent.Content = "Please be informed that your travel expense request has been <strong>denied</strong> by FC.";
+                    mailContent.Content = "Please be informed that your travel expense ciaInfo has been <strong>denied</strong> by FC.";
                 }
                 SendEmail(mailContent);
 
@@ -1429,7 +1429,11 @@ namespace FinancePortal.Dao
 
                 message.From = new MailAddress(emailSender);
                 message.To.Add(mailContent.RecipientTo);
-                message.CC.Add(mailContent.RecipientCc);
+                if (mailContent.RecipientCc != null)
+                {
+                    message.CC.Add(mailContent.RecipientCc);
+                }
+                
                 message.Subject = emailSubject;
                 message.IsBodyHtml = true;
                 message.Body = bodyContent;
@@ -1455,82 +1459,7 @@ namespace FinancePortal.Dao
         }
 
 
-        //public static List<object> GetAllRequest(string username, string employeeCode, string role)
-        //{
-        //    int maxItems = int.TryParse(ConfigurationManager.AppSettings["MaxRequestListItems"], out int limit)
-        //                    ? limit
-        //                    : 100; // Fallback default
-
-        //    using (var db = new FinancePortalEntities())
-        //    {
-        //        // Step 1: Prepare allowed travel expense IDs based on role logic (one-time shared condition)
-        //        var travelExpensesQuery = db.TravelExpenses.Where(c => c.IsShown);
-
-        //        if (role == RequesterRole)
-        //        {
-        //            travelExpensesQuery = travelExpensesQuery.Where(c => c.CreatedBy == username);
-        //        }
-        //        else if (role == HODRole)
-        //        {
-        //            travelExpensesQuery = travelExpensesQuery.Where(c =>
-        //                db.TravelExpenseApprovals.Any(a =>
-        //                    a.TravelExpenseID == c.ID &&
-        //                    a.ApprovalStep == 1 &&
-        //                    a.ApproverID == employeeCode));
-        //        }
-        //        else if (role == FCRole)
-        //        {
-        //            travelExpensesQuery = travelExpensesQuery.Where(c =>
-        //                db.TravelExpenseApprovals.Any(a =>
-        //                    a.TravelExpenseID == c.ID &&
-        //                    a.ApprovalStep == 3 &&
-        //                    a.ApproverID == employeeCode));
-        //        }
-
-        //        // TravelExpense IDs that match permission logic
-        //        var travelIDs = travelExpensesQuery.Select(c => c.ID);
-
-        //        // Step 2: Identify which of these are in CashInAdvance
-        //        var travelIDInCIA = db.CashInAdvances
-        //            .Where(c => c.IsShown && travelIDs.Contains(c.TravelExpenseID))
-        //            .Select(c => c.TravelExpenseID)
-        //            .Distinct();
-
-        //        // Step 3: Get Travel IDs not in CIA (those still only in TravelExpenses)
-        //        var travelIDOnlyInTravel = travelIDs.Except(travelIDInCIA);
-
-        //        // Step 4: Fetch detailed records for each group (with joins)
-        //        var travelOnlyList = (from c in db.TravelExpenses
-        //                              join s in db.TravelExpenseStatus on c.StatusID equals s.ID
-        //                              join u in db.Users on c.CreatedBy equals u.UserName
-        //                              where travelIDOnlyInTravel.Contains(c.ID)
-        //                              select new
-        //                              {
-        //                                  u.Department,
-        //                                  c.ID,
-        //                                  c.TarNo,
-        //                                  s.DisplayName,
-        //                                  s.ColorCode
-        //                              }).OrderByDescending(i => i.ID).ToList<object>();
-
-        //        var travelWithCIAList = (from c in db.CashInAdvances
-        //                                 join c in db.TravelExpenses on c.TravelExpenseID equals c.ID
-        //                                 join s in db.TravelExpenseStatus on c.StatusID equals s.ID
-        //                                 join u in db.Users on c.CreatedBy equals u.UserName
-        //                                 where travelIDInCIA.Contains(c.ID)
-        //                                 select new
-        //                                 {
-        //                                     u.Department,
-        //                                     c.ID,
-        //                                     c.TarNo,
-        //                                     s.DisplayName,
-        //                                     s.ColorCode
-        //                                 }).OrderByDescending(i => i.ID).ToList<object>();
-
-        //        // Step 5: Combine and return
-        //        return travelOnlyList.Concat(travelWithCIAList).ToList();
-        //    }
-        //}
+        
 
         public static List<TravelInfoViewModel> GetCurrentList(string role, int travelID)
         {
@@ -1567,6 +1496,7 @@ namespace FinancePortal.Dao
                         EditMode = ((role == RequesterRole && (
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.WaitingHOD ||
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedHOD ||
+                                        cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedAP ||
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedFC))
                                     || (role == GLRole && cashQuery.StatusID < 7)) ? 1 : 0,
                         CashMode = (role == RequesterRole && cashQuery.StatusID == (int)TravelExpenseStatusEnum.TARApproved) ? 1 : 0
@@ -1578,80 +1508,7 @@ namespace FinancePortal.Dao
             }
         }
 
-        public static CashInAdvanceViewModel GetCIAViewDetails(int id)
-        {
-            using (var db = new FinancePortalEntities())
-            {
-                var c = db.CashInAdvances.FirstOrDefault(x => x.ID == id);
-                if (c == null) return null;
 
-                var s = db.TravelExpenseStatus.FirstOrDefault(x => x.ID == c.StatusID);
-
-                var approvals = db.CashInAdvanceApprovals
-                                  .Where(a => a.CIAID == c.ID)
-                                  .OrderBy(a => a.ApprovalStep)
-                                  .Select(a => new ApprovalInfoViewModel
-                                  {
-                                      ApprovalStep = (int)a.ApprovalStep,
-                                      ApproverID = a.ApproverID,
-                                      ApproverName = a.ApproverName,
-                                      ApproverEmail = a.ApproverEmail,
-                                      ApproverPosition = a.ApproverPosition,
-                                      ApproverSignature = a.ApproverSignature,
-                                      ApproverSignDate = a.ApproverSignDate,
-                                      IsApproved = a.IsApproved
-                                  }).ToList();
-
-                // Check if FC approval step exists, if not, preload from User table
-                bool hasFCApproval = approvals.Any(a => a.ApprovalStep == (int)ApprovalStep.FC);
-                if (!hasFCApproval)
-                {
-                    var fcUser = (from u in db.Users
-                                  join ur in db.UserRoles on u.UserId equals ur.UserId
-                                  join r in db.Roles on ur.RoleId equals r.RoleId
-                                  where r.RoleName == FCRole && u.IsShown && u.IsActive && ur.IsShown == true
-                                  select new ApprovalInfoViewModel
-                                  {
-                                      ApprovalStep = (int)ApprovalStep.FC,
-                                      ApproverID = u.EmployeeCode,
-                                      ApproverName = u.UserName,
-                                      ApproverEmail = u.UserEmailAddress,
-                                      ApproverPosition = "Finance Controller", // or u.Position if available
-                                      IsApproved = false
-                                  }).FirstOrDefault();
-
-                    if (fcUser != null)
-                        approvals.Add(fcUser);
-                }
-
-                 var model = new CashInAdvanceViewModel
-                {
-                    ID = c.ID,
-                    TravelExpenseID = c.TravelExpenseID,
-                    Reason = c.Reason,
-                    RequiredCash = c.RequiredCash,
-                    RequiredDate = c.RequiredDate,
-                    ReturnedDate = c.ReturnedDate,
-                    BeneficialName = c.BeneficialName,
-                    BankBranch = c.BankBranch,
-                    AccountNo = c.AccountNo,
-
-                    RequesterSign = c.RequesterSignature,
-                    CreatedDate = c.CreatedDate,
-
-                    StatusID = c.StatusID,
-                    StatusName = s?.DisplayName,
-                    StatusColor = s?.ColorCode,
-
-                     Approvals = approvals.OrderBy(a => a.ApprovalStep).ToList(),
-                    //AttachmentFiles = db.TravelExpenseAttachmentFiles
-                    //                .Where(a => a.TravelExpenseID == c.ID && a.IsShown == true)
-                    //                .Select(a => a.FileName).ToList(),
-                };
-
-                    return model;
-                }
-        }
         #endregion
     }
 }

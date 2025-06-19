@@ -3,10 +3,14 @@ const StatusEnum = {
     Cancelled: 1,
     WaitingHOD: 2,
     RejectedHOD: 3,
-    WaitingGL: 4,
-    WaitingFC: 5,
-    RejectedFC: 6,
-    TARApproved: 7
+    WaitingGL:4,
+    WaitingAP: 5,
+    RejectedAP: 6,
+    WaitingFC: 7,
+    RejectedFC: 8,
+    TARApproved: 9,
+    CIAApproved: 10,
+    CFApproved: 11,
 };
 
 const LabelStatusEnum = {
@@ -21,6 +25,7 @@ const RoleEnum = {
     Requester: 'Requester',
     HOD: 'HOD',
     GL: 'GL',
+    AP: 'AP',
     FC: 'FC',
 }
 
@@ -29,6 +34,13 @@ const StepEnum = {
     GL: 2,
     FC: 3
 }
+
+const FormEnum = {
+    TravelExpense: 1,
+    CashInAdvance: 2
+}
+
+var currentForm = 1;
 
 $(document).ready(function () {
     loadUserRequests();
@@ -185,19 +197,21 @@ function loadUserRequests() {
                                 </td>
                                 <td>`;
 
-                                if (item.EditMode == 1) {
-                                    if (item.FormName === "Cash In Advance") {
-                                        childHtml += `
-                                    <a class="btn btn-sm btn-outline-info btn-view-cia" data-id="${item.ID}"><i class="fa fa-eye"></i></a>
-                                    <a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}" class="btn btn-sm btn-outline-primary ml-1">
-                                        <i class="fa fa-edit"></i>
-                                    </a>`;
-                                    } else {
-                                        childHtml += `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                
+                                if (item.FormName === "Cash In Advance") {
+                                    childHtml += `<a class="btn btn-sm btn-outline-info btn-view-cia" data-id="${item.ID}"><i class="fa fa-eye"></i></a>`;
+                                    if (item.EditMode == 1) {
+                                        childHtml += `<a href="/CashInAdvance/Index?t=${encodeURIComponent(item.TokenID)}" class="btn btn-sm btn-outline-primary ml-1">
                                                         <i class="fa fa-edit"></i>
                                                     </a>`;
                                     }
+                                                
+                                } else {
+                                    childHtml += `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>`;
                                 }
+                                
 
                                 childHtml += `</td></tr>`;
                             });
@@ -238,7 +252,8 @@ function loadRequestDetails(requestId) {
             showToast("Failed to load request details", "danger");
             return;
         }
-
+        //
+        currentForm = FormEnum.TravelExpense;
         // Fill modal with all info (including budget)
         fillViewModal(data);
 
@@ -264,8 +279,6 @@ function fillViewModal(data) {
     // 🔹 Cost Details
     var costDetails = data.CostDetails;
     var costViewHtml = '';
-    var itemsPerRow = 2;
-    var index = 0;
     costDetails.forEach(function (cost, i) {
         // Start a new row every 4 items
         costViewHtml += `<div class="row mt-4">
@@ -279,7 +292,6 @@ function fillViewModal(data) {
                                     <div class="col-md-4"><strong class="font-italic text-secondary">Remain:</strong> <span class="font-italic text-secondary">${cost.BudgetRemainAtSubmit}$</span></div>
                                 </div>
                             </div>
-                            
                         </div>`
     });
 
@@ -346,17 +358,24 @@ function showApprovalSections(role, approvals, statusID) {
     // Show FC Section (always shown for consistency)
     showFCSection(fc, statusID);
 
-    // Approve/Reject buttons (based on role + section still pending)
-    if (role === RoleEnum.HOD && statusID === StatusEnum.WaitingHOD) {
+    // Approve/Reject buttons
+    const showApprovalActions = (
+        (role === RoleEnum.HOD && statusID === StatusEnum.WaitingHOD) ||
+        (role === RoleEnum.GL && statusID === StatusEnum.WaitingGL) ||
+        (role === RoleEnum.AP && statusID === StatusEnum.WaitingAP) ||
+        (role === RoleEnum.FC && statusID === StatusEnum.WaitingFC)
+    );
+
+    if (showApprovalActions) {
         $('#approvalActions').removeClass('d-none');
-        $('#rejectBtn').show();
-    } else if (role === RoleEnum.GL && statusID === StatusEnum.WaitingGL) {
-        $('#approvalActions').removeClass('d-none');
-        $('#rejectBtn').hide();
-    } else if (role === RoleEnum.FC && statusID === StatusEnum.WaitingFC) {
-        $('#approvalActions').removeClass('d-none');
-        $('#rejectBtn').show();
+        const rolesWithRejectBtn = [RoleEnum.HOD, RoleEnum.AP, RoleEnum.FC];
+        if (rolesWithRejectBtn.includes(role)) {
+            $('#rejectBtn').show();
+        } else {
+            $('#rejectBtn').hide();
+        }
     }
+
 
     //Cancel buttons
     if (role === RoleEnum.Requester && statusID < StatusEnum.RejectedHOD) {
@@ -497,82 +516,159 @@ function submitApproval(userAction) {
         return;
     }
 
-    //Cancel TravelExpense Request
-    if (userAction < 0) {
-        $.ajax({
-            url: '/TravelExpense/CancelByRequester',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                requestID: +requestId
-            }),
-            success: function (res) {
-                if (res.success) {
-                    showToast("Request cancelled successfully!", "success");
+    if (currentForm == FormEnum.TravelExpense) {
+        //Cancel TravelExpense Request
+        if (userAction < 0) {
+            $.ajax({
+                url: '/TravelExpense/CancelByRequester',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    requestID: +requestId
+                }),
+                success: function (res) {
+                    if (res.success) {
+                        showToast("Request cancelled successfully!", "success");
 
-                    // Refresh modal contents in real-time
-                    loadRequestDetails(requestId);
-                } else {
-                    showToast(res.message || "Failed to cancel request", "danger");
+                        // Refresh modal contents in real-time
+                        loadRequestDetails(requestId);
+                    } else {
+                        showToast(res.message || "Failed to cancel request", "danger");
+                    }
+                },
+                error: function () {
+                    showToast("Server error while approving request", "danger");
                 }
-            },
-            error: function () {
-                showToast("Server error while approving request", "danger");
+            });
+
+        } else { //Approve or Reject TravelExpense Request
+
+            const payload = {
+                requestId: parseInt(requestId),
+                isApprove: userAction == 0 ? false : true
+            };
+
+            let url;
+            switch (role) {
+                case RoleEnum.HOD:
+                    url = '/TravelExpense/ApproveByHOD';
+                    break;
+                case RoleEnum.GL:
+                    url = '/TravelExpense/ApproveByGL';
+                    break;
+                case RoleEnum.FC:
+                    url = '/TravelExpense/ApproveByFC';
+                    break;
+                default:
+                    url = null;
             }
-        });
 
-    } else { //Approve or Reject TravelExpense Request
+            if (!url) {
+                showToast("Unauthorized action for current role", "warning");
+                return;
+            }
 
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function (res) {
+                    if (res.success) {
+                        showToast("Approval status updated successfully!", "success");
 
-        const payload = {
-            requestId: parseInt(requestId),
-            isApprove: userAction == 0 ? false : true
-        };
-
-
-        let url;
-        switch (role) {
-            case RoleEnum.HOD:
-                url = '/TravelExpense/ApproveByHOD';
-                break;
-            case RoleEnum.GL:
-                url = '/TravelExpense/ApproveByGL';
-                break;
-            case RoleEnum.FC:
-                url = '/TravelExpense/ApproveByFC';
-                break;
-            default:
-                url = null;
-        }
-
-        if (!url) {
-            showToast("Unauthorized action for current role", "warning");
-            return;
-        }
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(payload),
-            success: function (res) {
-                if (res.success) {
-                    showToast("Approval status updated successfully!", "success");
-
-                    // Refresh modal contents in real-time
-                    loadRequestDetails(payload.requestId);
-                } else {
-                    showToast(res.message || "Failed to update approval", "danger");
+                        // Refresh modal contents in real-time
+                        loadRequestDetails(payload.requestId);
+                    } else {
+                        showToast(res.message || "Failed to update approval", "danger");
+                    }
+                },
+                error: function () {
+                    showToast("Server error while approving request", "danger");
                 }
-            },
-            error: function () {
-                showToast("Server error while approving request", "danger");
-            }
-        });
+            });
+        }
+    } else {
+        if (userAction < 0) {
+            handleCIAByRequester(requestId);
+        } else {
+            handleCIA(requestId, userAction, role)
+        }
     }
+
 
 }
 
+function handleCIAByRequester(requestId) {
+    $.ajax({
+        url: '/CashInAdvance/HandleCIAByRequester',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            requestID: +requestId
+        }),
+        success: function (res) {
+            if (res.success) {
+                showToast("Request cancelled successfully!", "success");
+
+                // Refresh modal contents in real-time
+                loadCIADetails(requestId);
+            } else {
+                showToast(res.message || "Failed to cancel request", "danger");
+            }
+        },
+        error: function () {
+            showToast("Server error while approving request", "danger");
+        }
+    });
+}
+
+function handleCIA(requestId, userAction, role) {
+    const payload = {
+        requestId: parseInt(requestId),
+        isApprove: userAction == 0 ? false : true
+    };
+
+    let url;
+    switch (role) {
+        case RoleEnum.HOD:
+            url = '/CashInAdvance/HandleCIAByHOD';
+            break;
+        case RoleEnum.AP:
+            url = '/CashInAdvance/HandleCIAByAP';
+            break;
+        case RoleEnum.FC:
+            url = '/CashInAdvance/HandleCIAByFC';
+            break;
+        default:
+            url = null;
+    }
+
+    if (!url) {
+        showToast("Unauthorized action for current role", "warning");
+        return;
+    }
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function (res) {
+            if (res.success) {
+                showToast("Approval status updated successfully!", "success");
+
+                // Refresh modal contents in real-time
+                loadCIADetails(payload.requestId);
+            } else {
+                showToast(res.message || "Failed to update approval", "danger");
+            }
+        },
+        error: function () {
+            showToast("Server error while approving request", "danger");
+        }
+    });
+}
 $('#closeViewModalBtn').click(function () {
     $('#viewRequestModal').modal('hide'); // Close the modal
     loadUserRequests(); // Refresh the request list
@@ -589,11 +685,13 @@ $(document).on('click', '.btn-view-cia', function () {
 
 
 function loadCIADetails(ciaId) {
-    $.get(`/TravelExpense/GetCIAViewDetails?id=${ciaId}`, function (data) {
+    $.get(`/CashInAdvance/GetCIAViewDetails?id=${ciaId}`, function (data) {
         if (!data) {
             showToast("Failed to load request details", "danger");
             return;
         }
+        //
+        currentForm = FormEnum.CashInAdvance;
 
         // Fill modal with all info (including budget)
         fillCIAViewModal(data);
@@ -608,7 +706,7 @@ function loadCIADetails(ciaId) {
 
 function fillCIAViewModal(data) {
     const role = sessionStorage.getItem("currentUserRole") || "";
-    $('#vCIAID').text(data.ID);
+    $('#viewRequestID').val(data.ID);
     // 🔹 Travel Info
    /* $('#viewTarNo').text(data.TarNo || "");*/
     $('#vRequiredDate').text(formatJSONDate(data.RequiredDate));

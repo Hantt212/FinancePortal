@@ -358,12 +358,7 @@ namespace FinancePortal.Controllers
             return Json(new { success = true, data = currentList }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public JsonResult GetCIAViewDetails(int id)
-        {
-            var result = TravelExpenseDao.GetCIAViewDetails(id);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+       
         #endregion
     }
 }

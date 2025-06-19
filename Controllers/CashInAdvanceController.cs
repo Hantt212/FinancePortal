@@ -20,17 +20,6 @@ namespace FinancePortal.Controllers
 
         #region CashInAdvanceForm
 
-        //public ActionResult Index(int? id)
-        //{
-        //    if (id.HasValue)
-        //    {
-        //        var model = TravelExpenseDao.GetSubmitModelById(id.Value);
-        //        return View(model); // edit mode
-        //    }
-
-        //    return View(); // create new
-        //}
-
         public ActionResult Index(string t)
         {
             if (string.IsNullOrEmpty(t))
@@ -84,7 +73,70 @@ namespace FinancePortal.Controllers
 
            // return Json(new { success = result, message = result ? "" : "Failed to save travel expense." });
         }
-            #endregion
 
+        [HttpGet]
+        public JsonResult GetCIAViewDetails(int id)
+        {
+            var result = CashInAdvanceDao.GetCIAViewDetails(id);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult HandleCIAByHOD(ApprovalActionModel dto)
+        {
+            var username = Session["Username"]?.ToString();
+            if (dto == null || dto.requestId <= 0 || string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "Invalid request or session." });
+            }
+
+            var result = CashInAdvanceDao.HandleCIAByHOD(dto.requestId, username, dto.isApprove);
+
+            return Json(new { success = result.Success, message = result.Message });
+        }
+
+        [HttpPost]
+        public JsonResult HandleCIAByAP(ApprovalActionModel dto)
+        {
+            var username = Session["Username"]?.ToString();
+            if (dto == null || dto.requestId <= 0 || string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "Invalid request or session." });
+            }
+
+            var result = CashInAdvanceDao.HandleCIAByAP(dto.requestId, username, dto.isApprove);
+
+            return Json(new { success = result.Success, message = result.Message });
+        }
+
+        [HttpPost]
+        public JsonResult HandleCIAByFC(ApprovalActionModel dto)
+        {
+            var username = Session["Username"]?.ToString();
+            if (dto == null || dto.requestId <= 0 || string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "Invalid request or session." });
+            }
+
+            var result = CashInAdvanceDao.HandleCIAByFC(dto.requestId, username, dto.isApprove);
+
+            return Json(new { success = result.Success, message = result.Message });
+        }
+
+        [HttpPost]
+        public JsonResult HandleCIAByRequester(int requestID)
+        {
+            var username = Session["Username"]?.ToString();
+            if (requestID <= 0 || string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false, message = "Invalid request or session." });
+            }
+
+            var result = CashInAdvanceDao.HandleCIAByRequester(requestID, username);
+
+            return Json(new { success = result.Success, message = result.Message });
+        }
+        #endregion
+
+    }
 }

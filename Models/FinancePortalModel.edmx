@@ -215,6 +215,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CashInAdvance_TravelExpense">
+          <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
+          <End Role="CashInAdvance" Type="Self.CashInAdvance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpense">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CashInAdvance">
+              <PropertyRef Name="TravelExpenseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TravelExpense_TravelExpenseStatus">
           <End Role="TravelExpenseStatus" Type="Self.TravelExpenseStatus" Multiplicity="1" />
           <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
@@ -288,9 +300,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TravelExpenseEmployee_TravelExpense">
-          <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
           <End Role="TravelExpenseEmployee" Type="Self.TravelExpenseEmployee" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TravelExpense">
@@ -347,6 +357,10 @@
           <AssociationSet Name="FK_CashInAdvance_CashInAdvanceApproval" Association="Self.FK_CashInAdvance_CashInAdvanceApproval">
             <End Role="CashInAdvance" EntitySet="CashInAdvance" />
             <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApproval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CashInAdvance_TravelExpense" Association="Self.FK_CashInAdvance_TravelExpense">
+            <End Role="TravelExpense" EntitySet="TravelExpense" />
+            <End Role="CashInAdvance" EntitySet="CashInAdvance" />
           </AssociationSet>
           <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="Self.FK_TravelExpense_TravelExpenseStatus">
             <End Role="TravelExpenseStatus" EntitySet="TravelExpenseStatus" />
@@ -444,6 +458,10 @@
             <End Role="CashInAdvance" EntitySet="CashInAdvances" />
             <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApprovals" />
           </AssociationSet>
+          <AssociationSet Name="FK_CashInAdvance_TravelExpense" Association="FinancePortalModel.FK_CashInAdvance_TravelExpense">
+            <End Role="TravelExpense" EntitySet="TravelExpenses" />
+            <End Role="CashInAdvance" EntitySet="CashInAdvances" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Role">
           <Key>
@@ -479,6 +497,7 @@
           <NavigationProperty Name="TravelExpenseApprovals" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseApproval" />
           <NavigationProperty Name="TravelExpenseAttachmentFiles" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseAttachmentFile" />
           <NavigationProperty Name="TravelExpenseEmployees" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseEmployee" />
+          <NavigationProperty Name="CashInAdvances" Relationship="FinancePortalModel.FK_CashInAdvance_TravelExpense" FromRole="TravelExpense" ToRole="CashInAdvance" />
         </EntityType>
         <EntityType Name="TravelExpenseApproval">
           <Key>
@@ -756,6 +775,7 @@
           <Property Name="IsShown" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="CashInAdvanceApprovals" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvance" ToRole="CashInAdvanceApproval" />
           <Property Name="StatusID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_CashInAdvance_TravelExpense" FromRole="CashInAdvance" ToRole="TravelExpense" />
         </EntityType>
         <EntityType Name="CashInAdvanceApproval">
           <Key>
@@ -786,6 +806,18 @@
             </Principal>
             <Dependent Role="CashInAdvanceApproval">
               <PropertyRef Name="CIAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CashInAdvance_TravelExpense">
+          <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
+          <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpense">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CashInAdvance">
+              <PropertyRef Name="TravelExpenseID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

@@ -39,5 +39,6 @@ namespace FinancePortal.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CashInAdvanceApproval> CashInAdvanceApprovals { get; set; }
+        public virtual TravelExpense TravelExpense { get; set; }
     }
 }

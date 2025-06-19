@@ -94,8 +94,11 @@ $("#submitCIAButton").click(function () {
         return;
     }
     // Bank Info
-
-    if (requiredCash > 5000000) {
+    if (requiredCash == 0) {
+        showToast("Required cash cannot be equal 0.", "warning");
+        return;
+    }
+    else if (requiredCash > 5000000) {
         beneficialName = $('#BName').val().trim();
         bankBranch = $('#BBranch').val().trim();
         accountNo = $('#BAccountNo').val().trim();

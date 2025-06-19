@@ -210,6 +210,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_CashInAdvance_TravelExpense">
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
+    <End Role="CashInAdvance" Type="Self.CashInAdvance" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TravelExpense">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="CashInAdvance">
+        <PropertyRef Name="TravelExpenseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_TravelExpense_TravelExpenseStatus">
     <End Role="TravelExpenseStatus" Type="Self.TravelExpenseStatus" Multiplicity="1" />
     <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
@@ -283,9 +295,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="FK_TravelExpenseEmployee_TravelExpense">
-    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
+    <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="1" />
     <End Role="TravelExpenseEmployee" Type="Self.TravelExpenseEmployee" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="TravelExpense">
@@ -342,6 +352,10 @@
     <AssociationSet Name="FK_CashInAdvance_CashInAdvanceApproval" Association="Self.FK_CashInAdvance_CashInAdvanceApproval">
       <End Role="CashInAdvance" EntitySet="CashInAdvance" />
       <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApproval" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CashInAdvance_TravelExpense" Association="Self.FK_CashInAdvance_TravelExpense">
+      <End Role="TravelExpense" EntitySet="TravelExpense" />
+      <End Role="CashInAdvance" EntitySet="CashInAdvance" />
     </AssociationSet>
     <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="Self.FK_TravelExpense_TravelExpenseStatus">
       <End Role="TravelExpenseStatus" EntitySet="TravelExpenseStatus" />

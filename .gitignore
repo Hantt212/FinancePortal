@@ -16,3 +16,5 @@ obj/Debug/TempPE/Models.FinancePortalModel.cs.dll
 *.cache
 /Upload
 /obj
+.vs/FinancePortal/v17/DocumentLayout.json
+*.cache

@@ -326,9 +326,6 @@
     <Content Include="Assets\js\Common\moment.min.js" />
     <Content Include="Assets\js\Common\pdfmake.min.js" />
     <Content Include="Assets\js\Common\vfs_fonts.js" />
-    <Content Include="Assets\js\TravelExpense\alllist.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\js\TravelExpense\chart.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -535,7 +532,6 @@
     <Content Include="Views\TravelExpense\List.cshtml" />
     <Content Include="Views\Account\ManageUser.cshtml" />
     <Content Include="Views\CashInAdvance\Index.cshtml" />
-    <Content Include="Views\TravelExpense\AllList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
