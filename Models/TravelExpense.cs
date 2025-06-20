@@ -17,10 +17,10 @@ namespace FinancePortal.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TravelExpense()
         {
+            this.CashInAdvances = new HashSet<CashInAdvance>();
             this.TravelExpenseApprovals = new HashSet<TravelExpenseApproval>();
             this.TravelExpenseAttachmentFiles = new HashSet<TravelExpenseAttachmentFile>();
             this.TravelExpenseEmployees = new HashSet<TravelExpenseEmployee>();
-            this.CashInAdvances = new HashSet<CashInAdvance>();
         }
     
         public int ID { get; set; }
@@ -40,6 +40,8 @@ namespace FinancePortal.Models
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public bool IsShown { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<CashInAdvance> CashInAdvances { get; set; }
         public virtual TravelExpenseStatu TravelExpenseStatu { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
@@ -47,7 +49,5 @@ namespace FinancePortal.Models
         public virtual ICollection<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TravelExpenseEmployee> TravelExpenseEmployees { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CashInAdvance> CashInAdvances { get; set; }
     }
 }

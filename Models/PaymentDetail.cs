@@ -12,27 +12,25 @@ namespace FinancePortal.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class PaymentDetail
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public PaymentDetail()
         {
-            this.UserRoles = new HashSet<UserRole>();
+            this.ExpenseClaimDetails = new HashSet<ExpenseClaimDetail>();
         }
     
-        public int UserId { get; set; }
-        public string EmployeeCode { get; set; }
-        public string UserName { get; set; }
-        public string Department { get; set; }
-        public System.DateTime CreatedTime { get; set; }
-        public bool IsActive { get; set; }
-        public Nullable<System.DateTime> LastLogin { get; set; }
-        public string Password { get; set; }
-        public string UserEmailAddress { get; set; }
-        public bool IsWindowsAccount { get; set; }
+        public int ID { get; set; }
+        public int PaymentID { get; set; }
+        public int CostBudgetID { get; set; }
+        public string Description { get; set; }
+        public decimal ActualVND { get; set; }
+        public decimal ActualUSD { get; set; }
         public bool IsShown { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<ExpenseClaimDetail> ExpenseClaimDetails { get; set; }
+        public virtual Payment Payment { get; set; }
+        public virtual TravelExpenseCostBudget TravelExpenseCostBudget { get; set; }
     }
 }

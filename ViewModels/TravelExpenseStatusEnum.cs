@@ -17,7 +17,7 @@ namespace FinancePortal.ViewModels
         RejectedFC = 8,
         TARApproved = 9,
         CIAApproved = 10,
-        CFApproved = 11,
+        ECApproved = 11,
     }
 
     public enum ApprovalStep

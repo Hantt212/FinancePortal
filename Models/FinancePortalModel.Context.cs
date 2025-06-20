@@ -25,7 +25,15 @@ namespace FinancePortal.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<CashInAdvance> CashInAdvances { get; set; }
+        public virtual DbSet<CashInAdvanceApproval> CashInAdvanceApprovals { get; set; }
+        public virtual DbSet<ExpenseClaim> ExpenseClaims { get; set; }
+        public virtual DbSet<ExpenseClaimApproval> ExpenseClaimApprovals { get; set; }
+        public virtual DbSet<ExpenseClaimDetail> ExpenseClaimDetails { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PaymentDetail> PaymentDetails { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TravelExpense> TravelExpenses { get; set; }
         public virtual DbSet<TravelExpenseApproval> TravelExpenseApprovals { get; set; }
         public virtual DbSet<TravelExpenseAttachmentFile> TravelExpenseAttachmentFiles { get; set; }
@@ -37,7 +45,5 @@ namespace FinancePortal.Models
         public virtual DbSet<TravelExpenseStatu> TravelExpenseStatus { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
-        public virtual DbSet<CashInAdvance> CashInAdvances { get; set; }
-        public virtual DbSet<CashInAdvanceApproval> CashInAdvanceApprovals { get; set; }
     }
 }

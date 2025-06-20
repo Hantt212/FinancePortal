@@ -1458,9 +1458,6 @@ namespace FinancePortal.Dao
             }
         }
 
-
-        
-
         public static List<TravelInfoViewModel> GetCurrentList(string role, int travelID)
         {
             using (var db = new FinancePortalEntities())
@@ -1481,9 +1478,11 @@ namespace FinancePortal.Dao
                                  }).FirstOrDefault();
 
                 var travelList = new List<TravelInfoViewModel>();
+                var existClaim = false; 
 
                 if (cashQuery != null)
                 {
+                    existClaim = db.ExpenseClaims.Any(item => item.CIAID == cashQuery.ID);
                     var cashInfo = new TravelInfoViewModel
                     {
                         FormName = "Cash In Advance",
@@ -1499,7 +1498,10 @@ namespace FinancePortal.Dao
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedAP ||
                                         cashQuery.StatusID == (int)TravelExpenseStatusEnum.RejectedFC))
                                     || (role == GLRole && cashQuery.StatusID < 7)) ? 1 : 0,
-                        CashMode = (role == RequesterRole && cashQuery.StatusID == (int)TravelExpenseStatusEnum.TARApproved) ? 1 : 0
+                      //  CashMode = (role == RequesterRole && cashQuery.StatusID == (int)TravelExpenseStatusEnum.TARApproved) ? 1 : 0,
+                        NewClaim = (role == RequesterRole &&
+                                    cashQuery.StatusID == (int)TravelExpenseStatusEnum.CIAApproved &&
+                                    !existClaim) ? 1 : 0,
                     };
                     travelList.Add(cashInfo);
                 }

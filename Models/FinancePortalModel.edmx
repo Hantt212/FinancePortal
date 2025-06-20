@@ -45,6 +45,78 @@
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
         </EntityType>
+        <EntityType Name="ExpenseClaim">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CIAID" Type="int" />
+          <Property Name="StatusID" Type="int" Nullable="false" />
+          <Property Name="ReportDate" Type="datetime" Nullable="false" />
+          <Property Name="FromDate" Type="datetime" Nullable="false" />
+          <Property Name="ToDate" Type="datetime" Nullable="false" />
+          <Property Name="BusinessPurpose" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Rate" Type="float" />
+          <Property Name="CashReceived" Type="bigint" Nullable="false" />
+          <Property Name="BalanceCompany" Type="bigint" Nullable="false" />
+          <Property Name="BalanceEmployee" Type="bigint" Nullable="false" />
+          <Property Name="TotalCharges" Type="bigint" Nullable="false" />
+          <Property Name="RequesterSignature" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsShown" Type="bit" />
+        </EntityType>
+        <EntityType Name="ExpenseClaimApproval">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ECID" Type="int" Nullable="false" />
+          <Property Name="ApprovalStep" Type="int" Nullable="false" />
+          <Property Name="ApproverID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApproverName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ApproverEmail" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ApproverPosition" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ApproverSignature" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ApproverSignDate" Type="datetime" Nullable="false" />
+          <Property Name="IsApproved" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="150" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="ExpenseClaimDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ECID" Type="int" Nullable="false" />
+          <Property Name="PaymentID" Type="int" Nullable="false" />
+          <Property Name="IsShown" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="IsShown" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PaymentDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PaymentID" Type="int" Nullable="false" />
+          <Property Name="CostBudgetID" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="ActualVND" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ActualUSD" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="IsShown" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="RoleId" />
@@ -53,6 +125,16 @@
           <Property Name="RoleName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="RoleDescription" Type="varchar" MaxLength="255" />
           <Property Name="IsShown" Type="bit" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="TravelExpense">
           <Key>
@@ -227,6 +309,78 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ExpenseClaim_CashInAdvance">
+          <End Role="CashInAdvance" Type="Self.CashInAdvance" Multiplicity="0..1" />
+          <End Role="ExpenseClaim" Type="Self.ExpenseClaim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CashInAdvance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaim">
+              <PropertyRef Name="CIAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaimApproval_ExpenseClaim">
+          <End Role="ExpenseClaim" Type="Self.ExpenseClaim" Multiplicity="1" />
+          <End Role="ExpenseClaimApproval" Type="Self.ExpenseClaimApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseClaim">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaimApproval">
+              <PropertyRef Name="ECID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaimDetail_ExpenseClaim">
+          <End Role="ExpenseClaim" Type="Self.ExpenseClaim" Multiplicity="1" />
+          <End Role="ExpenseClaimDetail" Type="Self.ExpenseClaimDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseClaim">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaimDetail">
+              <PropertyRef Name="ECID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaimDetail_PaymentDetail">
+          <End Role="PaymentDetail" Type="Self.PaymentDetail" Multiplicity="1" />
+          <End Role="ExpenseClaimDetail" Type="Self.ExpenseClaimDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentDetail">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaimDetail">
+              <PropertyRef Name="PaymentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentDetail_CostBudget">
+          <End Role="TravelExpenseCostBudget" Type="Self.TravelExpenseCostBudget" Multiplicity="1" />
+          <End Role="PaymentDetail" Type="Self.PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpenseCostBudget">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="CostBudgetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentDetail_Payment">
+          <End Role="Payment" Type="Self.Payment" Multiplicity="1" />
+          <End Role="PaymentDetail" Type="Self.PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Payment">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="PaymentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TravelExpense_TravelExpenseStatus">
           <End Role="TravelExpenseStatus" Type="Self.TravelExpenseStatus" Multiplicity="1" />
           <End Role="TravelExpense" Type="Self.TravelExpense" Multiplicity="*" />
@@ -342,7 +496,13 @@
         <EntityContainer Name="FinancePortalModelStoreContainer">
           <EntitySet Name="CashInAdvance" EntityType="Self.CashInAdvance" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CashInAdvanceApproval" EntityType="Self.CashInAdvanceApproval" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExpenseClaim" EntityType="Self.ExpenseClaim" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExpenseClaimApproval" EntityType="Self.ExpenseClaimApproval" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExpenseClaimDetail" EntityType="Self.ExpenseClaimDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payment" EntityType="Self.Payment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentDetail" EntityType="Self.PaymentDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpense" EntityType="Self.TravelExpense" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpenseApproval" EntityType="Self.TravelExpenseApproval" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="Self.TravelExpenseAttachmentFiles" Schema="dbo" store:Type="Tables" />
@@ -361,6 +521,30 @@
           <AssociationSet Name="FK_CashInAdvance_TravelExpense" Association="Self.FK_CashInAdvance_TravelExpense">
             <End Role="TravelExpense" EntitySet="TravelExpense" />
             <End Role="CashInAdvance" EntitySet="CashInAdvance" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaim_CashInAdvance" Association="Self.FK_ExpenseClaim_CashInAdvance">
+            <End Role="CashInAdvance" EntitySet="CashInAdvance" />
+            <End Role="ExpenseClaim" EntitySet="ExpenseClaim" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaimApproval_ExpenseClaim" Association="Self.FK_ExpenseClaimApproval_ExpenseClaim">
+            <End Role="ExpenseClaim" EntitySet="ExpenseClaim" />
+            <End Role="ExpenseClaimApproval" EntitySet="ExpenseClaimApproval" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaimDetail_ExpenseClaim" Association="Self.FK_ExpenseClaimDetail_ExpenseClaim">
+            <End Role="ExpenseClaim" EntitySet="ExpenseClaim" />
+            <End Role="ExpenseClaimDetail" EntitySet="ExpenseClaimDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaimDetail_PaymentDetail" Association="Self.FK_ExpenseClaimDetail_PaymentDetail">
+            <End Role="PaymentDetail" EntitySet="PaymentDetail" />
+            <End Role="ExpenseClaimDetail" EntitySet="ExpenseClaimDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentDetail_CostBudget" Association="Self.FK_PaymentDetail_CostBudget">
+            <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudget" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentDetail_Payment" Association="Self.FK_PaymentDetail_Payment">
+            <End Role="Payment" EntitySet="Payment" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetail" />
           </AssociationSet>
           <AssociationSet Name="FK_TravelExpense_TravelExpenseStatus" Association="Self.FK_TravelExpense_TravelExpenseStatus">
             <End Role="TravelExpenseStatus" EntitySet="TravelExpenseStatus" />
@@ -404,7 +588,15 @@
     <edmx:ConceptualModels>
       <Schema Namespace="FinancePortalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="FinancePortalEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CashInAdvances" EntityType="FinancePortalModel.CashInAdvance" />
+          <EntitySet Name="CashInAdvanceApprovals" EntityType="FinancePortalModel.CashInAdvanceApproval" />
+          <EntitySet Name="ExpenseClaims" EntityType="FinancePortalModel.ExpenseClaim" />
+          <EntitySet Name="ExpenseClaimApprovals" EntityType="FinancePortalModel.ExpenseClaimApproval" />
+          <EntitySet Name="ExpenseClaimDetails" EntityType="FinancePortalModel.ExpenseClaimDetail" />
+          <EntitySet Name="Payments" EntityType="FinancePortalModel.Payment" />
+          <EntitySet Name="PaymentDetails" EntityType="FinancePortalModel.PaymentDetail" />
           <EntitySet Name="Roles" EntityType="FinancePortalModel.Role" />
+          <EntitySet Name="sysdiagrams" EntityType="FinancePortalModel.sysdiagram" />
           <EntitySet Name="TravelExpenses" EntityType="FinancePortalModel.TravelExpense" />
           <EntitySet Name="TravelExpenseApprovals" EntityType="FinancePortalModel.TravelExpenseApproval" />
           <EntitySet Name="TravelExpenseAttachmentFiles" EntityType="FinancePortalModel.TravelExpenseAttachmentFile" />
@@ -416,6 +608,38 @@
           <EntitySet Name="TravelExpenseStatus" EntityType="FinancePortalModel.TravelExpenseStatu" />
           <EntitySet Name="Users" EntityType="FinancePortalModel.User" />
           <EntitySet Name="UserRoles" EntityType="FinancePortalModel.UserRole" />
+          <AssociationSet Name="FK_CashInAdvance_CashInAdvanceApproval" Association="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval">
+            <End Role="CashInAdvance" EntitySet="CashInAdvances" />
+            <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CashInAdvance_TravelExpense" Association="FinancePortalModel.FK_CashInAdvance_TravelExpense">
+            <End Role="TravelExpense" EntitySet="TravelExpenses" />
+            <End Role="CashInAdvance" EntitySet="CashInAdvances" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaim_CashInAdvance" Association="FinancePortalModel.FK_ExpenseClaim_CashInAdvance">
+            <End Role="CashInAdvance" EntitySet="CashInAdvances" />
+            <End Role="ExpenseClaim" EntitySet="ExpenseClaims" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaimApproval_ExpenseClaim" Association="FinancePortalModel.FK_ExpenseClaimApproval_ExpenseClaim">
+            <End Role="ExpenseClaim" EntitySet="ExpenseClaims" />
+            <End Role="ExpenseClaimApproval" EntitySet="ExpenseClaimApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaimDetail_ExpenseClaim" Association="FinancePortalModel.FK_ExpenseClaimDetail_ExpenseClaim">
+            <End Role="ExpenseClaim" EntitySet="ExpenseClaims" />
+            <End Role="ExpenseClaimDetail" EntitySet="ExpenseClaimDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ExpenseClaimDetail_PaymentDetail" Association="FinancePortalModel.FK_ExpenseClaimDetail_PaymentDetail">
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+            <End Role="ExpenseClaimDetail" EntitySet="ExpenseClaimDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentDetail_Payment" Association="FinancePortalModel.FK_PaymentDetail_Payment">
+            <End Role="Payment" EntitySet="Payments" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PaymentDetail_CostBudget" Association="FinancePortalModel.FK_PaymentDetail_CostBudget">
+            <End Role="TravelExpenseCostBudget" EntitySet="TravelExpenseCostBudgets" />
+            <End Role="PaymentDetail" EntitySet="PaymentDetails" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserRole_Role" Association="FinancePortalModel.FK_UserRole_Role">
             <End Role="Role" EntitySet="Roles" />
             <End Role="UserRole" EntitySet="UserRoles" />
@@ -452,17 +676,133 @@
             <End Role="User" EntitySet="Users" />
             <End Role="UserRole" EntitySet="UserRoles" />
           </AssociationSet>
-          <EntitySet Name="CashInAdvances" EntityType="FinancePortalModel.CashInAdvance" />
-          <EntitySet Name="CashInAdvanceApprovals" EntityType="FinancePortalModel.CashInAdvanceApproval" />
-          <AssociationSet Name="FK_CashInAdvance_CashInAdvanceApproval" Association="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval">
-            <End Role="CashInAdvance" EntitySet="CashInAdvances" />
-            <End Role="CashInAdvanceApproval" EntitySet="CashInAdvanceApprovals" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CashInAdvance_TravelExpense" Association="FinancePortalModel.FK_CashInAdvance_TravelExpense">
-            <End Role="TravelExpense" EntitySet="TravelExpenses" />
-            <End Role="CashInAdvance" EntitySet="CashInAdvances" />
-          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="CashInAdvance">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
+          <Property Name="StatusID" Type="Int32" Nullable="false" />
+          <Property Name="Reason" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RequiredCash" Type="Int64" Nullable="false" />
+          <Property Name="RequiredDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+          <Property Name="RequesterSignature" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsShown" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="CashInAdvanceApprovals" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvance" ToRole="CashInAdvanceApproval" />
+          <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_CashInAdvance_TravelExpense" FromRole="CashInAdvance" ToRole="TravelExpense" />
+          <NavigationProperty Name="ExpenseClaims" Relationship="FinancePortalModel.FK_ExpenseClaim_CashInAdvance" FromRole="CashInAdvance" ToRole="ExpenseClaim" />
+        </EntityType>
+        <EntityType Name="CashInAdvanceApproval">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CIAID" Type="Int32" />
+          <Property Name="ApprovalStep" Type="Int32" />
+          <Property Name="ApproverID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ApproverName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverEmail" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverPosition" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverSignature" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverSignDate" Type="DateTime" Precision="3" />
+          <Property Name="IsApproved" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CashInAdvance" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvanceApproval" ToRole="CashInAdvance" />
+        </EntityType>
+        <EntityType Name="ExpenseClaim">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CIAID" Type="Int32" />
+          <Property Name="StatusID" Type="Int32" Nullable="false" />
+          <Property Name="ReportDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FromDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ToDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BusinessPurpose" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Rate" Type="Double" />
+          <Property Name="CashReceived" Type="Int64" Nullable="false" />
+          <Property Name="BalanceCompany" Type="Int64" Nullable="false" />
+          <Property Name="BalanceEmployee" Type="Int64" Nullable="false" />
+          <Property Name="TotalCharges" Type="Int64" Nullable="false" />
+          <Property Name="RequesterSignature" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsShown" Type="Boolean" />
+          <NavigationProperty Name="CashInAdvance" Relationship="FinancePortalModel.FK_ExpenseClaim_CashInAdvance" FromRole="ExpenseClaim" ToRole="CashInAdvance" />
+          <NavigationProperty Name="ExpenseClaimApprovals" Relationship="FinancePortalModel.FK_ExpenseClaimApproval_ExpenseClaim" FromRole="ExpenseClaim" ToRole="ExpenseClaimApproval" />
+          <NavigationProperty Name="ExpenseClaimDetails" Relationship="FinancePortalModel.FK_ExpenseClaimDetail_ExpenseClaim" FromRole="ExpenseClaim" ToRole="ExpenseClaimDetail" />
+        </EntityType>
+        <EntityType Name="ExpenseClaimApproval">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ECID" Type="Int32" Nullable="false" />
+          <Property Name="ApprovalStep" Type="Int32" Nullable="false" />
+          <Property Name="ApproverID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverEmail" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverPosition" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverSignature" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ApproverSignDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsApproved" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ExpenseClaim" Relationship="FinancePortalModel.FK_ExpenseClaimApproval_ExpenseClaim" FromRole="ExpenseClaimApproval" ToRole="ExpenseClaim" />
+        </EntityType>
+        <EntityType Name="ExpenseClaimDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ECID" Type="Int32" Nullable="false" />
+          <Property Name="PaymentID" Type="Int32" Nullable="false" />
+          <Property Name="IsShown" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ExpenseClaim" Relationship="FinancePortalModel.FK_ExpenseClaimDetail_ExpenseClaim" FromRole="ExpenseClaimDetail" ToRole="ExpenseClaim" />
+          <NavigationProperty Name="PaymentDetail" Relationship="FinancePortalModel.FK_ExpenseClaimDetail_PaymentDetail" FromRole="ExpenseClaimDetail" ToRole="PaymentDetail" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsShown" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="PaymentDetails" Relationship="FinancePortalModel.FK_PaymentDetail_Payment" FromRole="Payment" ToRole="PaymentDetail" />
+        </EntityType>
+        <EntityType Name="PaymentDetail">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PaymentID" Type="Int32" Nullable="false" />
+          <Property Name="CostBudgetID" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ActualVND" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="ActualUSD" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="IsShown" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="ExpenseClaimDetails" Relationship="FinancePortalModel.FK_ExpenseClaimDetail_PaymentDetail" FromRole="PaymentDetail" ToRole="ExpenseClaimDetail" />
+          <NavigationProperty Name="Payment" Relationship="FinancePortalModel.FK_PaymentDetail_Payment" FromRole="PaymentDetail" ToRole="Payment" />
+          <NavigationProperty Name="TravelExpenseCostBudget" Relationship="FinancePortalModel.FK_PaymentDetail_CostBudget" FromRole="PaymentDetail" ToRole="TravelExpenseCostBudget" />
+        </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="RoleId" />
@@ -472,6 +812,16 @@
           <Property Name="RoleDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="IsShown" Type="Boolean" />
           <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_Role" FromRole="Role" ToRole="UserRole" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="TravelExpense">
           <Key>
@@ -493,11 +843,11 @@
           <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsShown" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="CashInAdvances" Relationship="FinancePortalModel.FK_CashInAdvance_TravelExpense" FromRole="TravelExpense" ToRole="CashInAdvance" />
           <NavigationProperty Name="TravelExpenseStatu" Relationship="FinancePortalModel.FK_TravelExpense_TravelExpenseStatus" FromRole="TravelExpense" ToRole="TravelExpenseStatu" />
           <NavigationProperty Name="TravelExpenseApprovals" Relationship="FinancePortalModel.FK_TravelExpenseApproval_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseApproval" />
           <NavigationProperty Name="TravelExpenseAttachmentFiles" Relationship="FinancePortalModel.FK_TravelExpenseAttachFiles_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseAttachmentFile" />
           <NavigationProperty Name="TravelExpenseEmployees" Relationship="FinancePortalModel.FK_TravelExpenseEmployee_TravelExpense" FromRole="TravelExpense" ToRole="TravelExpenseEmployee" />
-          <NavigationProperty Name="CashInAdvances" Relationship="FinancePortalModel.FK_CashInAdvance_TravelExpense" FromRole="TravelExpense" ToRole="CashInAdvance" />
         </EntityType>
         <EntityType Name="TravelExpenseApproval">
           <Key>
@@ -570,6 +920,7 @@
           <Property Name="CostID" Type="Int32" Nullable="false" />
           <Property Name="BudgetID" Type="Int32" Nullable="false" />
           <Property Name="IsShown" Type="Boolean" />
+          <NavigationProperty Name="PaymentDetails" Relationship="FinancePortalModel.FK_PaymentDetail_CostBudget" FromRole="TravelExpenseCostBudget" ToRole="PaymentDetail" />
           <NavigationProperty Name="TravelExpenseBudget" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseBudget" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseBudget" />
           <NavigationProperty Name="TravelExpenseCost" Relationship="FinancePortalModel.FK_TravelExpenseCostBudget_TravelExpenseCost" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseCost" />
           <NavigationProperty Name="TravelExpenseCostDetails" Relationship="FinancePortalModel.FK_TravelExpenseCostDetail_TravelExpenseCostBudget" FromRole="TravelExpenseCostBudget" ToRole="TravelExpenseCostDetail" />
@@ -619,6 +970,7 @@
           <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="EmployeeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreatedTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="LastLogin" Type="DateTime" Precision="3" />
@@ -627,7 +979,6 @@
           <Property Name="IsWindowsAccount" Type="Boolean" Nullable="false" />
           <Property Name="IsShown" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="UserRoles" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="User" ToRole="UserRole" />
-          <Property Name="Department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="UserRole">
           <Key>
@@ -640,6 +991,102 @@
           <NavigationProperty Name="Role" Relationship="FinancePortalModel.FK_UserRole_Role" FromRole="UserRole" ToRole="Role" />
           <NavigationProperty Name="User" Relationship="FinancePortalModel.FK_UserRole_User" FromRole="UserRole" ToRole="User" />
         </EntityType>
+        <Association Name="FK_CashInAdvance_CashInAdvanceApproval">
+          <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="0..1" />
+          <End Type="FinancePortalModel.CashInAdvanceApproval" Role="CashInAdvanceApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CashInAdvance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CashInAdvanceApproval">
+              <PropertyRef Name="CIAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CashInAdvance_TravelExpense">
+          <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
+          <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpense">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CashInAdvance">
+              <PropertyRef Name="TravelExpenseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaim_CashInAdvance">
+          <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="0..1" />
+          <End Type="FinancePortalModel.ExpenseClaim" Role="ExpenseClaim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CashInAdvance">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaim">
+              <PropertyRef Name="CIAID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaimApproval_ExpenseClaim">
+          <End Type="FinancePortalModel.ExpenseClaim" Role="ExpenseClaim" Multiplicity="1" />
+          <End Type="FinancePortalModel.ExpenseClaimApproval" Role="ExpenseClaimApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseClaim">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaimApproval">
+              <PropertyRef Name="ECID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaimDetail_ExpenseClaim">
+          <End Type="FinancePortalModel.ExpenseClaim" Role="ExpenseClaim" Multiplicity="1" />
+          <End Type="FinancePortalModel.ExpenseClaimDetail" Role="ExpenseClaimDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ExpenseClaim">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaimDetail">
+              <PropertyRef Name="ECID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ExpenseClaimDetail_PaymentDetail">
+          <End Type="FinancePortalModel.PaymentDetail" Role="PaymentDetail" Multiplicity="1" />
+          <End Type="FinancePortalModel.ExpenseClaimDetail" Role="ExpenseClaimDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PaymentDetail">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ExpenseClaimDetail">
+              <PropertyRef Name="PaymentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentDetail_Payment">
+          <End Type="FinancePortalModel.Payment" Role="Payment" Multiplicity="1" />
+          <End Type="FinancePortalModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Payment">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="PaymentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PaymentDetail_CostBudget">
+          <End Type="FinancePortalModel.TravelExpenseCostBudget" Role="TravelExpenseCostBudget" Multiplicity="1" />
+          <End Type="FinancePortalModel.PaymentDetail" Role="PaymentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TravelExpenseCostBudget">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PaymentDetail">
+              <PropertyRef Name="CostBudgetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserRole_Role">
           <End Type="FinancePortalModel.Role" Role="Role" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -691,9 +1138,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TravelExpenseEmployee_TravelExpense">
-          <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
           <End Type="FinancePortalModel.TravelExpenseEmployee" Role="TravelExpenseEmployee" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TravelExpense">
@@ -754,79 +1199,131 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="CashInAdvance">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TravelExpenseID" Type="Int32" Nullable="false" />
-          <Property Name="Reason" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="RequiredCash" Type="Int64" Nullable="false" />
-          <Property Name="RequiredDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="ReturnedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="BeneficialName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="BankBranch" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="AccountNo" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
-          <Property Name="RequesterSignature" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-          <Property Name="IsShown" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="CashInAdvanceApprovals" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvance" ToRole="CashInAdvanceApproval" />
-          <Property Name="StatusID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TravelExpense" Relationship="FinancePortalModel.FK_CashInAdvance_TravelExpense" FromRole="CashInAdvance" ToRole="TravelExpense" />
-        </EntityType>
-        <EntityType Name="CashInAdvanceApproval">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CIAID" Type="Int32" />
-          <Property Name="ApprovalStep" Type="Int32" />
-          <Property Name="ApproverID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ApproverName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="ApproverEmail" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ApproverPosition" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ApproverSignature" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ApproverSignDate" Type="DateTime" Precision="3" />
-          <Property Name="IsApproved" Type="Boolean" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-          <Property Name="UpdatedBy" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CashInAdvance" Relationship="FinancePortalModel.FK_CashInAdvance_CashInAdvanceApproval" FromRole="CashInAdvanceApproval" ToRole="CashInAdvance" />
-        </EntityType>
-        <Association Name="FK_CashInAdvance_CashInAdvanceApproval">
-          <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="0..1" />
-          <End Type="FinancePortalModel.CashInAdvanceApproval" Role="CashInAdvanceApproval" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CashInAdvance">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="CashInAdvanceApproval">
-              <PropertyRef Name="CIAID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CashInAdvance_TravelExpense">
-          <End Type="FinancePortalModel.TravelExpense" Role="TravelExpense" Multiplicity="1" />
-          <End Type="FinancePortalModel.CashInAdvance" Role="CashInAdvance" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TravelExpense">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="CashInAdvance">
-              <PropertyRef Name="TravelExpenseID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="FinancePortalModelStoreContainer" CdmEntityContainer="FinancePortalEntities">
+          <EntitySetMapping Name="CashInAdvances">
+            <EntityTypeMapping TypeName="FinancePortalModel.CashInAdvance">
+              <MappingFragment StoreEntitySet="CashInAdvance">
+                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="RequesterSignature" ColumnName="RequesterSignature" />
+                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
+                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+                <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
+                <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
+                <ScalarProperty Name="RequiredDate" ColumnName="RequiredDate" />
+                <ScalarProperty Name="RequiredCash" ColumnName="RequiredCash" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CashInAdvanceApprovals">
+            <EntityTypeMapping TypeName="FinancePortalModel.CashInAdvanceApproval">
+              <MappingFragment StoreEntitySet="CashInAdvanceApproval">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="ApproverSignDate" ColumnName="ApproverSignDate" />
+                <ScalarProperty Name="ApproverSignature" ColumnName="ApproverSignature" />
+                <ScalarProperty Name="ApproverPosition" ColumnName="ApproverPosition" />
+                <ScalarProperty Name="ApproverEmail" ColumnName="ApproverEmail" />
+                <ScalarProperty Name="ApproverName" ColumnName="ApproverName" />
+                <ScalarProperty Name="ApproverID" ColumnName="ApproverID" />
+                <ScalarProperty Name="ApprovalStep" ColumnName="ApprovalStep" />
+                <ScalarProperty Name="CIAID" ColumnName="CIAID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseClaims">
+            <EntityTypeMapping TypeName="FinancePortalModel.ExpenseClaim">
+              <MappingFragment StoreEntitySet="ExpenseClaim">
+                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="RequesterSignature" ColumnName="RequesterSignature" />
+                <ScalarProperty Name="TotalCharges" ColumnName="TotalCharges" />
+                <ScalarProperty Name="BalanceEmployee" ColumnName="BalanceEmployee" />
+                <ScalarProperty Name="BalanceCompany" ColumnName="BalanceCompany" />
+                <ScalarProperty Name="CashReceived" ColumnName="CashReceived" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="BusinessPurpose" ColumnName="BusinessPurpose" />
+                <ScalarProperty Name="ToDate" ColumnName="ToDate" />
+                <ScalarProperty Name="FromDate" ColumnName="FromDate" />
+                <ScalarProperty Name="ReportDate" ColumnName="ReportDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="CIAID" ColumnName="CIAID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseClaimApprovals">
+            <EntityTypeMapping TypeName="FinancePortalModel.ExpenseClaimApproval">
+              <MappingFragment StoreEntitySet="ExpenseClaimApproval">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="ApproverSignDate" ColumnName="ApproverSignDate" />
+                <ScalarProperty Name="ApproverSignature" ColumnName="ApproverSignature" />
+                <ScalarProperty Name="ApproverPosition" ColumnName="ApproverPosition" />
+                <ScalarProperty Name="ApproverEmail" ColumnName="ApproverEmail" />
+                <ScalarProperty Name="ApproverName" ColumnName="ApproverName" />
+                <ScalarProperty Name="ApproverID" ColumnName="ApproverID" />
+                <ScalarProperty Name="ApprovalStep" ColumnName="ApprovalStep" />
+                <ScalarProperty Name="ECID" ColumnName="ECID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpenseClaimDetails">
+            <EntityTypeMapping TypeName="FinancePortalModel.ExpenseClaimDetail">
+              <MappingFragment StoreEntitySet="ExpenseClaimDetail">
+                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
+                <ScalarProperty Name="ECID" ColumnName="ECID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="FinancePortalModel.Payment">
+              <MappingFragment StoreEntitySet="Payment">
+                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PaymentName" ColumnName="PaymentName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PaymentDetails">
+            <EntityTypeMapping TypeName="FinancePortalModel.PaymentDetail">
+              <MappingFragment StoreEntitySet="PaymentDetail">
+                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
+                <ScalarProperty Name="ActualUSD" ColumnName="ActualUSD" />
+                <ScalarProperty Name="ActualVND" ColumnName="ActualVND" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CostBudgetID" ColumnName="CostBudgetID" />
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Roles">
             <EntityTypeMapping TypeName="FinancePortalModel.Role">
               <MappingFragment StoreEntitySet="Role">
@@ -834,6 +1331,17 @@
                 <ScalarProperty Name="RoleDescription" ColumnName="RoleDescription" />
                 <ScalarProperty Name="RoleName" ColumnName="RoleName" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="FinancePortalModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -973,7 +1481,6 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="FinancePortalModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="Department" ColumnName="Department" />
                 <ScalarProperty Name="IsShown" ColumnName="IsShown" />
                 <ScalarProperty Name="IsWindowsAccount" ColumnName="IsWindowsAccount" />
                 <ScalarProperty Name="UserEmailAddress" ColumnName="UserEmailAddress" />
@@ -981,6 +1488,7 @@
                 <ScalarProperty Name="LastLogin" ColumnName="LastLogin" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="CreatedTime" ColumnName="CreatedTime" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="EmployeeCode" ColumnName="EmployeeCode" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -997,49 +1505,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CashInAdvances">
-            <EntityTypeMapping TypeName="FinancePortalModel.CashInAdvance">
-              <MappingFragment StoreEntitySet="CashInAdvance">
-                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
-                <ScalarProperty Name="IsShown" ColumnName="IsShown" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="RequesterSignature" ColumnName="RequesterSignature" />
-                <ScalarProperty Name="AccountNo" ColumnName="AccountNo" />
-                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
-                <ScalarProperty Name="BeneficialName" ColumnName="BeneficialName" />
-                <ScalarProperty Name="ReturnedDate" ColumnName="ReturnedDate" />
-                <ScalarProperty Name="RequiredDate" ColumnName="RequiredDate" />
-                <ScalarProperty Name="RequiredCash" ColumnName="RequiredCash" />
-                <ScalarProperty Name="Reason" ColumnName="Reason" />
-                <ScalarProperty Name="TravelExpenseID" ColumnName="TravelExpenseID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CashInAdvanceApprovals">
-            <EntityTypeMapping TypeName="FinancePortalModel.CashInAdvanceApproval">
-              <MappingFragment StoreEntitySet="CashInAdvanceApproval">
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
-                <ScalarProperty Name="ApproverSignDate" ColumnName="ApproverSignDate" />
-                <ScalarProperty Name="ApproverSignature" ColumnName="ApproverSignature" />
-                <ScalarProperty Name="ApproverPosition" ColumnName="ApproverPosition" />
-                <ScalarProperty Name="ApproverEmail" ColumnName="ApproverEmail" />
-                <ScalarProperty Name="ApproverName" ColumnName="ApproverName" />
-                <ScalarProperty Name="ApproverID" ColumnName="ApproverID" />
-                <ScalarProperty Name="ApprovalStep" ColumnName="ApprovalStep" />
-                <ScalarProperty Name="CIAID" ColumnName="CIAID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          </EntityContainerMapping>
+        </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

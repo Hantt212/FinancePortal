@@ -10,7 +10,7 @@ const StatusEnum = {
     RejectedFC: 8,
     TARApproved: 9,
     CIAApproved: 10,
-    CFApproved: 11,
+    ECApproved: 11,
 };
 
 const LabelStatusEnum = {
@@ -146,6 +146,7 @@ function loadUserRequests() {
                             ? `<a href="/CashInAdvance/Index?t=${encodeURIComponent(data.Token)}" class="btn btn-sm btn-outline-success ml-1">
                             ➕
                            </a>` : "";
+
                         return `${viewBtn} ${editBtn} ${cashBtn}`;
                     }
                 }
@@ -205,9 +206,14 @@ function loadUserRequests() {
                                                         <i class="fa fa-edit"></i>
                                                     </a>`;
                                     }
+                                    if (item.NewClaim == 1) {
+                                        childHtml += `<a href="/ExpenseClaim/Index?t=${encodeURIComponent(item.TokenID)}" class="btn btn-sm btn-outline-success ml-1">
+                                                        ➕
+                                                    </a>`;
+                                    }
                                                 
                                 } else {
-                                    childHtml += `<a href="/ClaimForm/Index/${item.ID}" class="btn btn-sm btn-outline-primary ml-1">
+                                    childHtml += `<a href="/ClaimForm/Index?t=${encodeURIComponent(item.ID)}" class="btn btn-sm btn-outline-primary ml-1">
                                                     <i class="fa fa-edit"></i>
                                                 </a>`;
                                 }
@@ -429,7 +435,7 @@ function showFCSection(fc, statusID) {
         statusLabel = LabelStatusEnum.Waiting;
     } else if (statusID === StatusEnum.RejectedFC) {
         statusLabel = LabelStatusEnum.Rejected;
-    } else if (statusID === StatusEnum.TARApproved) {
+    } else if (statusID === StatusEnum.TARApproved || statusID === StatusEnum.CIAApproved) {
         statusLabel = LabelStatusEnum.Approved;
     }
 

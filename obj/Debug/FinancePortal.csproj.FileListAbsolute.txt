@@ -332,7 +332,6 @@ C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePor
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\manageuser.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\cashinadvance.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\requestlist.js
-C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\expensebudget.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\editor.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\dashboard.js
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\travelexpense.js
@@ -436,3 +435,4 @@ C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePor
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinanceP.DE22A81D.Up2Date
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.dll
 C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\obj\Debug\FinancePortal.pdb
+C:\Users\hatt.nguyen.HTPVTG\Desktop\Hantt\Ha's Handover\Ha's Handover\FinancePortal\bin\Assets\js\TravelExpense\expenseclaim.js

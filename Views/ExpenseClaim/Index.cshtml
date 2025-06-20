@@ -1,0 +1,370 @@
+﻿@{
+    var isEdit = Model != null && Model.ID > 0;
+    ViewBag.Title = "Expense Claim Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- 🔔 Toast Notification -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container position-fixed" style="top: 20px; right: 20px; z-index: 1055;">
+        <div class="toast" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+            <div class="toast-header">
+                <div class="rounded mr-2" id="toastIcon" style="width: 15px; height: 15px;"></div>
+                <strong class="mr-auto" id="toastTitle">Notification</strong>
+                <small class="text-muted" id="toastTime">Just now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body" id="toastBody"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Global variables -->
+<input type="hidden" id="RequestID" value="@(Model?.ID ?? 0)" />
+
+<!-- 🔹 Form Container -->
+
+<div class="card-body section-padding" style="margin-left:2%; width: 96%; margin-top: 60px;">
+    <div class="card o-hidden border-0 shadow-lg row">
+        <div class="col-lg-12">
+            <div class="col-md-12">
+
+                <input type="hidden" id="ciaID" value="@(Model?.ID ?? 0)" />
+                <input type="hidden" id="travelID" value="@(Model != null ? Model.TravelExpenseID : 0)" />
+                <!-- 🔸 Travel Info -->
+                <div class="card mb-4">
+                    <h4 class="card-header text-center" style="background: #ffca2c;">
+                        EXPENSE  REPORT <span class="font-italic text-secondary">(Báo cáo chi phí công tác)</span>
+                    </h4>
+                    <div class="card-body">
+                        <div class="row equal-height">
+                            <!-- Personal Details -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <h5 class="card-header text-center" style="background: #9ddef2;">
+                                        Personal Details <span class="font-italic text-secondary"> (Thông tin cá nhân)</span>
+                                    </h5>
+                                    <div class="card-body">
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Employee Number <br /><span class="font-italic text-secondary">(Mã số nhân viên)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" id="lblEmployeeID" value="@(Model != null ? Model.EmployeeID : "")" readonly />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Employee Name<br /><span class="font-italic text-secondary">(Tên nhân viên)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" id="lblEmployeeName" value="@(Model != null ? Model.EmployeeName : "")" readonly />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Department <br /><span class="font-italic text-secondary"> (Bộ phận)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" id="lblDept" value="@(Model != null ? Model.Department : "")" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detail Info -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <h5 class="card-header text-center" style="background: #9ddef2;">
+                                        Date Information <span class="font-italic text-secondary"> (Thông tin lịch trình)</span>
+                                    </h5>
+                                    <div class="card-body">
+                                        @*<div class="form-group row">
+                                                <label class="control-label col-md-4 font-weight-bold">
+                                                    Reason for Advance <span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Lý do tạm ứng)</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    <textarea id="reason" class="form-control" rows="3">@(Model != null ? Model.Reason : "")</textarea>
+                                                </div>
+                                            </div>*@
+
+
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Current Date <span class="text-danger">*</span><br /><span class="font-italic text-secondary"> (Ngày báo cáo)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="date" class="form-control" id="returnedDate" value="@(Model != null && Model.ID > 0 ? Model.ReturnedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                From Date<span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Từ ngày)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="date" class="form-control" id="requiredDate" value="@(Model != null && Model.ID > 0? Model.RequiredDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                To Date<span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Từ ngày)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="date" class="form-control" id="requiredDate" value="@(Model != null && Model.ID > 0? Model.RequiredDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4 mt-3">
+                            <label class="font-weight-bold">Business Purpose <span class="text-danger">*</span></label>
+                            <textarea id="BusinessPurpose" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <!-- 🔸 Employees Section -->
+                        <div class="card shadow border-0 mb-4 mt-4">
+                            <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
+                                <h5 class="m-0">Payments Info <span class="text-danger">*</span></h5>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="openPayment()">
+                                    <i class="fa fa-plus-circle"></i> Add Payment
+                                </button>
+                            </div>
+                            <div class="card-body" style="overflow-x: auto;">
+                                <div class="form-group row">
+                                    <!-- First group -->
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Foreign currency<br />
+                                                <span class="font-italic text-secondary">(Tiền tệ)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="text" class="form-control" id="foreignCurrency" value="USD" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Second group -->
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="control-label col-md-4 font-weight-bold">
+                                                Rate <br />
+                                                <span class="font-italic text-secondary">(Tỉ giá)</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="number" class="form-control" id="exchangeRate" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <table class="table table-bordered table-sm" id="paymentListTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Payment</th>
+                                            <th>Description of expense/ Diễn giải</th>
+                                            <th>Expense type </th>
+                                            <th>Budget line </th>
+                                            <th>Actual amm </th>
+                                            <th>Actual amm (USD)</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Populated via JS (window.preloadedEmployees) -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <div class="row mt-4">
+                            <!-- Approver Info Card -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100">
+                                    <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                        Approver Info <span class="text-danger">*</span>
+                                        <span class="font-italic text-secondary ml-2">(Thông tin người duyệt)</span>
+                                    </h5>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="font-weight-bold">Approver Code</label>
+                                            <div class="input-group">
+                                                <input type="number" id="approverCode" class="form-control" value="@(Model != null ? Model.HODID : "")" />
+                                            </div>
+                                        </div>
+
+                                        <div id="approverInfoFields" style="">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <input type="text" class="form-control" id="approverName" value="@(Model != null ? Model.HODName : "")" readonly />
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Position</label>
+                                                <input type="text" class="form-control" id="approverPosition" value="@(Model != null ? Model.HODPosition : "")" readonly />
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Email</label>
+                                                <input type="text" class="form-control" id="approverEmail" value="@(Model != null ? Model.HODEmail : "")" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Requester Signature Card with fixed body height -->
+                            <div class="col-md-6">
+                                <div class="card shadow-sm h-100" min-height: 280px>
+                                    <h5 class="card-header font-weight-bold" style="background-color: #9ddef2;">
+                                        Requester Signature <span class="text-danger">*</span>
+                                        <span class="font-italic text-secondary ml-2">(Chữ ký người yêu cầu)</span>
+                                    </h5>
+                                    <div class="card-body text-center" style="min-height: 280px; display: flex; flex-direction: column; justify-content: center;">
+                                        <label class="font-weight-bold d-block">Your Signature</label>
+                                        <input type="text" id="requesterSign" class="form-control text-center mb-3"
+                                               style="font-family: 'Binetta Signature'; font-size: 3.0em; border: none; background-color:#e9ecef"
+                                               value="@(Model != null && Model.ID > 0 ? Model.RequesterSign : HttpContext.Current.Session["UserName"]?.ToString())" />
+
+                                        <div class="input-group mt-auto">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Date</span>
+                                            </div>
+                                            <input type="date" id="requesterSignDate" class="form-control"
+                                                   value="@(Model != null && Model.ID > 0? Model.CreatedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 🔘 Submit Button -->
+                        <div class="tile-footer my-4 text-center">
+                            <button class="btn btn-primary btn-lg" id="submitCIAButton" type="button" style="width:200px">
+                                <i class="fa fa-save" aria-hidden="true"></i> @(isEdit ? "Update" : "Submit")
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addPaymentModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeLabel">Add Payment</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">Payment Type</label>
+                        <select class="form-control form-select" id="vPaymentType">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label font-weight-bold">Description</label>
+                        <textarea class="form-control" id="vDescription"></textarea>
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">Expense Type</label>
+                        <select class="form-control form-select" id="vExpenseType">
+
+                        </select>
+                    </div>
+                    <div class="mb-3 col-md-6" style="visibility:hidden" id="containerBudget">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">Budget Line</label>
+                        <select class="form-control form-select" id="vBudgetLine">
+                        </select>
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">Actual amm (VND)</label>
+                        <input type="number" class="form-control" id="vActualVND">
+                    </div>
+                    <div class="mb-3 col-md-6">
+                        <label for="recipient-name" class="col-form-label font-weight-bold">Actual amm (USD)</label>
+                        <input type="number" class="form-control" id="vActualUSD" readonly>
+                    </div>
+
+                    <!-- Confirm Button -->
+                    <div class="text-right mt-3">
+                        <button class="btn btn-success" id="addPaymentBtn">
+                            <i class="fa fa-check-circle"></i> Add to List
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .equal-height {
+        display: flex;
+        flex-direction: row;
+    }
+
+        .equal-height > div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .equal-height .card {
+            flex: 1;
+        }
+</style>
+<!-- JS hook -->
+@section expenseClaimScript {
+    <script src="~/Assets/js/TravelExpense/expenseclaim.js"></script>
+}
+
+@if (Model != null && Model.ID > 0)
+{
+    <script>
+        window.isEdit = true;
+        @*window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees));
+        window.preloadedApprover = @Html.Raw(Json.Encode(Model.Approver));
+        window.preloadedBudgetID = @(Model.BudgetID);
+        window.preloadedCostDetails = @Html.Raw(Json.Encode(Model.CostDetails));
+        window.preloadedExchangeRate = @(Model.ExchangeRate);*@
+    </script>
+}
+else
+{
+    <script>
+        window.isEdit = false;
+        window.preloadedEmployees = [];
+        window.preloadedApprover = null;
+        window.preloadedBudgetID = null;
+        window.preloadedCostDetails = [];
+        window.preloadedExchangeRate = 25000;
+    </script>
+}
+

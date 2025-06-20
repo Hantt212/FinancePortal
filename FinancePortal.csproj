@@ -160,9 +160,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ExpenseClaimController.cs" />
     <Compile Include="Controllers\CashInAdvanceController.cs" />
     <Compile Include="Controllers\TravelExpenseController.cs" />
     <Compile Include="Dao\AccountDao.cs" />
+    <Compile Include="Dao\ExpenseClaimDao.cs" />
     <Compile Include="Dao\CashInAdvanceDao.cs" />
     <Compile Include="Dao\TravelExpenseDao.cs" />
     <Compile Include="Global.asax.cs">
@@ -198,6 +200,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EmployeesModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ExpenseClaim.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ExpenseClaimApproval.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ExpenseClaimDetail.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\FinancePortalModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -213,7 +224,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FinancePortalModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Payment.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PaymentDetail.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Role.cs">
+      <DependentUpon>FinancePortalModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>FinancePortalModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TravelExpense.cs">
@@ -255,6 +275,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ApprovalActionModel.cs" />
     <Compile Include="ViewModels\CashInAdvanceViewModel.cs" />
+    <Compile Include="ViewModels\PaymentsModel.cs" />
+    <Compile Include="ViewModels\PaymentViewModel.cs" />
     <Compile Include="ViewModels\TravelInfoViewModel.cs" />
     <Compile Include="ViewModels\MailContentModel.cs" />
     <Compile Include="ViewModels\CostViewModel.cs" />
@@ -341,7 +363,7 @@
     <Content Include="Assets\js\TravelExpense\requestlist.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\js\TravelExpense\expensebudget.js">
+    <Content Include="Assets\js\TravelExpense\expenseclaim.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\js\TravelExpense\editor.js">
@@ -532,6 +554,7 @@
     <Content Include="Views\TravelExpense\List.cshtml" />
     <Content Include="Views\Account\ManageUser.cshtml" />
     <Content Include="Views\CashInAdvance\Index.cshtml" />
+    <Content Include="Views\ExpenseClaim\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

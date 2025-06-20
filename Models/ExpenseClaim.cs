@@ -12,36 +12,38 @@ namespace FinancePortal.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CashInAdvance
+    public partial class ExpenseClaim
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public CashInAdvance()
+        public ExpenseClaim()
         {
-            this.CashInAdvanceApprovals = new HashSet<CashInAdvanceApproval>();
-            this.ExpenseClaims = new HashSet<ExpenseClaim>();
+            this.ExpenseClaimApprovals = new HashSet<ExpenseClaimApproval>();
+            this.ExpenseClaimDetails = new HashSet<ExpenseClaimDetail>();
         }
     
         public int ID { get; set; }
-        public int TravelExpenseID { get; set; }
+        public Nullable<int> CIAID { get; set; }
         public int StatusID { get; set; }
-        public string Reason { get; set; }
-        public long RequiredCash { get; set; }
-        public System.DateTime RequiredDate { get; set; }
-        public System.DateTime ReturnedDate { get; set; }
-        public string BeneficialName { get; set; }
-        public string BankBranch { get; set; }
-        public string AccountNo { get; set; }
+        public System.DateTime ReportDate { get; set; }
+        public System.DateTime FromDate { get; set; }
+        public System.DateTime ToDate { get; set; }
+        public string BusinessPurpose { get; set; }
+        public Nullable<double> Rate { get; set; }
+        public long CashReceived { get; set; }
+        public long BalanceCompany { get; set; }
+        public long BalanceEmployee { get; set; }
+        public long TotalCharges { get; set; }
         public string RequesterSignature { get; set; }
         public string CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public string UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public bool IsShown { get; set; }
+        public Nullable<bool> IsShown { get; set; }
     
+        public virtual CashInAdvance CashInAdvance { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<CashInAdvanceApproval> CashInAdvanceApprovals { get; set; }
-        public virtual TravelExpense TravelExpense { get; set; }
+        public virtual ICollection<ExpenseClaimApproval> ExpenseClaimApprovals { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ExpenseClaim> ExpenseClaims { get; set; }
+        public virtual ICollection<ExpenseClaimDetail> ExpenseClaimDetails { get; set; }
     }
 }
