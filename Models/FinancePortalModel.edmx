@@ -56,8 +56,9 @@
           <Property Name="FromDate" Type="datetime" Nullable="false" />
           <Property Name="ToDate" Type="datetime" Nullable="false" />
           <Property Name="BusinessPurpose" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Rate" Type="float" />
-          <Property Name="CashReceived" Type="bigint" Nullable="false" />
+          <Property Name="TotalExpense" Type="bigint" Nullable="false" />
           <Property Name="BalanceCompany" Type="bigint" Nullable="false" />
           <Property Name="BalanceEmployee" Type="bigint" Nullable="false" />
           <Property Name="TotalCharges" Type="bigint" Nullable="false" />
@@ -732,8 +733,9 @@
           <Property Name="FromDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ToDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="BusinessPurpose" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Currency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Rate" Type="Double" />
-          <Property Name="CashReceived" Type="Int64" Nullable="false" />
+          <Property Name="TotalExpense" Type="Int64" Nullable="false" />
           <Property Name="BalanceCompany" Type="Int64" Nullable="false" />
           <Property Name="BalanceEmployee" Type="Int64" Nullable="false" />
           <Property Name="TotalCharges" Type="Int64" Nullable="false" />
@@ -1259,8 +1261,9 @@
                 <ScalarProperty Name="TotalCharges" ColumnName="TotalCharges" />
                 <ScalarProperty Name="BalanceEmployee" ColumnName="BalanceEmployee" />
                 <ScalarProperty Name="BalanceCompany" ColumnName="BalanceCompany" />
-                <ScalarProperty Name="CashReceived" ColumnName="CashReceived" />
+                <ScalarProperty Name="TotalExpense" ColumnName="TotalExpense" />
                 <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="BusinessPurpose" ColumnName="BusinessPurpose" />
                 <ScalarProperty Name="ToDate" ColumnName="ToDate" />
                 <ScalarProperty Name="FromDate" ColumnName="FromDate" />

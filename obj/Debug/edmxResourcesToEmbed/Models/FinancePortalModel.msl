@@ -55,8 +55,9 @@
           <ScalarProperty Name="TotalCharges" ColumnName="TotalCharges" />
           <ScalarProperty Name="BalanceEmployee" ColumnName="BalanceEmployee" />
           <ScalarProperty Name="BalanceCompany" ColumnName="BalanceCompany" />
-          <ScalarProperty Name="CashReceived" ColumnName="CashReceived" />
+          <ScalarProperty Name="TotalExpense" ColumnName="TotalExpense" />
           <ScalarProperty Name="Rate" ColumnName="Rate" />
+          <ScalarProperty Name="Currency" ColumnName="Currency" />
           <ScalarProperty Name="BusinessPurpose" ColumnName="BusinessPurpose" />
           <ScalarProperty Name="ToDate" ColumnName="ToDate" />
           <ScalarProperty Name="FromDate" ColumnName="FromDate" />

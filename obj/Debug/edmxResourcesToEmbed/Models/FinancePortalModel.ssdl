@@ -51,8 +51,9 @@
     <Property Name="FromDate" Type="datetime" Nullable="false" />
     <Property Name="ToDate" Type="datetime" Nullable="false" />
     <Property Name="BusinessPurpose" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Currency" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="Rate" Type="float" />
-    <Property Name="CashReceived" Type="bigint" Nullable="false" />
+    <Property Name="TotalExpense" Type="bigint" Nullable="false" />
     <Property Name="BalanceCompany" Type="bigint" Nullable="false" />
     <Property Name="BalanceEmployee" Type="bigint" Nullable="false" />
     <Property Name="TotalCharges" Type="bigint" Nullable="false" />

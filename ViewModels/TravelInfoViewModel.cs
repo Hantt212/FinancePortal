@@ -12,6 +12,7 @@ namespace FinancePortal.ViewModels
         public int ID { get; set; }
         public int TravelExpenseID { get; set; }
         public string TokenID { get; set; }
+        public string TokenCAID { get; set; }
         public int EditMode { get; set; }
         public int CashMode { get; set; }
         public int NewClaim {  get; set; }

@@ -135,7 +135,7 @@ $('#addPaymentBtn').click(function () {
             <td>${actualVND}</td>
             <td>${actualUSD}</td>
             <td class="text-center">
-                <button class="btn btn-sm btn-danger w-auto remove-employee">
+                <button class="btn btn-sm btn-danger w-auto remove-payment">
                     <i class="fa fa-trash"></i> <span class="d-none d-sm-inline">Remove</span>
                 </button>
             </td>
@@ -191,6 +191,7 @@ function calcSumActualGroupPayment() {
     }
 
     // 🔸 Add totals grouped by payment type
+    var totalActualUSD = 0;
     for (const [payment, totals] of Object.entries(groupedSums)) {
         const rowHtml = `
             <tr class="summary-row">
@@ -204,8 +205,46 @@ function calcSumActualGroupPayment() {
             </tr>
         `;
         $tbody.append(rowHtml);
+
+        totalActualUSD += totals.actualUSD.toFixed(2);
     }
+    $("#totalExpense").append(totalActualUSD);
 }
+
+
+function calcSumByBudgetLine() {
+    const totalsByBudgetLine = {};
+
+    $('#paymentListTable tbody tr').each(function () {
+        const budgetLine = $(this).find('td:nth-child(4)').text().trim();
+        const actualUSD = parseFloat($(this).find('td:nth-child(6)').text().trim()) || 0;
+
+        if (!totalsByBudgetLine[budgetLine]) {
+            totalsByBudgetLine[budgetLine] = 0;
+        }
+        totalsByBudgetLine[budgetLine] += actualUSD;
+    });
+
+    // Output result to console
+    console.log("Total USD grouped by Budget Line:");
+    $.each(totalsByBudgetLine, function (budgetLine, totalUSD) {
+        console.log(`${budgetLine}: $${totalUSD.toFixed(2)}`);
+    });
+
+    // Optional: Show results on page
+    let resultHtml = '<ul>';
+    $.each(totalsByBudgetLine, function (budgetLine, totalUSD) {
+        resultHtml += `<li><strong>${budgetLine}</strong>: $${totalUSD.toFixed(2)}</li>`;
+    });
+    resultHtml += '</ul>';
+
+    $('body').append(`<div class="mt-3">${resultHtml}</div>`);
+}
+
+$(document).on('click', '.remove-payment', function () {
+    $(this).closest('tr').remove();
+    calcSumActualGroupPayment();
+});
 
 function roundTo2Decimals(num) {
     return Math.round(num * 100) / 100;

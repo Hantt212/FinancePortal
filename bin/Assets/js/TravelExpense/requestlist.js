@@ -207,13 +207,13 @@ function loadUserRequests() {
                                                     </a>`;
                                     }
                                     if (item.NewClaim == 1) {
-                                        childHtml += `<a href="/ExpenseClaim/Index?t=${encodeURIComponent(item.TokenID)}" class="btn btn-sm btn-outline-success ml-1">
+                                        childHtml += `<a href="/ExpenseClaim/Index?t=${encodeURIComponent(item.TokenCAID)}" class="btn btn-sm btn-outline-success ml-1">
                                                         ➕
                                                     </a>`;
                                     }
                                                 
                                 } else {
-                                    childHtml += `<a href="/ClaimForm/Index?t=${encodeURIComponent(item.ID)}" class="btn btn-sm btn-outline-primary ml-1">
+                                    childHtml += `<a href="/ExpenseClaim/Index?t=${encodeURIComponent(item.TokenCAID)}" class="btn btn-sm btn-outline-primary ml-1">
                                                     <i class="fa fa-edit"></i>
                                                 </a>`;
                                 }

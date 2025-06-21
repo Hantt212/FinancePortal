@@ -23,7 +23,7 @@ namespace FinancePortal.Controllers
                 var decryptedId = TokenHelper.Decrypt(t);
                 int travelID = int.Parse(decryptedId);
 
-                var model = CashInAdvanceDao.GetCashInAdvanceByTravelID(travelID);
+                var model = ExpenseClaimDao.GetExpenseClaimByCIAID(travelID);
               
                 if (model == null)
                     return RedirectToAction("AccessDenied");
@@ -38,9 +38,9 @@ namespace FinancePortal.Controllers
 
 
         [HttpGet]
-        public JsonResult GetInitPayment()
+        public JsonResult GetInitPayment(int ciaId)
         {
-            var paymentInfo = ExpenseClaimDao.GetInitPayment();
+            var paymentInfo = ExpenseClaimDao.GetInitPayment(ciaId);
             return Json(paymentInfo, JsonRequestBehavior.AllowGet);
         }
 

@@ -170,7 +170,7 @@ namespace FinancePortal.Dao
                 mailContent.TarNumber = travel.TarNo;
                 mailContent.RecipientTo = model.Approver.Email;
                 mailContent.RecipientCc = mailRequester;
-                mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
+                mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
                 SendEmail(mailContent);
 
                 // 8. Final save with validation catch
@@ -204,7 +204,7 @@ namespace FinancePortal.Dao
                 // 1. Validate TravelExpense exists
                 var travel = db.TravelExpenses.FirstOrDefault(t => t.ID == model.ID && t.IsShown);
                 if (travel == null)
-                    throw new Exception("Travel Expense ciaInfo not found.");
+                    throw new Exception("Travel Expense request not found.");
 
 
                 // 2. Validate Budget
@@ -1090,7 +1090,7 @@ namespace FinancePortal.Dao
                     return new OperationResult { Success = false, Message = "HOD approval record not found." };
 
                 var glUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == GLRole && r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == GLRole && r.IsShown == true && u.IsActive && u.IsShown))
                             .FirstOrDefault();
 
                 if (isApprove)
@@ -1145,7 +1145,7 @@ namespace FinancePortal.Dao
                             //Approve:Send mail to GL
                             mailContent.RecipientTo = glUser.UserEmailAddress;
                             mailContent.RecipientCc = mailRequester;
-                            mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
+                            mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
                             SendEmail(mailContent);
                         }
                     }
@@ -1153,7 +1153,7 @@ namespace FinancePortal.Dao
 
                 //Reject:Send mail to Requester
                 mailContent.RecipientTo = mailRequester;
-                mailContent.Content = "Please be informed that your travel expense ciaInfo has been <strong>denied</strong> by HOD.";
+                mailContent.Content = "Please be informed that your travel expense request has been <strong>denied</strong> by HOD.";
                 SendEmail(mailContent);
 
                 db.SaveChanges();
@@ -1181,7 +1181,7 @@ namespace FinancePortal.Dao
                     return new OperationResult { Success = false, Message = "GL Approval record not found." };
 
                 var fcUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true && u.IsActive && u.IsShown))
                             .FirstOrDefault();
 
                 // Update approval
@@ -1235,7 +1235,7 @@ namespace FinancePortal.Dao
                     mailContent.TarNumber = request.TarNo;
                     mailContent.RecipientTo = fcUser.UserEmailAddress;
                     mailContent.RecipientCc = mailRequester;
-                    mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
+                    mailContent.Content = "Please be informed that you have a travel expense request waiting for approval.";
                     SendEmail(mailContent);
                 }
 
@@ -1288,11 +1288,11 @@ namespace FinancePortal.Dao
                 mailContent.RecipientTo = mailRequester;
                 if (isApprove)
                 {
-                    mailContent.Content = "Please be informed that your travel expense ciaInfo has been done.";
+                    mailContent.Content = "Please be informed that your travel expense request has been done.";
                 }
                 else
                 {
-                    mailContent.Content = "Please be informed that your travel expense ciaInfo has been <strong>denied</strong> by FC.";
+                    mailContent.Content = "Please be informed that your travel expense request has been <strong>denied</strong> by FC.";
                 }
                 SendEmail(mailContent);
 
@@ -1487,6 +1487,7 @@ namespace FinancePortal.Dao
                     {
                         FormName = "Cash In Advance",
                         TokenID = TokenHelper.Encrypt(cashQuery.TravelExpenseID.ToString()),
+                        TokenCAID = TokenHelper.Encrypt(cashQuery.ID.ToString()),
                         CreatedDate = cashQuery.CreatedDate.ToString("dd/MM/yyyy"),
                         ID = cashQuery.ID,
                         StatusName = cashQuery.DisplayName,

@@ -728,32 +728,7 @@ function addEmployeeToTable(emp) {
 
 $('#BusinessDateFrom, #BusinessDateTo').on('change', updateTripDays);
 
-//$('#saveBudgetBtn').click(function () {
-//    const name = $('#newBudgetName').val().trim();
-//    const amountRaw = $('#newBudgetAmount').val().replace(/\./g, '').replace(/,/g, '');
-//    const amount = parseFloat(amountRaw) || 0;
 
-//    if (!name || amount <= 0) {
-//        showToast("Please enter valid budget name and amount.", "warning");
-//        return;
-//    }
-
-//    $.ajax({
-//        url: '/TravelExpense/AddBudget',
-//        type: 'POST',
-//        contentType: 'application/json',
-//        data: JSON.stringify({ BudgetName: name, BudgetAmount: amount }),
-//        success: function (res) {
-//            if (res.success) {
-//                $('#addBudgetModal').modal('hide');
-//                showToast("Budget added successfully", "success");
-//               // loadBudgets();
-//            } else {
-//                showToast(res.message || "Add budget failed", "danger");
-//            }
-//        }
-//    });
-//});
 
 $('#newBudgetAmount').on('input', function () {
     let raw = $(this).val().replace(/\./g, '').replace(/,/g, '');
@@ -761,10 +736,6 @@ $('#newBudgetAmount').on('input', function () {
     $(this).val(num.toLocaleString('de-DE')); // Use dot for thousands
 });
 
-//$('#addBudgetModal').on('hidden.bs.modal', function () {
-//    $('#newBudgetName').val('');
-//    $('#newBudgetAmount').val('');
-//});
 
 $('#BudgetName').on('change', function () {
     const selected = $(this).find('option:selected');
@@ -773,25 +744,6 @@ $('#BudgetName').on('change', function () {
     $('#BudgetUsed').val(formatNumber(selected.data('used') || 0));
     $('#BudgetRemaining').val(formatNumber(selected.data('remaining') || 0));
 });
-
-//function resetTravelExpenseForm() {
-//    $('#BusinessDateFrom, #BusinessDateTo, #RequestDate').val('');
-//    $('#TripPurpose').val('');
-//    $('#TripDays').val('');
-//    $('#EstimatedCost').val('');
-//    $('#ExchangeRate').val('25000');
-//    $('#BudgetName').val('');
-//    $('#BudgetAmount, #BudgetUsed, #BudgetRemaining').val('');
-//    $('.cost-input').val(0);
-
-//    // Clear employee table
-//    $('#employeeListTable tbody').empty();
-
-//    // Clear approver
-//    $('#approverCode, #approverName, #approverEmail, #approverPosition').val('');
-//    $('#approverSign').val('');
-//    $('#approverInfoFields').hide();
-//}
 
 function showToast(message, type = "success") {
     var toastEl = $("#toastMessage");

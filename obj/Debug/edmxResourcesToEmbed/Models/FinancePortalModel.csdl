@@ -145,8 +145,9 @@
     <Property Name="FromDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="ToDate" Type="DateTime" Nullable="false" Precision="3" />
     <Property Name="BusinessPurpose" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Currency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Rate" Type="Double" />
-    <Property Name="CashReceived" Type="Int64" Nullable="false" />
+    <Property Name="TotalExpense" Type="Int64" Nullable="false" />
     <Property Name="BalanceCompany" Type="Int64" Nullable="false" />
     <Property Name="BalanceEmployee" Type="Int64" Nullable="false" />
     <Property Name="TotalCharges" Type="Int64" Nullable="false" />

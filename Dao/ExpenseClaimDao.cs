@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 
 namespace FinancePortal.Dao
@@ -17,59 +18,63 @@ namespace FinancePortal.Dao
         const string APRole = "AP";
         const string FCRole = "FC";
 
-        public static PaymentViewModel GetInitPayment()
+        public static PaymentViewModel GetInitPayment(int ciaID)
         {
             using (var db = new FinancePortalEntities())
             {
                 var payments = db.Payments.Select(item => new PaymentsModel { ID = item.ID, PaymentName = item.PaymentName}).ToList();
                 var costs = TravelExpenseDao.GetCostBudgetList();
 
+                var ciaInfo = db.CashInAdvances.Find(ciaID);
+                int travelExpenseId = ciaInfo != null ? ciaInfo.TravelExpenseID : 0;
+                var budgetApproved = (from d in db.TravelExpenseCostDetails
+                                      join cb in db.TravelExpenseCostBudgets on d.CostBudgetID equals cb.ID
+                                      join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                                      where d.TravelExpenseID == travelExpenseId && d.IsShown
+                                      group d by b.BudgetName into g
+                                      select new BudgetViewModel
+                                      {
+                                          BudgetName = g.Key,
+                                          BudgetAmount = g.Sum(x => x.CostAmount) // sum budget approved
+                                      }).ToList();
+
                 var result = new PaymentViewModel();
                 result.Payments = payments;
+                result.Budgets = budgetApproved;
                 result.Costs = costs;
                 return result;
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public static CashInAdvanceViewModel GetCashInAdvanceByTravelID(int travelID)
+        public static ExpenseClaimViewModel GetExpenseClaimByCIAID(int ciaID)
         {
             using (var db = new FinancePortalEntities())
             {
-                CashInAdvanceViewModel viewModel = new CashInAdvanceViewModel();
-                int CIAID = 0;
-                CashInAdvance cashInAdvance = db.CashInAdvances.Where(c => c.TravelExpenseID == travelID).FirstOrDefault();
-                if (cashInAdvance != null)
+                int ID = 0;
+                var ciaInfo = db.CashInAdvances.Find(ciaID);
+
+                ExpenseClaimViewModel viewModel = new ExpenseClaimViewModel();
+                ExpenseClaim expenseClaim = db.ExpenseClaims.Where(c => c.CIAID == ciaID).FirstOrDefault();
+                if (expenseClaim != null)
                 {
-                    CIAID = cashInAdvance.ID;
-                    viewModel.ID = cashInAdvance.ID;
-                    viewModel.Reason = cashInAdvance.Reason;
-                    viewModel.RequiredCash = cashInAdvance.RequiredCash;
-                    viewModel.RequiredDate = cashInAdvance.RequiredDate;
-                    viewModel.ReturnedDate = cashInAdvance.ReturnedDate;
-                    viewModel.RequesterSign = cashInAdvance.RequesterSignature;
+                    ID = expenseClaim.ID;
+                    viewModel.ID = expenseClaim.ID;
+                    viewModel.ReportDate = expenseClaim.ReportDate;
+                    viewModel.FromDate = expenseClaim.FromDate;
+                    viewModel.ToDate = expenseClaim.ToDate;
+                    viewModel.BusinessPurpose = expenseClaim.BusinessPurpose;
+                    viewModel.Currency = expenseClaim.Currency;
+                    viewModel.Rate = (double)expenseClaim.Rate;
+                    viewModel.TotalExpense = expenseClaim.TotalExpense;
+                    viewModel.CashReceived = ciaInfo == null ? ciaInfo.RequiredCash : 0;
+                    viewModel.BalanceCompany = expenseClaim.BalanceCompany;
+                    viewModel.BalanceEmployee = expenseClaim.BalanceEmployee;
+                    viewModel.TotalCharges = expenseClaim.TotalCharges;
+                    viewModel.RequesterSign = expenseClaim.RequesterSignature;
 
 
                     //Get Approval HOD Info 
-                    CashInAdvanceApproval hodApprovalInfo = db.CashInAdvanceApprovals.Where(c => c.CIAID == CIAID).FirstOrDefault();
+                    ExpenseClaimApproval hodApprovalInfo = db.ExpenseClaimApprovals.Where(c => c.ECID == ID).FirstOrDefault();
                     if (hodApprovalInfo != null)
                     {
                         viewModel.HODID = hodApprovalInfo.ApproverID;
@@ -77,16 +82,11 @@ namespace FinancePortal.Dao
                         viewModel.HODEmail = hodApprovalInfo.ApproverEmail;
                         viewModel.HODPosition = hodApprovalInfo.ApproverPosition;
                     }
-
-                    //Get Bank Info
-                    viewModel.BeneficialName = cashInAdvance.BeneficialName;
-                    viewModel.BankBranch = cashInAdvance.BankBranch;
-                    viewModel.AccountNo = cashInAdvance.AccountNo;
                 }
                 else
                 {
                     //Get Approval HOD Info from travel expense
-                    TravelExpenseApproval hodApprovalInfo = db.TravelExpenseApprovals.Where(t => t.TravelExpenseID == travelID && t.ApprovalStep == 1).FirstOrDefault();
+                    CashInAdvanceApproval hodApprovalInfo = db.CashInAdvanceApprovals.Where(t => t.CIAID == ID && t.ApprovalStep == 1).FirstOrDefault();
                     if (hodApprovalInfo != null)
                     {
                         viewModel.HODID = hodApprovalInfo.ApproverID;
@@ -96,10 +96,9 @@ namespace FinancePortal.Dao
                     }
                 }
 
-                TravelExpense travelInfo = db.TravelExpenses.Find(travelID);
-                viewModel.TravelExpenseID = travelID;
+                viewModel.CIAID = ciaID;
                 //Get requester
-                User user = db.Users.Where(u => u.UserName == travelInfo.CreatedBy).FirstOrDefault();
+                User user = db.Users.Where(u => u.UserName == ciaInfo.CreatedBy).FirstOrDefault();
                 viewModel.EmployeeID = user.EmployeeCode;
                 viewModel.EmployeeName = user.UserName;
                 viewModel.Department = user.Department;
@@ -110,6 +109,11 @@ namespace FinancePortal.Dao
                 return viewModel;
             }
         }
+
+
+
+
+
 
         public static bool SaveCashInAdvance(CashInAdvanceViewModel model)
         {
@@ -164,7 +168,7 @@ namespace FinancePortal.Dao
                     mailContent.TarNumber = db.TravelExpenses.Find(ciaForm.TravelExpenseID)?.TarNo;
                     mailContent.RecipientTo = model.HODEmail;
                     mailContent.RecipientCc = mailRequester;
-                    mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
+                    mailContent.Content = "Please be informed that you have a expense claim waiting for approval.";
                     TravelExpenseDao.SendEmail(mailContent);
                     return true;
                 }
@@ -355,7 +359,7 @@ namespace FinancePortal.Dao
                 if (approval == null)
                     return new OperationResult { Success = false, Message = "HOD approval record not found." };
                 var apUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == APRole && r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == APRole && r.IsShown == true && u.IsActive && u.IsShown))
                             .FirstOrDefault();
 
                 if (isApprove)
@@ -445,7 +449,7 @@ namespace FinancePortal.Dao
                 if (approval == null)
                     return new OperationResult { Success = false, Message = "AP Approval record not found." };
                 var fcUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true && u.IsActive && u.IsShown))
                             .FirstOrDefault();
 
                 // Update approval

@@ -31,8 +31,8 @@
         <div class="col-lg-12">
             <div class="col-md-12">
 
-                <input type="hidden" id="ciaID" value="@(Model?.ID ?? 0)" />
-                <input type="hidden" id="travelID" value="@(Model != null ? Model.TravelExpenseID : 0)" />
+                <input type="hidden" id="ecID" value="@(Model?.ID ?? 0)" />
+                <input type="hidden" id="ciaID" value="@(Model != null ? Model.CIAID : 0)" />
                 <!-- 🔸 Travel Info -->
                 <div class="card mb-4">
                     <h4 class="card-header text-center" style="background: #ffca2c;">
@@ -85,23 +85,12 @@
                                         Date Information <span class="font-italic text-secondary"> (Thông tin lịch trình)</span>
                                     </h5>
                                     <div class="card-body">
-                                        @*<div class="form-group row">
-                                                <label class="control-label col-md-4 font-weight-bold">
-                                                    Reason for Advance <span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Lý do tạm ứng)</span>
-                                                </label>
-                                                <div class="col-md-8">
-                                                    <textarea id="reason" class="form-control" rows="3">@(Model != null ? Model.Reason : "")</textarea>
-                                                </div>
-                                            </div>*@
-
-
-
                                         <div class="form-group row">
                                             <label class="control-label col-md-4 font-weight-bold">
                                                 Current Date <span class="text-danger">*</span><br /><span class="font-italic text-secondary"> (Ngày báo cáo)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="date" class="form-control" id="returnedDate" value="@(Model != null && Model.ID > 0 ? Model.ReturnedDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                                <input type="date" class="form-control" id="reportDate" value="@(Model != null && Model.ID > 0 ? Model.ReportDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                                             </div>
                                         </div>
 
@@ -110,15 +99,15 @@
                                                 From Date<span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Từ ngày)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="date" class="form-control" id="requiredDate" value="@(Model != null && Model.ID > 0? Model.RequiredDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                                <input type="date" class="form-control" id="fromDate" value="@(Model != null && Model.ID > 0? Model.FromDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label class="control-label col-md-4 font-weight-bold">
-                                                To Date<span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Từ ngày)</span>
+                                                To Date<span class="text-danger">*</span><br /><span class="font-italic text-secondary">(Đến ngày)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="date" class="form-control" id="requiredDate" value="@(Model != null && Model.ID > 0? Model.RequiredDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
+                                                <input type="date" class="form-control" id="toDate" value="@(Model != null && Model.ID > 0? Model.ToDate.ToString("yyyy-MM-dd") : DateTime.Now.ToString("yyyy-MM-dd"))" />
                                             </div>
                                         </div>
 
@@ -129,10 +118,10 @@
 
                         <div class="form-group mb-4 mt-3">
                             <label class="font-weight-bold">Business Purpose <span class="text-danger">*</span></label>
-                            <textarea id="BusinessPurpose" class="form-control" rows="3"></textarea>
+                            <textarea id="BusinessPurpose" class="form-control" rows="3" value="@(Model != null ? Model.BusinessPurpose : "")" ></textarea>
                         </div>
 
-                        <!-- 🔸 Employees Section -->
+                        <!-- 🔸 Payment Section -->
                         <div class="card shadow border-0 mb-4 mt-4">
                             <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
                                 <h5 class="m-0">Payments Info <span class="text-danger">*</span></h5>
@@ -150,7 +139,7 @@
                                                 <span class="font-italic text-secondary">(Tiền tệ)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="text" class="form-control" id="foreignCurrency" value="USD" />
+                                                <input type="text" class="form-control" id="foreignCurrency" value="@(Model != null ? Model.Currency : "USD")" />
                                             </div>
                                         </div>
                                     </div>
@@ -163,14 +152,11 @@
                                                 <span class="font-italic text-secondary">(Tỉ giá)</span>
                                             </label>
                                             <div class="col-md-8">
-                                                <input type="number" class="form-control" id="exchangeRate" />
+                                                <input type="number" class="form-control" id="exchangeRate" value="@(Model != null ? Model.Rate : 0)"/>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-
-
                                 <table class="table table-bordered table-sm" id="paymentListTable">
                                     <thead class="table-light">
                                         <tr>
@@ -184,12 +170,70 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Populated via JS (window.preloadedEmployees) -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
+                        <!-- 🔸 Adjust Section -->
+                        <div class="card shadow border-0 mb-4 mt-4">
+                            <div class="card-header d-flex justify-content-between align-items-center" style="background: #9ddef2;">
+                                <h5 class="m-0">Adjust Budget approved</h5>
+                            </div>
+                            <div class="card-body" style="overflow-x: auto;">
+                                <div class="form-group row">
+                                    <!-- First group -->
+                                    <div class="col-md-6">
+                                        <table class="table table-bordered table-sm" id="paymentListTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Budget Name</th>
+                                                    <th>Approved Budget</th>
+                                                    <th>Actual</th>
+                                                    <th>Adjust Budget</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Second group -->
+                                    <div class="col-md-6">
+                                        <table class="table table-bordered table-sm">
+                                            <tr>
+                                                <td class="font-weight-bold text-center" style="background: #dee2e6">Total expense:<br><span class="font-italic text-secondary">Tổng CP</span></td>
+                                                <td class="font-weight-bold text-right" id="totalExpense">@(Model != null ? Model.TotalExpense : 0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label font-weight-bold">Less cash advances received:<br><span class="font-italic text-secondary">Đã ứng</span></td>
+                                                <td class="font-weight-bold text-right">@(Model != null ? Model.CashReceived : 0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label font-weight-bold">Balance due to company:<br><span class="font-italic text-secondary">Tổng hoàn công ty</span></td>
+                                                <td class="font-weight-bold text-right">@(Model != null ? Model.BalanceCompany : 0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label font-weight-bold">Balance due to employee:<br><span class="font-italic text-secondary">Tổng hoàn nhân viên</span></td>
+                                                <td class="font-weight-bold text-right">@(Model != null ? Model.BalanceEmployee : 0)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label font-weight-bold">Total Company Charges</td>
+                                                <td class="font-weight-bold text-right">@(Model != null ? Model.TotalCharges : 0)</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <label class="control-label mt-3">
+                            I certify that the above expenses have been incurred on behalf of the company. Business was discussed at meals claimed above except eats alone. Exceptions have been noted in the space provided.
+                            </br>
+                            <span class="text-secondary font-italic">
+                                Tôi xác nhận các chi phí trên đều phát sinh dưới danh nghĩa của công ty. Việc kinh doanh đã được thảo luận tại bữa ăn, ngoại trừ các bữa ăn riêng. Các trường hợp ngoại lệ đã được ghi nhận cụ thể.
+                            </span>
+                        </label>
 
                         <div class="row mt-4">
                             <!-- Approver Info Card -->
@@ -331,14 +375,19 @@
         flex-direction: row;
     }
 
-        .equal-height > div {
-            display: flex;
-            flex-direction: column;
-        }
+    .equal-height > div {
+        display: flex;
+        flex-direction: column;
+    }
 
-        .equal-height .card {
-            flex: 1;
-        }
+    .equal-height .card {
+        flex: 1;
+    }
+
+    .sub-label {
+        font-style: italic;
+        font-size: 12px;
+    }
 </style>
 <!-- JS hook -->
 @section expenseClaimScript {
@@ -349,6 +398,7 @@
 {
     <script>
         window.isEdit = true;
+        window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees))
         @*window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees));
         window.preloadedApprover = @Html.Raw(Json.Encode(Model.Approver));
         window.preloadedBudgetID = @(Model.BudgetID);
@@ -360,11 +410,11 @@ else
 {
     <script>
         window.isEdit = false;
-        window.preloadedEmployees = [];
-        window.preloadedApprover = null;
-        window.preloadedBudgetID = null;
-        window.preloadedCostDetails = [];
-        window.preloadedExchangeRate = 25000;
+        window.preloadedBudgetApproved = [];
+        //window.preloadedApprover = null;
+        //window.preloadedBudgetID = null;
+        //window.preloadedCostDetails = [];
+        //window.preloadedExchangeRate = 25000;
     </script>
 }
 

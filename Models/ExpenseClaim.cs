@@ -28,8 +28,9 @@ namespace FinancePortal.Models
         public System.DateTime FromDate { get; set; }
         public System.DateTime ToDate { get; set; }
         public string BusinessPurpose { get; set; }
+        public string Currency { get; set; }
         public Nullable<double> Rate { get; set; }
-        public long CashReceived { get; set; }
+        public long TotalExpense { get; set; }
         public long BalanceCompany { get; set; }
         public long BalanceEmployee { get; set; }
         public long TotalCharges { get; set; }

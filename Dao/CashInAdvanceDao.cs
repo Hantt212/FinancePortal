@@ -130,7 +130,7 @@ namespace FinancePortal.Dao
                     mailContent.TarNumber = db.TravelExpenses.Find(ciaForm.TravelExpenseID)?.TarNo;
                     mailContent.RecipientTo = model.HODEmail;
                     mailContent.RecipientCc = mailRequester;
-                    mailContent.Content = "Please be informed that you have a travel expense ciaInfo waiting for approval.";
+                    mailContent.Content = "Please be informed that you have a cash in advance waiting for approval.";
                     TravelExpenseDao.SendEmail(mailContent);
                     return true;
                 }
@@ -321,7 +321,7 @@ namespace FinancePortal.Dao
                 if (approval == null)
                     return new OperationResult { Success = false, Message = "HOD approval record not found." };
                 var apUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == APRole && r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == APRole && r.IsShown == true && u.IsActive && u.IsShown))
                             .FirstOrDefault();
 
                 if (isApprove)
@@ -411,7 +411,7 @@ namespace FinancePortal.Dao
                 if (approval == null)
                     return new OperationResult { Success = false, Message = "AP Approval record not found." };
                 var fcUser = db.Users
-                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true))
+                            .Where(u => u.UserRoles.Any(r => r.Role.RoleName == FCRole && r.IsShown == true && u.IsActive && u.IsShown))
                             .FirstOrDefault();
 
                 // Update approval
