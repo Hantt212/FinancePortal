@@ -25,22 +25,11 @@ namespace FinancePortal.Dao
                 var payments = db.Payments.Select(item => new PaymentsModel { ID = item.ID, PaymentName = item.PaymentName}).ToList();
                 var costs = TravelExpenseDao.GetCostBudgetList();
 
-                var ciaInfo = db.CashInAdvances.Find(ciaID);
-                int travelExpenseId = ciaInfo != null ? ciaInfo.TravelExpenseID : 0;
-                var budgetApproved = (from d in db.TravelExpenseCostDetails
-                                      join cb in db.TravelExpenseCostBudgets on d.CostBudgetID equals cb.ID
-                                      join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
-                                      where d.TravelExpenseID == travelExpenseId && d.IsShown
-                                      group d by b.BudgetName into g
-                                      select new BudgetViewModel
-                                      {
-                                          BudgetName = g.Key,
-                                          BudgetAmount = g.Sum(x => x.CostAmount) // sum budget approved
-                                      }).ToList();
+               
 
                 var result = new PaymentViewModel();
                 result.Payments = payments;
-                result.Budgets = budgetApproved;
+               // result.Budgets = budgetApproved;
                 result.Costs = costs;
                 return result;
             }
@@ -66,7 +55,7 @@ namespace FinancePortal.Dao
                     viewModel.Currency = expenseClaim.Currency;
                     viewModel.Rate = (double)expenseClaim.Rate;
                     viewModel.TotalExpense = expenseClaim.TotalExpense;
-                    viewModel.CashReceived = ciaInfo == null ? ciaInfo.RequiredCash : 0;
+                    
                     viewModel.BalanceCompany = expenseClaim.BalanceCompany;
                     viewModel.BalanceEmployee = expenseClaim.BalanceEmployee;
                     viewModel.TotalCharges = expenseClaim.TotalCharges;
@@ -86,7 +75,7 @@ namespace FinancePortal.Dao
                 else
                 {
                     //Get Approval HOD Info from travel expense
-                    CashInAdvanceApproval hodApprovalInfo = db.CashInAdvanceApprovals.Where(t => t.CIAID == ID && t.ApprovalStep == 1).FirstOrDefault();
+                    CashInAdvanceApproval hodApprovalInfo = db.CashInAdvanceApprovals.Where(t => t.CIAID == ciaID && t.ApprovalStep == 1).FirstOrDefault();
                     if (hodApprovalInfo != null)
                     {
                         viewModel.HODID = hodApprovalInfo.ApproverID;
@@ -94,15 +83,31 @@ namespace FinancePortal.Dao
                         viewModel.HODEmail = hodApprovalInfo.ApproverEmail;
                         viewModel.HODPosition = hodApprovalInfo.ApproverPosition;
                     }
+
+                    //Set value default
+                    viewModel.Currency = "USD";
                 }
 
+
                 viewModel.CIAID = ciaID;
+                viewModel.CashReceived = ciaInfo != null ? ciaInfo.RequiredCash : 0;
                 //Get requester
                 User user = db.Users.Where(u => u.UserName == ciaInfo.CreatedBy).FirstOrDefault();
                 viewModel.EmployeeID = user.EmployeeCode;
                 viewModel.EmployeeName = user.UserName;
                 viewModel.Department = user.Department;
 
+                int travelExpenseId = ciaInfo != null ? ciaInfo.TravelExpenseID : 0;
+                viewModel.BudgetApproved = (from d in db.TravelExpenseCostDetails
+                                              join cb in db.TravelExpenseCostBudgets on d.CostBudgetID equals cb.ID
+                                              join b in db.TravelExpenseBudgets on cb.BudgetID equals b.ID
+                                              where d.TravelExpenseID == travelExpenseId && d.IsShown
+                                              group d by b.BudgetName into g
+                                              select new BudgetViewModel
+                                              {
+                                                  BudgetName = g.Key,
+                                                  BudgetAmount = g.Sum(x => x.CostAmount) // sum budget approved
+                                              }).ToList();
                 
 
 

@@ -11,7 +11,9 @@ function openPayment() {
         return;
     }
     clearPayment();
-    $.get('/ExpenseClaim/GetInitPayment', function (list) {
+
+    var ciaId = $("#ciaID").val();
+    $.get(`/ExpenseClaim/GetInitPayment?ciaId=${ciaId}`, function (list) {
         // Payment Dropdown
         var paymentHtml = `<option value="">-- Select Value --</option>`;
         $('#vPaymentType').append(`<option value="">-- Select Value --</option>`);
@@ -58,7 +60,7 @@ function openPayment() {
     });
 }
 
-$('#vActualVND').on('change', function () {
+$('#vActualVND').on('input', function () {
     var exchangeRate = +$("#exchangeRate").val();
     var actualVND = +this.value; 
     var actualUSD = roundTo2Decimals(actualVND * exchangeRate);
@@ -145,7 +147,7 @@ $('#addPaymentBtn').click(function () {
     
     $('#addPaymentModal').modal('hide');
     calcSumActualGroupPayment();
-
+    
     // ✅ Show toast
     showToast("Payment added to the list successfully!", "success");
 
@@ -206,9 +208,35 @@ function calcSumActualGroupPayment() {
         `;
         $tbody.append(rowHtml);
 
-        totalActualUSD += totals.actualUSD.toFixed(2);
+        totalActualUSD += +totals.actualUSD.toFixed(2);
     }
-    $("#totalExpense").append(totalActualUSD);
+    totalActualUSD = roundTo2Decimals(totalActualUSD);
+    $("#totalExpense").html(totalActualUSD);
+
+    calcSumByBudgetLine();
+
+    // calc Balance company or Balance Employee
+    var cashReceived = +$("#cashReceived").text().trim();
+    const cashAdvanceUSD = +$('#paymentListTable tbody tr').filter(function () {
+        return $(this).find('td:nth-child(2)').text().trim() === 'Total Cash Advance';
+    }).find('td:nth-child(6)').text().trim();
+
+    cashReceived = roundTo2Decimals(cashReceived);
+
+    if (cashReceived > cashAdvanceUSD) {
+        let balance = cashReceived - cashAdvanceUSD;
+        $("#balanceCompany").text(balance);
+        $("#balanceEmp").text("0");
+    } else {
+        let balance = cashAdvanceUSD - cashReceived;
+        $("#balanceCompany").text("0");
+        $("#balanceEmp").text(balance);
+    }
+
+    //
+    let balanceCompany = roundTo2Decimals(+$("#balanceCompany").text())
+    let totalCharges = (+totalActualUSD) - (+balanceCompany);
+    $("#totalCharges").text(roundTo2Decimals(totalCharges));
 }
 
 
@@ -219,27 +247,38 @@ function calcSumByBudgetLine() {
         const budgetLine = $(this).find('td:nth-child(4)').text().trim();
         const actualUSD = parseFloat($(this).find('td:nth-child(6)').text().trim()) || 0;
 
+        if (!budgetLine) return; // Skip empty budget lines
+
         if (!totalsByBudgetLine[budgetLine]) {
             totalsByBudgetLine[budgetLine] = 0;
         }
         totalsByBudgetLine[budgetLine] += actualUSD;
     });
 
-    // Output result to console
-    console.log("Total USD grouped by Budget Line:");
-    $.each(totalsByBudgetLine, function (budgetLine, totalUSD) {
-        console.log(`${budgetLine}: $${totalUSD.toFixed(2)}`);
-    });
+    // Clear existing rows before appending new ones (optional)
+    $('#adjustBudgetTable tbody').empty();
 
-    // Optional: Show results on page
-    let resultHtml = '<ul>';
-    $.each(totalsByBudgetLine, function (budgetLine, totalUSD) {
-        resultHtml += `<li><strong>${budgetLine}</strong>: $${totalUSD.toFixed(2)}</li>`;
-    });
-    resultHtml += '</ul>';
+    const budgetList = window.preloadedBudgetApproved;
 
-    $('body').append(`<div class="mt-3">${resultHtml}</div>`);
+    $.each(totalsByBudgetLine, function (budgetLine, totalUSD) {
+        const matchedItem = budgetList.find(b => b.BudgetName === budgetLine);
+
+        const approved = matchedItem ? matchedItem.BudgetAmount : 0;
+        const actual = totalUSD.toFixed(2);
+        const adjust = approved - actual
+
+        const rowHtml = `
+            <tr class="summary-row">
+                <td>${budgetLine}</td>
+                <td>${approved}</td>
+                <td>${actual}</td>
+                <td>${adjust}</td>
+            </tr>
+        `;
+        $('#adjustBudgetTable tbody').append(rowHtml);
+    });
 }
+
 
 $(document).on('click', '.remove-payment', function () {
     $(this).closest('tr').remove();

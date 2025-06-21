@@ -36,5 +36,6 @@ namespace FinancePortal.ViewModels
         public string StatusColor { get; set; }
 
         public List<ApprovalInfoViewModel> Approvals { get; set; }
+        public List<BudgetViewModel>BudgetApproved { get; set; }
     }
 }

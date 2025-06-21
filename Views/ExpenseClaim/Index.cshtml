@@ -148,7 +148,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group row">
                                             <label class="control-label col-md-4 font-weight-bold">
-                                                Rate <br />
+                                                Rate <span class="text-danger">*</span><br />
                                                 <span class="font-italic text-secondary">(Tỉ giá)</span>
                                             </label>
                                             <div class="col-md-8">
@@ -184,7 +184,7 @@
                                 <div class="form-group row">
                                     <!-- First group -->
                                     <div class="col-md-6">
-                                        <table class="table table-bordered table-sm" id="paymentListTable">
+                                        <table class="table table-bordered table-sm" id="adjustBudgetTable">
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>Budget Name</th>
@@ -202,24 +202,24 @@
                                     <div class="col-md-6">
                                         <table class="table table-bordered table-sm">
                                             <tr>
-                                                <td class="font-weight-bold text-center" style="background: #dee2e6">Total expense:<br><span class="font-italic text-secondary">Tổng CP</span></td>
+                                                <td class="font-weight-bold text-center w-75" style="background: #dee2e6">Total expense:<br><span class="font-italic text-secondary">Tổng CP</span></td>
                                                 <td class="font-weight-bold text-right" id="totalExpense">@(Model != null ? Model.TotalExpense : 0)</td>
                                             </tr>
                                             <tr>
                                                 <td class="label font-weight-bold">Less cash advances received:<br><span class="font-italic text-secondary">Đã ứng</span></td>
-                                                <td class="font-weight-bold text-right">@(Model != null ? Model.CashReceived : 0)</td>
+                                                <td class="font-weight-bold text-right" id="cashReceived">@(Model != null ? Model.CashReceived : 0)</td>
                                             </tr>
                                             <tr>
                                                 <td class="label font-weight-bold">Balance due to company:<br><span class="font-italic text-secondary">Tổng hoàn công ty</span></td>
-                                                <td class="font-weight-bold text-right">@(Model != null ? Model.BalanceCompany : 0)</td>
+                                                <td class="font-weight-bold text-right" id="balanceCompany">@(Model != null ? Model.BalanceCompany : 0)</td>
                                             </tr>
                                             <tr>
                                                 <td class="label font-weight-bold">Balance due to employee:<br><span class="font-italic text-secondary">Tổng hoàn nhân viên</span></td>
-                                                <td class="font-weight-bold text-right">@(Model != null ? Model.BalanceEmployee : 0)</td>
+                                                <td class="font-weight-bold text-right" id="balanceEmp">@(Model != null ? Model.BalanceEmployee : 0)</td>
                                             </tr>
                                             <tr>
                                                 <td class="label font-weight-bold">Total Company Charges</td>
-                                                <td class="font-weight-bold text-right">@(Model != null ? Model.TotalCharges : 0)</td>
+                                                <td class="font-weight-bold text-right" id="totalCharges">@(Model != null ? Model.TotalCharges : 0)</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -398,7 +398,7 @@
 {
     <script>
         window.isEdit = true;
-        window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees))
+        window.preloadedBudgetApproved = @Html.Raw(Json.Encode(Model.BudgetApproved));
         @*window.preloadedEmployees = @Html.Raw(Json.Encode(Model.Employees));
         window.preloadedApprover = @Html.Raw(Json.Encode(Model.Approver));
         window.preloadedBudgetID = @(Model.BudgetID);
@@ -408,13 +408,13 @@
 }
 else
 {
-    <script>
+<script>
         window.isEdit = false;
-        window.preloadedBudgetApproved = [];
+        window.preloadedBudgetApproved = @Html.Raw(Json.Encode(Model.BudgetApproved));
         //window.preloadedApprover = null;
         //window.preloadedBudgetID = null;
         //window.preloadedCostDetails = [];
         //window.preloadedExchangeRate = 25000;
-    </script>
+</script>
 }
 
